@@ -35,6 +35,8 @@ describe("Marketplace", function () {
     //using value auctionPrice for everything because minting fee, listing fee,
     //price set by seller, and price paid by buyer are all 1 eth for simplicity
 
+    //add fetch market and display items 1:08:32
+
 
   });
 });
