@@ -43,14 +43,14 @@ contract Marketplace is ReentrancyGuard, Ownable {
     //places an item for sale on the marketplace
     function createListing(
         uint256 tokenId,
-        uint256 price,
+        uint256 priceIn,
         address nftContract
     ) public payable nonReentrant {
         require(msg.value == fee, "Please pay listing fee");
         //list something you don't own? require or backend? moralis?
         _itemIds.increment();
         uint256 itemId = _itemIds.current();
-
+        uint256 price = priceIn;
         idToListing[itemId] = Listing(
             itemId,
             tokenId,
@@ -80,7 +80,7 @@ contract Marketplace is ReentrancyGuard, Ownable {
         payable
         nonReentrant
     {
-        uint256 price = idToListing[itemId].price;
+        uint256 price = 1 ether * idToListing[itemId].price;
         uint256 tokenId = idToListing[itemId].tokenId;
         require(
             msg.value == price,
@@ -91,7 +91,7 @@ contract Marketplace is ReentrancyGuard, Ownable {
             "This item has already been sold"
         );
         require(
-            idToListing[itemId].active == false,
+            idToListing[itemId].active == true,
             "This listing is no longer active"
         );
 
@@ -125,8 +125,12 @@ contract Marketplace is ReentrancyGuard, Ownable {
         transferFrom(msg.sender, address(this))
     }
     function acceptBid(address nftContract, uint256 itemId) public payable {}
-*/
+    */
     function getListingPrice(uint256 id) public view returns (uint256) {
         return idToListing[id].price;
+    }
+
+    function getFee() public view returns (uint256) {
+        return fee;
     }
 }
