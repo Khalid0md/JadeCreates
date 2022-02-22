@@ -1,43 +1,6 @@
 {
   "_format": "hh-sol-cache-2",
   "files": {
-    "/Users/khalidhamid/Documents/Projects/JadeCreates/nft-marketplace/contracts/Greeter.sol": {
-      "lastModificationDate": 1645114440997,
-      "contentHash": "54c28c84e5277b35b8c8329ce9755dae",
-      "sourceName": "contracts/Greeter.sol",
-      "solcConfig": {
-        "version": "0.8.4",
-        "settings": {
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [
-        "hardhat/console.sol"
-      ],
-      "versionPragmas": [
-        "^0.8.0"
-      ],
-      "artifacts": [
-        "Greeter"
-      ]
-    },
     "/Users/khalidhamid/Documents/Projects/JadeCreates/nft-marketplace/node_modules/hardhat/console.sol": {
       "lastModificationDate": 1645114009438,
       "contentHash": "cc4777addd464ea56fa35b1c45df0591",
@@ -74,8 +37,8 @@
       ]
     },
     "/Users/khalidhamid/Documents/Projects/JadeCreates/nft-marketplace/contracts/Marketplace.sol": {
-      "lastModificationDate": 1645309854746,
-      "contentHash": "ea1f5d4e6fbd0c8feb225d902bc80eac",
+      "lastModificationDate": 1645561459360,
+      "contentHash": "545e1c836262491c8cb717dcb7dd4564",
       "sourceName": "contracts/Marketplace.sol",
       "solcConfig": {
         "version": "0.8.4",
