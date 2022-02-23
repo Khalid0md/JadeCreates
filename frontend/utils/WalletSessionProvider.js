@@ -1,21 +1,26 @@
 import { createContext } from "react"
 import { useState, useEffect } from "react/cjs/react.development"
+import { useModal } from "./ModalContext"
 
 // create context
 export const WalletContext = createContext()
+
+// wallet states
+
 
 // this context provider allows the wallet address to be passed down the component tree
 export default function WalletSessionProvider(props) {
 
     // setup state for wallet address
     const [walletAddress, setWalletAddress] = useState()
+    const [isLoaded, setIsLoaded] = useState(false)
 
     // assign walletAddress if already signed in
     useEffect(async () => {
         const currentWallet = await getCurrentWalletConnected()
         setWalletAddress(currentWallet.address)
-
         addWalletListener()
+        setIsLoaded(true)
     })
 
     function addWalletListener() {
@@ -27,12 +32,18 @@ export default function WalletSessionProvider(props) {
         }
     }
 
-    const walletSession = new Object()
-    walletSession.walletAddress = walletAddress
-    walletSession.connectWallet = connectWallet
+    const modalController = useModal()
+
+    async function connectWalletAndUpdateStatus() {
+        setIsLoaded(false)
+        const sessionStatus = await connectWallet(modalController)
+        setIsLoaded(true)
+
+        return sessionStatus;
+    }
 
     return (
-        <WalletContext.Provider value={walletSession}>
+        <WalletContext.Provider value={ {walletAddress: walletAddress, connectWallet: connectWalletAndUpdateStatus, isLoaded: isLoaded} }>
             {props.children}
         </WalletContext.Provider>
     )
@@ -70,8 +81,9 @@ const getCurrentWalletConnected = async () => {
     }
 };
 
-// OLD NOTE: can be used to connect wallet from anywhere in the app
-const connectWallet = async () => {
+// connects your wallet through metamask
+const connectWallet = async (modalController) => {
+
     if (window.ethereum) {
         try {
             const addressArray = await window.ethereum.request({
@@ -79,18 +91,37 @@ const connectWallet = async () => {
             });
             const obj = {
                 status: "Connected",
+                isConnected: true,
                 address: addressArray[0],
             };
             return obj;
         } catch (err) {
+
+            modalController.setContent(
+                <div className="w-64 h-24 flex items-center justify-center nunito-font font-black">
+                    Issue logging in. Please try again.
+                </div>
+            )
+            modalController.setIsShown(true);
+
             return {
                 address: "",
+                isConnected: false,
                 status: err.message,
             };
         }
     } else {
+
+        modalController.setContent(
+            <div className="w-64 h-24 flex items-center justify-center nunito-font font-black">
+                Please install Metamask.
+            </div>
+        )
+        modalController.setIsShown(true);
+
         return {
             address: "",
+            isConnected: false,
             status: "Need to install metamask",
         };
     }

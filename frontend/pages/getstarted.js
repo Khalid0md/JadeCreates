@@ -54,10 +54,10 @@ function BasicPlan() {
             </div>
             <div className="flex grow justify-center">
                 <div className="flex flex-col grow justify-center max-w-min space-y-6">
-                    <ListItem icon={<HiCreditCard size={25} />} text={'One time payment'} space={5} />
-                    <ListItem icon={<HiOutlineGlobeAlt size={25} />} text={'Custom subdomain'} space={5} />
-                    <ListItem icon={<HiViewGrid size={25} />} text={'List up to 10 NFTs'} space={5} />
-                    <ListItem icon={<HiReceiptTax size={25} />} text={'10% service fee'} space={5} />
+                    <ListItem icon={<HiCreditCard size={25} />} text={'One time payment'} space={4} />
+                    <ListItem icon={<HiOutlineGlobeAlt size={25} />} text={'Custom subdomain'} space={4} />
+                    <ListItem icon={<HiViewGrid size={25} />} text={'List up to 10 NFTs'} space={4} />
+                    <ListItem icon={<HiReceiptTax size={25} />} text={'10% service fee'} space={4} />
                 </div>
             </div>
             <button className="w-full h-14 bg-mainBlack rounded-2xl shadow-low">
@@ -124,10 +124,10 @@ function ProPlan() {
             </div>
             <div className="flex grow justify-center">
                 <div className="flex flex-col grow justify-center max-w-min space-y-6">
-                    <ListItem icon={<HiCreditCard size={25} />} text={'One time payment'} space={5} />
-                    <ListItem icon={<HiOutlineGlobeAlt size={25} />} text={'Custom subdomain'} space={5} />
-                    <ListItem icon={<HiViewGrid size={25} />} text={'List up to 100 NFTs'} space={5} />
-                    <ListItem icon={<HiReceiptTax size={25} />} text={'5% service fee'} space={5} />
+                    <ListItem icon={<HiCreditCard size={25} />} text={'One time payment'} space={4} />
+                    <ListItem icon={<HiOutlineGlobeAlt size={25} />} text={'Custom subdomain'} space={4} />
+                    <ListItem icon={<HiViewGrid size={25} />} text={'List up to 100 NFTs'} space={4} />
+                    <ListItem icon={<HiReceiptTax size={25} />} text={'5% service fee'} space={4} />
                 </div>
             </div>
             <button className="w-full h-14 bg-mainBlack rounded-2xl shadow-low">

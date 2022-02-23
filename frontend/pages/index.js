@@ -1,5 +1,8 @@
 
 import NavBar from "../components/NavBar"
+import { WalletContext } from "../utils/WalletSessionProvider"
+import { useContext, useEffect } from "react"
+import { useRouter } from "next/router";
 
 export default function Home() {
   return (
@@ -21,15 +24,3 @@ function LandingContent1() {
     </div>
   )
 }
-
-
-/*
-
-
-<div className="text-mainBlack bg-background flex flex-col items-center justify-center h-screen space-y-10" >
-      asdf
-    </div>
-
-
-
-*/

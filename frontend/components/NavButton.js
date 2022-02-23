@@ -5,7 +5,7 @@ export default function NavButton({ text, bgColor, textColor, shadow, link, onCl
     const router = useRouter();
 
     return (
-        <button className={"flex items-center justify-center px-8 h-full rounded-2xl" + " shadow-" + shadow + " bg-" + bgColor}
+        <button className={"flex items-center justify-center px-8 h-14 rounded-2xl flex-shrink-0" + " shadow-" + shadow + " bg-" + bgColor}
             onClick={() => {
                 if (onClick) {
                     onClick()
