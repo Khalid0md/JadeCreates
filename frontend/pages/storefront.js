@@ -6,10 +6,10 @@ import testNftData from "../testData/testNftData";
 
 export default function Storefront() {
     return (
-        <div className="flex flex-col w-full items-center bg-background h-screen">
-            <div className="fixed w-full h-16 bg-red-300 z-50" />
-            <div className="flex flex-col h-full w-full max-w-[90rem] bg-background space-y-8 px-6 md:px-14">
-                
+        <div className="flex flex-col w-full items-center bg-background h-full">
+            <div className="flex flex-col h-full w-full max-w-[90rem] space-y-8 px-6 md:px-14">
+                <div className="sticky flex flex-shrink-0 top-0 h-0 w-full" />
+                <StorefrontNavBar />
                 <SearchBar />
                 <SortingItemList />
                 <NFTGrid nfts={testNftData} />
@@ -17,10 +17,11 @@ export default function Storefront() {
         </div>
     )
 }//<StorefrontNavBar />
+//<div className="fixed w-full h-16 bg-red-300 z-50" />
 
 function StorefrontNavBar() {
     return (
-        <div className="fixed left-0 w-full h-14 space-x-4">
+        <div className="sticky flex grow top-0 space-x-4 flex-shrink-0 z-50 bg-background p-4 -mx-4">
             <CustomLogo />
             <div className="flex grow" />
             <NavButton text={'Button 1'} bgColor={'white'} textColor={'mainBlack'} link={'/storefront'} />
@@ -28,6 +29,8 @@ function StorefrontNavBar() {
         </div>
     )
 }//flex grow mt-8 md:mt-14 h-14 space-x-4 flex-shrink-0
+//sticky flex grow mt-8 md:mt-14 h-14 space-x-4 flex-shrink-0
+//18, 21
 
 function CustomLogo() {
 
@@ -89,7 +92,7 @@ function SortingItem({ text }) {
 
 function NFTGrid({ nfts, expectedBatchSize = 1 }) {
     return (
-        <div className="pr-4 pb-12 grid gap-8 overflow-y-scroll nft-grid  scrollbar">
+        <div className="pb-12 grid gap-8 nft-grid scrollbar">
             {
                 nfts &&
                 nfts.map(nftData => {
@@ -103,6 +106,7 @@ function NFTGrid({ nfts, expectedBatchSize = 1 }) {
         </div>
     )
 }//auto-rows-min auto-cols-min
+//overflow-y-scroll
 
 function NFTGrid2({ nfts, expectedBatchSize = 1 }) {
     return (

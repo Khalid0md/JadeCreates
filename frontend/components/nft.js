@@ -1,7 +1,7 @@
 export default function NFT({ number, imgSrc, isAuction }) {
     return (
         <div className="aspect-[square] flex flex-col p-4 space-y-4 bg-white rounded-2xl shadow-high flex-shrink-0">
-            <img src={`https://cloudflare-ipfs.com/ipfs/${imgSrc}`} className="flex aspect-square flex-shrink-0" />
+            <img src={`https://cloudflare-ipfs.com/ipfs/${imgSrc}`} className="flex aspect-square flex-shrink-0 rounded-xl" />
             <div className="flex space-x-4" >
                 <p className="bg-background text-secondaryGray text-2xl numbers-font italic font-black rounded-xl px-4 py-2 max-w-min">
                     {'#' + number}

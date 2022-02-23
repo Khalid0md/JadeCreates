@@ -1,12 +1,15 @@
 import '../styles/globals.css'
 import MoralisWrapper from '../utils/MoralisWrapper'
 import WalletSessionProvider from '../utils/WalletSessionProvider'
+import ModalProvider from '../utils/ModalContext'
 
 function MyApp({ Component, pageProps }) {
   return (
-    <WalletSessionProvider>
-      <Component {...pageProps} />
-    </WalletSessionProvider>
+    <ModalProvider>
+      <WalletSessionProvider>
+        <Component {...pageProps} />
+      </WalletSessionProvider>
+    </ModalProvider >
   )
 }
 
