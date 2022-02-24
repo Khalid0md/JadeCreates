@@ -157,7 +157,7 @@ contract Marketplace is ReentrancyGuard, Ownable {
         return items;
     }
 
-    //returns an array of listing id's by subdomain
+    //returns an array of unsold listing id's by subdomain
     function getListingIdsBySubDomain(string memory subdomainIn)
         public
         view
