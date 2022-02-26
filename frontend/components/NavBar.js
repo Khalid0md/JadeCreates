@@ -25,11 +25,17 @@ export default function NavBar() {
                 modalController.setIsShown(true);
                 */
 
-                const sessionStatus = await walletSession.connectWallet();
+                if (walletSession.walletAddress) { 
+                    router.push('/dashboard') 
+                } else {
+                    const sessionStatus = await walletSession.connectWallet();
+                }
                 
+                /*
                 console.log(sessionStatus)
 
                 if (sessionStatus.isConnected) { router.push('/dashboard') }
+                */
             }} />
             <NavButton text={'Get Started'} bgColor={'mainBlack'} textColor={'white'} shadow={'high'} link={'/getstarted'} />
         </div>
