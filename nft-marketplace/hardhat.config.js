@@ -13,7 +13,7 @@ module.exports = {
       accounts: [privateKey]
     },
     testnet: {
-      url: `https://api.s1.b.hmny.io`,
+      url: `https://api.s0.b.hmny.io`,
       accounts: [privateKey]
     },
 
