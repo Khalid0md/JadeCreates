@@ -57,7 +57,7 @@ function BasicPlan() {
                     <ListItem icon={<HiCreditCard size={25} />} text={'One time payment'} space={4} />
                     <ListItem icon={<HiOutlineGlobeAlt size={25} />} text={'Custom subdomain'} space={4} />
                     <ListItem icon={<HiViewGrid size={25} />} text={'List up to 10 NFTs'} space={4} />
-                    <ListItem icon={<HiReceiptTax size={25} />} text={'10% service fee'} space={4} />
+                    <ListItem icon={<HiReceiptTax size={25} />} text={'5% service fee'} space={4} />
                 </div>
             </div>
             <button className="w-full h-14 bg-mainBlack rounded-2xl shadow-low">
@@ -79,7 +79,7 @@ function UnlimitedPlan() {
                 <p className="-translate-x-2 -translate-y-2 flex space-x-2 bg-green1 p-4 mb-0 mr-0 rounded-xl text-white justify-center items-end">
                     <p className="text-5xl numbers-font font-black" >
                         <div className="inline-block h-full align-text-baseline" />
-                        5000
+                        2000
                     </p>
                     <p className="text-3xl nunito-font font-black">
                         <div className="inline-block h-full align-text-baseline" />
@@ -127,7 +127,7 @@ function ProPlan() {
                     <ListItem icon={<HiCreditCard size={25} />} text={'One time payment'} space={4} />
                     <ListItem icon={<HiOutlineGlobeAlt size={25} />} text={'Custom subdomain'} space={4} />
                     <ListItem icon={<HiViewGrid size={25} />} text={'List up to 100 NFTs'} space={4} />
-                    <ListItem icon={<HiReceiptTax size={25} />} text={'5% service fee'} space={4} />
+                    <ListItem icon={<HiReceiptTax size={25} />} text={'3% service fee'} space={4} />
                 </div>
             </div>
             <button className="w-full h-14 bg-mainBlack rounded-2xl shadow-low">

@@ -113,37 +113,33 @@ function NFTGrid2({ nfts, expectedBatchSize = 1 }) {
         <div className="h-full pb-12 grid gap-8 p-4 overflow-y-scroll ticket-grid auto-rows-min auto-cols-min">
             {
                 nfts &&
-                nfts.map(ticketsPromise => {
+                nfts.map(nftsPromise => {
 
                     // state for tracking promise results
-                    const [ticketsMetadata, setTicketsMetadata] = useState()
+                    const [nftsMetadata, setNftsMetadata] = useState()
                     const [fetchFailed, setFetchFailed] = useState(false)
 
                     // check that the promise exists
-                    if (!ticketsPromise) { return }
+                    if (!nftsPromise) { return }
 
                     // update state based on promise outcome
                     // successful promise should return an array of metadata objects
-                    ticketsPromise
+                    nftsPromise
                         .then(metadata => {
-                            setTicketsMetadata(metadata)
+                            setNftsMetadata(metadata)
                         })
                         .catch(() => {
                             setFetchFailed(true)
                         })
 
                     // display loading skeleton until promise is fulfilled
-                    if (!ticketsMetadata && !fetchFailed) { return Array(expectedBatchSize).fill(0).map(_ => { return <TicketCardLoading /> }) }
+                    //if (!nftsMetadata && !fetchFailed) { return Array(expectedBatchSize).fill(0).map(_ => { return  }) }
 
                     // check that ticketsMetadata mapys nicely
-                    if (!Array.isArray(ticketsMetadata)) { return }
+                    if (!Array.isArray(nftsMetadata)) { return }
 
-                    return ticketsMetadata.map(ticketMetadata => {
-                        return (
-                            ticketMetadata &&
-                            ticketMetadata.section && ticketMetadata.row && ticketMetadata.price &&
-                            <TicketCard section={ticketMetadata.section} row={ticketMetadata.row} price={ticketMetadata.price} />
-                        )
+                    return nftsMetadata.map(nftsMetadata => {
+                        
                     })
                 })
             }

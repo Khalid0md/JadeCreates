@@ -30,6 +30,11 @@
       "static/chunks/main.js",
       "static/chunks/pages/dashboard.js"
     ],
+    "/getstarted": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/getstarted.js"
+    ],
     "/storefront": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",

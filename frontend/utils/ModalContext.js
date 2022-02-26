@@ -23,16 +23,19 @@ export default function ModalProvider(props) {
             </Modal>
 
             {props.children}
-        </ModalContext.Provider> 
+        </ModalContext.Provider>
     )
 }
 
 function Modal(props) {
     return (
-        <button onClick={() => { props.setIsShown(false) }} className={"flex items-center justify-center absolute w-screen h-screen backdrop-blur-none z-50 transition-all duration-300 cursor-default " + (props.isShown ? "backdrop-blur-[4px] bg-gray-500/30" : "backdrop-blur-none bg-transparent invisible") } >
-            <div className={"bg-white p-4 rounded-2xl shadow-high " + (!props.isShown && "invisible") } >
-                {props.children}
+        <div>
+            <button onClick={() => { props.setIsShown(false) }} className={"flex items-center justify-center absolute w-screen h-screen backdrop-blur-none z-40 transition-all duration-300 cursor-default " + (props.isShown ? "backdrop-blur-[4px] bg-gray-500/30" : "backdrop-blur-none bg-transparent invisible")} />
+            <div className={ "flex items-center justify-center absolute w-screen h-screen " + (!props.isShown && "invisible") } >
+                <div className="flex items-center justify-center text-center bg-white p-4 rounded-2xl shadow-high z-50" >
+                    {props.children}
+                </div>
             </div>
-        </button>
+        </div>
     )
 }
