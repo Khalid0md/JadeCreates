@@ -27,7 +27,7 @@ describe("Marketplace", function () {
     await nft.connect(seller1).setApprovalForAll(marketAddress, true)
 
     //seller 1 creates listing
-    await market.connect(seller1).createListing(1, 1, nftaddress, { value: auctionPrice })
+    await market.connect(seller1).createListing("littleMartazo", 1, 1, nftaddress, { value: auctionPrice })
 
     //buyer 1 buys NFT from seller1
     await market.connect(buyer1).buyNow(nftaddress, 1, { value: auctionPrice })
