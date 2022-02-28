@@ -3,52 +3,19 @@ import NavButton from "../components/NavButton";
 import { FiSearch } from "react-icons/fi";
 import NFT from "../components/nft";
 import testNftData from "../testData/testNftData";
+import { StorefrontNavBar, TopSpacer } from "../components/NavBar";
 
 export default function Storefront() {
     return (
-        <div className="flex flex-col w-full items-center bg-background h-full">
+        <div className="flex flex-col w-full items-center bg-background h-full space-y-4">
+            <TopSpacer />
+            <StorefrontNavBar />
             <div className="flex flex-col h-full w-full max-w-[90rem] space-y-8 px-6 md:px-14">
-                <div className="sticky flex flex-shrink-0 top-0 h-0 w-full" />
-                <StorefrontNavBar />
                 <SearchBar />
                 <SortingItemList />
                 <NFTGrid nfts={testNftData} />
             </div>
         </div>
-    )
-}//<StorefrontNavBar />
-//<div className="fixed w-full h-16 bg-red-300 z-50" />
-
-function StorefrontNavBar() {
-    return (
-        <div className="sticky flex grow top-0 space-x-4 flex-shrink-0 z-50 bg-background p-4 -mx-4">
-            <CustomLogo />
-            <div className="flex grow" />
-            <NavButton text={'Button 1'} bgColor={'white'} textColor={'mainBlack'} link={'/storefront'} />
-            {/*<NavButton text={'Button 2'} bgColor={'mainBlack'} textColor={'white'} shadow={'high'} link={'/storefront'} />*/}
-        </div>
-    )
-}//flex grow mt-8 md:mt-14 h-14 space-x-4 flex-shrink-0
-//sticky flex grow mt-8 md:mt-14 h-14 space-x-4 flex-shrink-0
-//18, 21
-
-function CustomLogo() {
-
-    const router = useRouter();
-
-    return (
-        <button className="flex items-center justify-center"
-            onClick={() => {
-                router.push('/storefront');
-            }}>
-
-            <p className="text-3xl nunito-font font-black text-mainBlack" >
-                Mar
-            </p>
-            <p className="bg-clip-text bg-gradient-to-l from-green1 to-green2 text-transparent text-3xl nunito-font font-black glow-main-xs" >
-                tazo
-            </p>
-        </button>
     )
 }
 
@@ -139,7 +106,7 @@ function NFTGrid2({ nfts, expectedBatchSize = 1 }) {
                     if (!Array.isArray(nftsMetadata)) { return }
 
                     return nftsMetadata.map(nftsMetadata => {
-                        
+
                     })
                 })
             }

@@ -6,6 +6,7 @@ import Logo from "../components/logo";
 import NavButton from "../components/NavButton";
 import { HiOutlineChevronRight } from "react-icons/hi";
 import testStoresData from "../testData/testStoresData";
+import { DashboardNavBar, TopSpacer } from "../components/NavBar";
 
 export default function DashboardLoginHandler() {
 
@@ -50,9 +51,10 @@ function Dashboard() {
     const [selectedStore, setSelectedStore] = useState();  //{ storeName: 'My New Store' })
 
     return (
-        <div className="flex w-full justify-center bg-background h-screen">
-            <div className="w-full max-w-[90rem] bg-background px-14">
-                <DashboardNavBar />
+        <div className="flex flex-col w-full items-center bg-background h-full space-y-4">
+            <TopSpacer />
+            <DashboardNavBar />
+            <div className="flex flex-col h-full w-full max-w-[90rem] space-y-8 px-6 md:px-14">
                 {
                     selectedStore
                         ?
@@ -64,7 +66,7 @@ function Dashboard() {
                                 <HiOutlineChevronRight />
                             </p>
                             <p className="nunito-font font-black text-4xl">
-                                {selectedStore.storeName ? selectedStore.storeName : 'Unnamed Store'}
+                                {selectedStore.name ? selectedStore.name : 'Unnamed Store'}
                             </p>
                         </div>
                         :
@@ -77,57 +79,47 @@ function Dashboard() {
                         ?
                         <DashboardStoreContent />
                         :
-                        <DashboardMainContent />
+                        <DashboardMainContent setSelectedStore={setSelectedStore} />
                 }
             </div>
         </div>
     )
 }
 
-function DashboardNavBar() {
-
-    const router = useRouter();
-
+function DashboardMainContent({ setSelectedStore }) {
     return (
-        <div className="flex grow my-14 h-14 space-x-4 flex-shrink-0">
-            <Logo />
-            <div className="flex grow" />
-            <NavButton text={'Landing Page'} bgColor={'white'} textColor={'mainBlack'} link={'/'} />
-            <NavButton text={'Get Started'} bgColor={'mainBlack'} textColor={'white'} shadow={'high'} link={'/getstarted'} />
-        </div>
-    )
-}
-
-function DashboardMainContent() {
-    return (
-        <div>
-            <p className="nunito-font text-2xl font-black pt-4">
+        <div className="flex flex-col space-y-4">
+            <p className="nunito-font text-2xl font-black">
                 My Stores
             </p>
-            <StoresList stores={testStoresData} />
+            <StoresList stores={testStoresData} setSelectedStore={setSelectedStore} />
         </div>
     )
 }
 
-function StoresList({ stores }) {
+function StoresList({ stores, setSelectedStore }) {
     return (
-        <div className="flex space-x-8 overflow-x-scroll p-8">
+        <div className="pb-12 grid gap-8 store-grid">
             {
                 stores.map(store => {
                     return (
-                        <SmallStoreDisplay logoUri={store.logoUri} subdomain={store.subdomain} name={store.name} owner={store.owner} colourInHex={store.colourInHex} />
+                        <SmallStoreDisplay store={store} logoUri={store.logoUri} subdomain={store.subdomain} name={store.name} owner={store.owner} colourInHex={store.colourInHex} setSelectedStore={setSelectedStore} />
                     )
                 })
             }
         </div>
     )
-}
+}//<div className="pb-12 grid gap-8 nft-grid scrollbar">
+//<div className="flex space-x-8 overflow-x-scroll p-8">
 
-function SmallStoreDisplay({ logoUri, subdomain, name, owner, colourInHex }) {
+function SmallStoreDisplay({ store, logoUri, subdomain, name, owner, colourInHex, setSelectedStore }) {
     return (
-        <div className="flex flex-shrink-0 w-96 bg-white p-4 rounded-2xl shadow-high">
+        <button className="flex aspect-square w-full bg-white p-4 rounded-2xl shadow-low hover:shadow-high hover:scale-105 transition-all"
+                onClick={() => {
+                    setSelectedStore(store);
+                }}>
             <img src={`https://cloudflare-ipfs.com/ipfs/${logoUri}`} className="flex aspect-square flex-shrink-0 rounded-xl" />
-        </div>
+        </button>
     )
 }
 

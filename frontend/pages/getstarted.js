@@ -1,5 +1,5 @@
 
-import NavBar from "../components/NavBar"
+import { MainNavBar, TopSpacer } from "../components/NavBar"
 import { AiFillCheckCircle } from "react-icons/ai";
 import { GrDomain } from "react-icons/gr";
 import { HiOutlineGlobe, HiOutlineGlobeAlt, HiViewGrid, HiViewGridAdd, HiCreditCard, HiReceiptTax } from "react-icons/hi";
@@ -7,10 +7,30 @@ import { FiDollarSign } from "react-icons/fi";
 
 export default function GetStarted() {
     return (
-        <div className="flex flex-col w-full items-center bg-background h-screen space-y-8">
-            <div className="w-full max-w-[90rem] bg-background">
-                <NavBar />
+        <div className="flex flex-col w-full items-center bg-background h-full space-y-4">
+            <TopSpacer />
+            <MainNavBar />
+            <div className="flex flex-col items-center h-full w-full max-w-[90rem] space-y-8 px-6 md:px-14">
+                <PlansHeader />
+                <div className="flex items-center justify-center w-full space-x-8 py-14 bg-background">
+                    <BasicPlan />
+                    <UnlimitedPlan />
+                    <ProPlan />
+                </div>
             </div>
+        </div>
+    )
+}
+
+function GetStartedOld() {
+    return (
+        <div className="flex flex-col w-full items-center bg-background h-screen space-y-8">
+            {/*<div className="w-full max-w-[90rem] bg-background">*/}
+
+            <TopSpacer />
+            <NavBar />
+
+            {/*</div>*/}
             <PlansHeader />
             <div className="flex items-center justify-center w-full space-x-8 py-14 bg-background">
                 <BasicPlan />
@@ -23,7 +43,7 @@ export default function GetStarted() {
 
 function PlansHeader() {
     return (
-        <div className="flex flex-col items-center space-y-4 max-w-2xl mx-14">
+        <div className="flex flex-col items-center space-y-4 max-w-2xl mx-14 pt-10">
             <p className="text-5xl nunito-font font-black">
                 Choose your plan
             </p>

@@ -26,7 +26,7 @@ module.exports = [
     {
         logoUri: 'QmP4e3DUZBppy6RTBhGPzZ8o8gKDPC8aNkioDf6TJzHu3W',
         subdomain: 'shopify',
-        name: 'Shopfiy',
+        name: 'Shopify',
         owner: '0xasdfasdfasdfasdfasdfasdf',
         colourInHex: '#96BF48'
     },
