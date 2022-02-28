@@ -1,5 +1,4 @@
 import '../styles/globals.css'
-import MoralisWrapper from '../utils/MoralisWrapper'
 import WalletSessionProvider from '../utils/WalletSessionProvider'
 import ModalProvider from '../utils/ModalContext'
 import { useEffect } from 'react'
