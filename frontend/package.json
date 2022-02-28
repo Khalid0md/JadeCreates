@@ -4,7 +4,7 @@
   "description": "This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).",
   "scripts": {
     "dev": "next dev",
-    "start": "next dev",
+    "start": "NODE_ENV=development node server.js",
     "build": "next build"
   },
   "main": "next.config.js",
