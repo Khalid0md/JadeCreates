@@ -2,7 +2,7 @@ name: Publish Website to CPanel
 on:
   push:
     branches:
-      - main
+      - none
 jobs:
   web-deploy:
     name: 🎉 Deploy
