@@ -1,5 +1,5 @@
 import { createContext } from "react"
-import { useState, useEffect } from "react/cjs/react.development"
+import { useState, useEffect } from "react"
 import { useModal } from "./ModalContext"
 
 // create context
