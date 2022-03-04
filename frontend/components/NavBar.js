@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import { useModal } from "../utils/ModalContext";
 import { CustomLogo } from "./logo";
 
-export default function NavBar(props) {
+function NavBar(props) {
     return (
         <div className="sticky flex justify-center w-full top-0 space-x-4 flex-shrink-0 bg-background/90 backdrop-blur-xl z-30 py-4">
             <div className="flex grow max-w-[90rem] px-6 md:px-14 space-x-4">

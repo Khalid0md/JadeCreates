@@ -74,6 +74,14 @@ html, body {
         @apply z-20 shadow-none drop-shadow-2xl 
     }
 
+    .glow-low {
+        @apply z-20 shadow-xl shadow-white/20
+    }
+
+    .glow-wide {
+        @apply z-20 shadow-2xl shadow-white/20
+    }
+
     .shadow-low {
         @apply z-10 drop-shadow-none shadow-xl shadow-secondaryGray/10
     }
@@ -110,5 +118,9 @@ html, body {
 
     .scrollbar::-webkit-scrollbar-thumb:hover {
         background: #00000055;
+    }
+
+    html {
+        overflow-x: hidden;
     }
 }

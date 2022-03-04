@@ -8,10 +8,16 @@ import { HiOutlineX } from "react-icons/hi";
 import { useModal } from "../utils/ModalContext"
 import { useWallet } from "../utils/WalletSessionProvider";
 import { useEffect, useState } from "react";
+const Web3 = require("web3");
+import { TwitterPicker } from 'react-color';
 
 // for ipfs upload
 import { create as ipfsHttpClient } from 'ipfs-http-client'
 const ipfs = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0')
+
+// reference store marketplace contract
+import * as storeMarketplaceJson from '../../backend/artifacts/contracts/StoreMarketplace.sol/StoreMarketplace.json';
+const storeMarketplaceAddress = '0x312151387deF230037dE2a20f36cb4B996967346';
 
 export default function GetStarted() {
 
@@ -120,7 +126,7 @@ function BasicPlan({ modalController, walletSession }) {
                         <div/>
                     )
                     modalController.setContent(
-                        <ConfigureStoreModalContent plan="Basic" price={500} walletSession={walletSession} modalController={modalController} />
+                        <ConfigureStoreModalContent plan="Basic" price={'500'} walletSession={walletSession} modalController={modalController} />
                     )
                     modalController.setIsShown(true);
                 }}>
@@ -161,10 +167,7 @@ function UnlimitedPlan({ modalController, walletSession }) {
             <button className="w-full h-14 bg-mainBlack rounded-2xl shadow-low"
                 onClick={() => {
                     modalController.setContent(
-                        <div/>
-                    )
-                    modalController.setContent(
-                        <ConfigureStoreModalContent plan="Unlimited" price={2000} walletSession={walletSession} modalController={modalController} />
+                        <ConfigureStoreModalContent plan="Unlimited" price={'2000'} walletSession={walletSession} modalController={modalController} />
                     )
                     modalController.setIsShown(true);
                 }}>
@@ -204,9 +207,8 @@ function ProPlan({ modalController, walletSession }) {
             </div>
             <button className="w-full h-14 bg-mainBlack rounded-2xl shadow-low"
                 onClick={() => {
-                    modalController.clearContent();
                     modalController.setContent(
-                        <ConfigureStoreModalContent plan="Pro" price={1000} walletSession={walletSession} modalController={modalController} />
+                        <ConfigureStoreModalContent plan="Pro" price={'1000'} walletSession={walletSession} modalController={modalController} />
                     )
                     modalController.setIsShown(true);
                 }}>
@@ -251,7 +253,7 @@ function ConfigureStoreModalContent({ plan, price, walletSession, modalControlle
                                 <HiOutlineX />
                             </button>
                         </div>
-                        <CreateStoreForm price={price} />
+                        <CreateStoreForm plan={plan.toLowerCase()} price={price} walletSession={walletSession} />
                     </div>
                     :
                     <p>
@@ -262,14 +264,13 @@ function ConfigureStoreModalContent({ plan, price, walletSession, modalControlle
     )
 }//<div className="w-64 h-24 flex items-center justify-center nunito-font font-black">
 
-function CreateStoreForm({ price }) {
+function CreateStoreForm({ plan, price, walletSession }) {
 
     // form states
     const [name, setName] = useState()
     const [subdomain, setSubdomain] = useState()
-    const [plan, setPlan] = useState()
     const [logoUri, setLogoUri] = useState()
-    const [colourInHex, setColourInHex] = useState()
+    const [colourInHex, setColourInHex] = useState('FFFFFF')
 
     const onSubmit = async (e) => {
         // prevents form from submitting early
@@ -280,7 +281,13 @@ function CreateStoreForm({ price }) {
             // we should have all info
             // TODO: *** perform any checks on the data (if necessary)
 
-            
+            if (window.ethereum && uri && walletSession.walletAddress) {
+                const web3 = new Web3(window.ethereum);
+                const payableAmount = web3.utils.toWei(price, "ether")
+                const storeMarketplace = new web3.eth.Contract(storeMarketplaceJson.abi, storeMarketplaceAddress)
+                const transaction = await storeMarketplace.methods.createStore(subdomain, colourInHex, plan, uri).send({from: walletSession.walletAddress, value: payableAmount})
+                console.log(transaction)
+            }
         })
     }
 
@@ -332,6 +339,7 @@ function CreateStoreForm({ price }) {
                             onChange={(e) => setSubdomain(e.target.value)}
                             className="form-text-field"
                         />
+                        {/*
                         <input
                             name="colourInHex"
                             type="text"
@@ -340,6 +348,8 @@ function CreateStoreForm({ price }) {
                             onChange={(e) => setColourInHex(e.target.value)}
                             className="form-text-field"
                         />
+                        */}
+                        <TwitterPicker triangle={"hide"} />
                         <div className="flex justify-end">
                             <button type="submit" fill={true} className="flex h-16 px-8 text-lg nunito-font text-background whitespace-nowrap bg-mainBlack rounded-xl items-center justify-center font-extrabold max-w-min" >
                                 Buy - {price} ONE
@@ -354,8 +364,8 @@ function CreateStoreForm({ price }) {
 
 function ImagePreview({ imgSrc }) {
     return (
-        <div className="flex w-[18rem] flex-shrink-0 grow aspect-square rounded-xl border-2 shadow-inner border-accentGray overflow-clip">
-            <img src={imgSrc} className="object-cover min-w-full min-h-full" />
+        <div className="flex items-center justify-center p-8 w-[18rem] flex-shrink-0 grow aspect-square rounded-xl border-2 shadow-inner border-accentGray overflow-clip">
+            <img src={imgSrc} className="min-w-full h-fit rounded-xl" />
         </div>
     )
 }

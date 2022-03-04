@@ -95,6 +95,7 @@ const connectWallet = async (modalController) => {
                 isConnected: true,
                 address: addressArray[0],
             };
+
             return obj;
         } catch (err) {
 
