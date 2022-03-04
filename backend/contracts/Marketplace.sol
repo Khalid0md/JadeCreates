@@ -11,7 +11,7 @@ contract Marketplace is ReentrancyGuard, Ownable {
     Counters.Counter private _itemIds;
     Counters.Counter private _itemsSold;
 
-    uint256 fee = 1 ether;
+    uint256 fee = 0.001 ether;
 
     constructor() {}
 
