@@ -195,6 +195,7 @@
     "interpret": "^2.2.0",
     "ip": "^1.1.5",
     "ipaddr.js": "^2.0.1",
+    "ipfs-http-client": "^56.0.1",
     "is-arguments": "^1.1.1",
     "is-arrayish": "^0.2.1",
     "is-bigint": "^1.0.4",

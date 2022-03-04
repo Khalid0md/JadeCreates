@@ -15,8 +15,12 @@ export default function ModalProvider(props) {
     const [isShown, setIsShown] = useState(false)
     const [content, setContent] = useState()
 
+    function clearContent() {
+        
+    }
+
     return (
-        <ModalContext.Provider value={{ isShown, setIsShown, setContent }}>
+        <ModalContext.Provider value={{ isShown, setIsShown, setContent, clearContent }}>
 
             <Modal isShown={isShown} setIsShown={setIsShown} >
                 {content}

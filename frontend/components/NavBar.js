@@ -1,6 +1,6 @@
 import Logo from "./logo"
 import NavButton from "./NavButton"
-import { WalletContext } from "../utils/WalletSessionProvider"
+import { useWallet } from "../utils/WalletSessionProvider";
 import { useContext } from "react"
 import { useRouter } from "next/router";
 import { useModal } from "../utils/ModalContext";
@@ -16,9 +16,9 @@ export default function NavBar(props) {
     )
 }
 
-export function MainNavBar() {
+export function MainNavBar({ showGetStarted }) {
 
-    const walletSession = useContext(WalletContext);
+    const walletSession = useWallet();
     const router = useRouter();
     const modalController = useModal();
 
@@ -48,7 +48,13 @@ export function MainNavBar() {
                 if (sessionStatus.isConnected) { router.push('/dashboard') }
                 */
             }} />
-            <NavButton text={'Get Started'} bgColor={'mainBlack'} textColor={'white'} shadow={'high'} link={'/getstarted'} />
+            {
+                showGetStarted
+                ?
+                <NavButton text={'Get Started'} bgColor={'mainBlack'} textColor={'white'} shadow={'high'} link={'/getstarted'} />
+                :
+                <NavButton text={'back'} bgColor={'mainBlack'} textColor={'white'} shadow={'high'} link={'/'} />
+            }
         </NavBar>
     )
 }

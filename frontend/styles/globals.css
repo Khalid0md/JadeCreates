@@ -91,6 +91,10 @@ html, body {
     .store-grid {
         grid-template-columns: repeat(auto-fill, minmax(315px, 1fr));
     }
+
+    .form-text-field {
+        @apply p-4 bg-transparent text-lg nunito-font font-bold shadow-inner rounded-xl outline outline-2 outline-accentGray focus:outline-green1 text-mainBlack
+    }
 }
 
 @layer utilities {

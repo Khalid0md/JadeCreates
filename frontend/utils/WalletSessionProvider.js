@@ -1,12 +1,13 @@
 import { createContext } from "react"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useContext } from "react"
 import { useModal } from "./ModalContext"
 
 // create context
-export const WalletContext = createContext()
+const WalletContext = createContext()
 
-// wallet states
-
+export function useWallet() {
+    return useContext(WalletContext)
+}
 
 // this context provider allows the wallet address to be passed down the component tree
 export default function WalletSessionProvider(props) {
@@ -31,7 +32,7 @@ export default function WalletSessionProvider(props) {
             });
         }
     }
-
+ 
     const modalController = useModal()
 
     async function connectWalletAndUpdateStatus() {

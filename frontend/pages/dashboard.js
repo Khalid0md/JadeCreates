@@ -1,5 +1,5 @@
 
-import { WalletContext } from "../utils/WalletSessionProvider"
+import { useWallet } from "../utils/WalletSessionProvider";
 import { useEffect, useContext, useState } from "react"
 import { useRouter } from "next/router";
 import Logo from "../components/logo";
@@ -10,7 +10,7 @@ import { DashboardNavBar, TopSpacer } from "../components/NavBar";
 
 export default function DashboardLoginHandler() {
 
-    const walletSession = useContext(WalletContext);
+    const walletSession = useWallet();
     const router = useRouter();
 
     function CheckLogin() {
@@ -26,6 +26,7 @@ export default function DashboardLoginHandler() {
     }
 
     useEffect(() => {
+        console.log("address changed")
         CheckLogin()
     }, [walletSession.walletAddress])
 

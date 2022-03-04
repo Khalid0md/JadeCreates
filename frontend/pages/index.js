@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <div className="flex flex-col w-full items-center bg-background h-full space-y-4">
       <TopSpacer />
-      <MainNavBar />
+      <MainNavBar showGetStarted={true} />
       <div className="flex flex-col items-center h-full w-full max-w-[90rem] space-y-8 px-6 md:px-14">
         
       </div>
