@@ -34,6 +34,16 @@ describe("Marketplace", function () {
     await store.connect(seller1).createStore("khalids", "#571686", "basic", "www.logo.com", { value: basicFee })
     console.log("store registery successful")
 
+
+    console.log(await store.connect(seller1).nameAvailable("khalids"))
+    //console.log(await store.connect(seller1).getStoreWithId(1))
+    console.log(await store.connect(seller1).getStoreWithSubdomain("khalids"))
+    //await store.connect(seller1).getStoreWithSubdomain("khalids")
+
+    await store.connect(seller1).editStoreLogo("khalids", "www.neURIlolol")
+    console.log(await store.connect(seller1).getStoreWithSubdomain("khalids"))
+
+
     //seller 1 approves marketplace to transfer his NFT, setApprovalForAllFunction takes in address and bool
     await nft.connect(seller1).setApprovalForAll(marketAddress, true)
     console.log("seller1 approval successful")
@@ -64,6 +74,9 @@ describe("Marketplace", function () {
     //price set by seller, and price paid by buyer are all 1 eth for simplicity
 
     //add fetch market and display items 1:08:32
+
+    console.log("\n\nmessing about\n\n")
+
 
 
   });

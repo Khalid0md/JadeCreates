@@ -124,7 +124,7 @@ function NFTGrid2({ nfts, expectedBatchSize = 1 }) {
     )
 }
 
-function ListNFT({ price, walletSession }) {
+function ListNFT({ walletSession }) {
 
     const [nftContract, setNftContract] = useState()
     const [price, setPrice] = useState()
@@ -138,12 +138,13 @@ function ListNFT({ price, walletSession }) {
 
         if (window.ethereum && uri && walletSession.walletAddress) {
             const web3 = new Web3(window.ethereum);
-            const payableAmount = web3.utils.toWei(listingFee, "ether")
+
             const marketplace = new web3.eth.Contract(marketplaceJson.abi, marketplaceAddress)
-            const fee = await marketplace.methods.getFee().send({ from: walletSession.walletAddress })
-            const transaction = await marketplace.methods.createListing(subdomain, tokenId, price,)
-            const transaction = await storeMarketplace.methods.createStore(subdomain, colourInHex, plan, uri).send({ from: walletSession.walletAddress, value: payableAmount })
+            const listingFee = await marketplace.methods.getFee().send({ from: walletSession.walletAddress })
+            const fee = web3.utils.toWei(listingFee, "ether")
+            const transaction = await marketplace.methods.createListing(subdomain, tokenId, price, nftContract).send({ from: walletSession.walletAddress, value: fee })
             console.log(transaction)
+
         }
     }
 

@@ -45,7 +45,7 @@ contract StoreMarketplace is ERC721, ReentrancyGuard, Ownable {
     //internal function, used by the contract to search if a name is taken or not before completing many procedures
     function nameAvailable(string memory name) public view returns (bool) {
         uint256 itemCount = _storeIds.current();
-        for (uint256 i = 0; i < itemCount; i++) {
+        for (uint256 i = 0; i <= itemCount; i++) {
             if (
                 keccak256(abi.encodePacked(idToStore[i].subdomain)) ==
                 keccak256(abi.encodePacked(name))
@@ -143,12 +143,12 @@ contract StoreMarketplace is ERC721, ReentrancyGuard, Ownable {
     {
         require(nameAvailable(subdomainIn) == false);
         uint256 itemCount = _storeIds.current();
-        for (uint256 i = 0; i < itemCount; i++) {
+        for (uint256 i = 0; i <= itemCount; i++) {
             if (
-                keccak256(abi.encodePacked(idToStore[i + 1].subdomain)) ==
+                keccak256(abi.encodePacked(idToStore[i].subdomain)) ==
                 keccak256(abi.encodePacked(subdomainIn))
             ) {
-                return idToStore[i + 1];
+                return idToStore[i];
             }
         }
     }
