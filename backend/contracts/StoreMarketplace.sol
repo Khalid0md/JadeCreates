@@ -43,7 +43,7 @@ contract StoreMarketplace is ERC721, ReentrancyGuard, Ownable {
     }
 
     //internal function, used by the contract to search if a name is taken or not before completing many procedures
-    function nameAvailable(string memory name) internal view returns (bool) {
+    function nameAvailable(string memory name) public view returns (bool) {
         uint256 itemCount = _storeIds.current();
         for (uint256 i = 0; i < itemCount; i++) {
             if (
@@ -56,6 +56,7 @@ contract StoreMarketplace is ERC721, ReentrancyGuard, Ownable {
         return true;
     }
 
+    //?use enums
     //creates a store and mints a Martazo token to the store owner
     function createStore(
         string memory subdomainIn,

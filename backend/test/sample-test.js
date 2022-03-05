@@ -40,7 +40,7 @@ describe("Marketplace", function () {
 
     //seller 1 creates listing
     //should require the subdomain to be available
-    await market.connect(seller1).createListing("khalids", 1, 1, nftaddress, { value: auctionPrice })
+    await market.connect(seller1).createListing("khalids", 1, 1, nftaddress, { value: fee })
     console.log("seller1 lsiitng created successful")
 
     //buyer 1 buys NFT from seller1
@@ -53,7 +53,7 @@ describe("Marketplace", function () {
 
     //buyer 1 relists
     //need a way of grabbing these nftcontractaddresses
-    await market.connect(buyer1).relistToken(1, 1, nftaddress, { value: auctionPrice })
+    await market.connect(buyer1).relistToken(1, 1, nftaddress, { value: fee })
     console.log("buyer1 relist successful")
 
     //seller 1 buys it back
