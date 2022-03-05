@@ -16,10 +16,10 @@ async function main() {
   console.log("marketplace deployed to: " + market.address)
 
 
-  const NFT = await ethers.getContractFactory("NFTest")
-  const nft = await NFT.deploy("name", "symbol", "baseUri", "notRevealedUri")
-  await nft.deployed()
-  console.log("nft deployed to: " + nft.address)
+  //const NFT = await ethers.getContractFactory("NFTest")
+  //const nft = await NFT.deploy("name", "symbol", "baseUri", "notRevealedUri")
+  //await nft.deployed()
+  //console.log("nft deployed to: " + nft.address)
 
   const Store = await ethers.getContractFactory("StoreMarketplace")
   const store = await Store.deploy("newBaseUri", "name", "blah")
@@ -34,9 +34,9 @@ async function main() {
   export const storeMarketplaceAddress = "${store.address}"
   `)
 
-  fs.writeFileSync('./config.js', `
-  export const nftAddress = "${nft.address}"
-  `)
+  //fs.writeFileSync('./config.js', `
+  //export const nftAddress = "${nft.address}"
+  //`)
 
 
 

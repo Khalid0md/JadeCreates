@@ -17,7 +17,7 @@ const ipfs = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0')
 
 // reference store marketplace contract
 import * as storeMarketplaceJson from '../../backend/artifacts/contracts/StoreMarketplace.sol/StoreMarketplace.json';
-const storeMarketplaceAddress = '0x312151387deF230037dE2a20f36cb4B996967346';
+const storeMarketplaceAddress = '0x02DfcEFB6069f27b89f041b6Be92dC3e2185c9bB';
 
 export default function GetStarted() {
 
@@ -123,7 +123,7 @@ function BasicPlan({ modalController, walletSession }) {
             <button className="w-full h-14 bg-mainBlack rounded-2xl shadow-low"
                 onClick={() => {
                     modalController.setContent(
-                        <div/>
+                        <div />
                     )
                     modalController.setContent(
                         <ConfigureStoreModalContent plan="Basic" price={'500'} walletSession={walletSession} modalController={modalController} />
@@ -285,7 +285,7 @@ function CreateStoreForm({ plan, price, walletSession }) {
                 const web3 = new Web3(window.ethereum);
                 const payableAmount = web3.utils.toWei(price, "ether")
                 const storeMarketplace = new web3.eth.Contract(storeMarketplaceJson.abi, storeMarketplaceAddress)
-                const transaction = await storeMarketplace.methods.createStore(subdomain, colourInHex, plan, uri).send({from: walletSession.walletAddress, value: payableAmount})
+                const transaction = await storeMarketplace.methods.createStore(subdomain, colourInHex, plan, uri).send({ from: walletSession.walletAddress, value: payableAmount })
                 console.log(transaction)
             }
         })
