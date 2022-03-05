@@ -257,7 +257,7 @@ function ConfigureStoreModalContent({ plan, price, walletSession, modalControlle
                     </div>
                     :
                     <p>
-                        Please login with MetaMask.
+                        Please log in with MetaMask.
                     </p>
             }
         </div>

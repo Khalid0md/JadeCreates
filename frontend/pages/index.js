@@ -4,8 +4,100 @@ import { WalletContext } from "../utils/WalletSessionProvider"
 import { useContext, useEffect, useState } from "react"
 import { useRouter } from "next/router";
 import makeBlockie from 'ethereum-blockies-base64';
+const Web3 = require("web3");
 
-export default function Home() {
+// reference store marketplace contract
+import * as storeMarketplaceJson from '../../backend/artifacts/contracts/StoreMarketplace.sol/StoreMarketplace.json';
+const storeMarketplaceAddress = '0x02DfcEFB6069f27b89f041b6Be92dC3e2185c9bB';
+
+async function getPageData() {
+  const { host } = window.location;
+  let splitHost = host.split('.');
+
+  if (splitHost.length === 3 || splitHost.length === 2) {
+    let subdomain = splitHost[0];
+    if (subdomain === 'www') {
+      return null;
+    }
+
+    /*
+    // Check subdomain validity here:
+    const web3 = new Web3('https://api.s0.b.hmny.io');
+    //const web3 = new Web3(window.ethereum);
+    const storeMarketplace = new web3.eth.Contract(storeMarketplaceJson.abi, storeMarketplaceAddress)
+
+    console.log(subdomain)
+
+
+    await storeMarketplace.methods.getStoreWithSubdomain(subdomain).call()
+      .then((store) => {
+        console.log(store);
+      })
+      */
+
+
+    //const transaction = await storeMarketplace.methods.createStore(subdomain, colourInHex, plan, uri).send({ from: walletSession.walletAddress, value: payableAmount })
+    //console.log(transaction)
+
+
+    /*
+    let res = await fetch(`/api/get-page?page=${page}`);
+
+    if (res.status === 200) {
+      let { html, allowEdit, token } = await res.json();
+      return { html, allowEdit, editLink: `${href}?edit=${token}` };
+    }
+
+    if (res.status === 404) {
+      let { html, token } = await res.json();
+      return { html, editLink: `${href}?edit=${token}` };
+    }
+
+    if (!res.ok && res.status !== 404) {
+      let { stack, message } = await res.json();
+      return { errorCode: res.status, stack, message };
+    }
+    */
+  }
+}
+
+export default function CheckDomain() {
+
+  const [pageData, setPageData] = useState();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!pageData) {
+      getPageData()
+      /*
+      .then(data => {
+        if (!data) {
+          setPageData(null);
+          return;
+        }
+        if (data.errorCode) {
+          let { errorCode, stack, message } = data;
+          setError({ errorCode, stack, message });
+          return;
+        }
+        let { html, allowEdit, editLink } = data;
+        setPageData({ html, allowEdit, editLink });
+        return;
+      })
+      .catch(e => {
+        setError({ message: e.message, stack: e.stack });
+      });
+      */
+    }
+    //return () => { };
+  }, [pageData]);
+
+  return (
+    <LandingPage />
+  )
+}
+
+function LandingPage() {
 
   const [offsetY, setOffsetY] = useState(0);
   const handleScroll = () => setOffsetY(window.pageYOffset);
@@ -45,7 +137,7 @@ function LandingContent2({ offsetY }) {
     <div className="px-6 2xl:px-0">
       <div className="flex items-center justify-end h-full w-full max-w-[90rem] px-6 md:px-12 bg-mainBlack/90 p-4 py-12 rounded-3xl">
         <div className="flex grow text-center pr-6 md:pr-12 nunito-font text-6xl font-black text-background leading-tight">
-          Build your brand, list all of your NFTs in one place.
+          List all of your NFTs in one place.
         </div>
         <NFTParallax offsetY={offsetY} />
       </div>
@@ -82,7 +174,16 @@ function NFTParallax({ offsetY }) {
 function NFTCard({ number, blockSeed }) {
   return (
     <div className="flex flex-col p-4 space-y-4 bg-white rounded-2xl glow-low flex-shrink-0 min-w-max">
-      <img src={makeBlockie(blockSeed)} className="flex rounded-xl w-64 h-64 opacity-80 flex-shrink-0 " />
+      {
+        /*
+        <div className="flex rounded-xl w-64 h-64 opacity-80 flex-shrink-0 overflow-clip -p-16">
+          <div className="bg-gradient-to-tr from-green1 to-green-600 flex grow -m-16 animate-spin" />
+        </div>
+        */
+      }
+      {
+        <img src={makeBlockie(blockSeed)} className="flex rounded-xl w-64 h-64 opacity-80 flex-shrink-0" />
+      }
       <div className="flex space-x-4" >
         <p className="bg-accentGray text-secondaryGray text-2xl numbers-font italic font-black rounded-xl px-4 py-2 w-24">
           {/*'#' + number*/}
