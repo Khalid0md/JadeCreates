@@ -53,7 +53,7 @@ export function MainNavBar({ showGetStarted }) {
                 ?
                 <NavButton text={'Get Started'} bgColor={'mainBlack'} textColor={'white'} shadow={'high'} link={'/getstarted'} />
                 :
-                <NavButton text={'back'} bgColor={'mainBlack'} textColor={'white'} shadow={'high'} link={'/'} />
+                <NavButton text={'Back'} bgColor={'mainBlack'} textColor={'white'} shadow={'high'} link={'/'} />
             }
         </NavBar>
     )
