@@ -20,20 +20,45 @@ async function getPageData() {
       return null;
     }
 
-    /*
+    
     // Check subdomain validity here:
     const web3 = new Web3('https://api.s0.b.hmny.io');
     //const web3 = new Web3(window.ethereum);
     const storeMarketplace = new web3.eth.Contract(storeMarketplaceJson.abi, storeMarketplaceAddress)
 
-    console.log(subdomain)
+    console.log(storeMarketplace)
 
+    // teststore, mystore?, ?, opensea
 
-    await storeMarketplace.methods.getStoreWithSubdomain(subdomain).call()
+    await storeMarketplace.methods.getStoreWithId(2).call()
+      .then((store) => {
+        console.log(store);
+      })
+
+    await storeMarketplace.methods.nameAvailable('teststore').call()
+      .then((store) => {
+        console.log(store);
+      })
+
+      /*
+    await storeMarketplace.methods.getStoreWithSubdomain("").call()
       .then((store) => {
         console.log(store);
       })
       */
+
+      /*
+      await storeMarketplace.methods.getStoreWithId(2).call()
+      .then((store) => {
+        console.log(store);
+      })
+
+      await storeMarketplace.methods.nameAvailable(subdomain).call()
+      .then((store) => {
+        console.log(store);
+      })
+      */
+    
 
 
     //const transaction = await storeMarketplace.methods.createStore(subdomain, colourInHex, plan, uri).send({ from: walletSession.walletAddress, value: payableAmount })
