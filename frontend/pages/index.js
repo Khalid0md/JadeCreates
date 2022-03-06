@@ -5,6 +5,11 @@ import { useContext, useEffect, useState } from "react"
 import { useRouter } from "next/router";
 import makeBlockie from 'ethereum-blockies-base64';
 const Web3 = require("web3");
+//
+var fs = require("fs")
+const market = fs.readFileSync("market.txt").toString()
+const store = fs.readFileSync("store.txt").toString()
+//
 
 // reference store marketplace contract
 import * as storeMarketplaceJson from '../../backend/artifacts/contracts/StoreMarketplace.sol/StoreMarketplace.json';
