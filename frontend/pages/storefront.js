@@ -10,10 +10,10 @@ import { useState } from "react";
 
 // reference store marketplace contract
 import * as storeMarketplaceJson from '../../backend/artifacts/contracts/StoreMarketplace.sol/StoreMarketplace.json';
-const storeMarketplaceAddress = '0x02DfcEFB6069f27b89f041b6Be92dC3e2185c9bB';
+const storeMarketplaceAddress = '0x508843B0a232c827CF6c40a4Af5e4f63da27906e';
 
 import * as marketplaceJson from '../../backend/artifacts/contracts/Marketplace.sol/Marketplace.json';
-const marketplaceAddress = '0x15e8DC5f8530e320A483a1da01fB9be4e42e9345';
+const marketplaceAddress = '0x37B6411fc59E7ed50dd5a0571Db6e6e579009Bf2';
 
 export default function Storefront() {
     return (

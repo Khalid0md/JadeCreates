@@ -17,7 +17,7 @@ const ipfs = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0')
 
 // reference store marketplace contract
 import * as storeMarketplaceJson from '../../backend/artifacts/contracts/StoreMarketplace.sol/StoreMarketplace.json';
-const storeMarketplaceAddress = '0x02DfcEFB6069f27b89f041b6Be92dC3e2185c9bB';
+const storeMarketplaceAddress = '0x508843B0a232c827CF6c40a4Af5e4f63da27906e';
 
 export default function GetStarted() {
 
