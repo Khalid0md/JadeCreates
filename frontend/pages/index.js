@@ -4,18 +4,22 @@ import { WalletContext } from "../utils/WalletSessionProvider"
 import { useContext, useEffect, useState } from "react"
 import { useRouter } from "next/router";
 import makeBlockie from 'ethereum-blockies-base64';
+import Storefront from "./storefront";
 const Web3 = require("web3");
 //
-var fs = require("fs")
-const market = fs.readFileSync("market.txt").toString()
-const store = fs.readFileSync("store.txt").toString()
+//const fs = require("fs")
+//const market = fs.readFileSync("market.txt").toString()
+//const store = fs.readFileSync("store.txt").toString()
 //
 
-// reference store marketplace contract
-import * as storeMarketplaceJson from '../../backend/artifacts/contracts/StoreMarketplace.sol/StoreMarketplace.json';
-const storeMarketplaceAddress = '0x02DfcEFB6069f27b89f041b6Be92dC3e2185c9bB';
+import { marketplaceAddress, storeMarketplaceAddress } from "../../backend/config";
 
-async function getPageData() {
+// reference store marketplace contract
+import storeMarketplaceJson from '../../backend/artifacts/contracts/StoreMarketplace.sol/StoreMarketplace.json';
+import LoadingIndicator from "../components/LoadingIndicator";
+//const storeMarketplaceAddress = '0x02DfcEFB6069f27b89f041b6Be92dC3e2185c9bB';
+
+async function getStoreData() {
   const { host } = window.location;
   let splitHost = host.split('.');
 
@@ -25,105 +29,55 @@ async function getPageData() {
       return null;
     }
 
-    
     // Check subdomain validity here:
     const web3 = new Web3('https://api.s0.b.hmny.io');
-    //const web3 = new Web3(window.ethereum);
     const storeMarketplace = new web3.eth.Contract(storeMarketplaceJson.abi, storeMarketplaceAddress)
 
-    console.log(storeMarketplace)
+    const isAvailable = await storeMarketplace.methods.nameAvailable(subdomain).call()
 
-    // teststore, mystore?, ?, opensea
+    if (!isAvailable) {
+      const storeData = await storeMarketplace.methods.getStoreWithSubdomain(subdomain).call()
 
-    await storeMarketplace.methods.getStoreWithId(2).call()
-      .then((store) => {
-        console.log(store);
-      })
-
-    await storeMarketplace.methods.nameAvailable('teststore').call()
-      .then((store) => {
-        console.log(store);
-      })
-
-      /*
-    await storeMarketplace.methods.getStoreWithSubdomain("").call()
-      .then((store) => {
-        console.log(store);
-      })
-      */
-
-      /*
-      await storeMarketplace.methods.getStoreWithId(2).call()
-      .then((store) => {
-        console.log(store);
-      })
-
-      await storeMarketplace.methods.nameAvailable(subdomain).call()
-      .then((store) => {
-        console.log(store);
-      })
-      */
-    
-
-
-    //const transaction = await storeMarketplace.methods.createStore(subdomain, colourInHex, plan, uri).send({ from: walletSession.walletAddress, value: payableAmount })
-    //console.log(transaction)
-
-
-    /*
-    let res = await fetch(`/api/get-page?page=${page}`);
-
-    if (res.status === 200) {
-      let { html, allowEdit, token } = await res.json();
-      return { html, allowEdit, editLink: `${href}?edit=${token}` };
+      if (storeData.subdomain === subdomain) { return storeData }
     }
 
-    if (res.status === 404) {
-      let { html, token } = await res.json();
-      return { html, editLink: `${href}?edit=${token}` };
-    }
-
-    if (!res.ok && res.status !== 404) {
-      let { stack, message } = await res.json();
-      return { errorCode: res.status, stack, message };
-    }
-    */
+    return null;
   }
 }
 
 export default function CheckDomain() {
 
-  const [pageData, setPageData] = useState();
+  const [storeData, setStoreData] = useState();
+  const [loaded, setLoaded] = useState(false);
   const router = useRouter();
 
-  useEffect(() => {
-    if (!pageData) {
-      getPageData()
-      /*
-      .then(data => {
-        if (!data) {
-          setPageData(null);
-          return;
-        }
-        if (data.errorCode) {
-          let { errorCode, stack, message } = data;
-          setError({ errorCode, stack, message });
-          return;
-        }
-        let { html, allowEdit, editLink } = data;
-        setPageData({ html, allowEdit, editLink });
-        return;
-      })
-      .catch(e => {
-        setError({ message: e.message, stack: e.stack });
-      });
-      */
+  useEffect(async () => {
+    if (!storeData) {
+      const data = await getStoreData()
+
+      if (data) { setStoreData(data) }
+      setLoaded(true)
     }
-    //return () => { };
-  }, [pageData]);
+  }, [storeData]);
 
   return (
-    <LandingPage />
+    <div>
+      {
+        loaded
+          ?
+          <div>
+            {
+              storeData
+                ?
+                <Storefront storeData={storeData} />
+                :
+                <LandingPage />
+            }
+          </div>
+          :
+          <LoadingIndicator />
+      }
+    </div>
   )
 }
 

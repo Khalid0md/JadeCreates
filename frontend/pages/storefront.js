@@ -8,18 +8,16 @@ import { useModal } from "../utils/ModalContext"
 import { useWallet } from "../utils/WalletSessionProvider";
 import { useState } from "react";
 
-// reference store marketplace contract
-import * as storeMarketplaceJson from '../../backend/artifacts/contracts/StoreMarketplace.sol/StoreMarketplace.json';
-const storeMarketplaceAddress = '0x508843B0a232c827CF6c40a4Af5e4f63da27906e';
+// reference store and marketplace contracts
+import storeMarketplaceJson from '../../backend/artifacts/contracts/StoreMarketplace.sol/StoreMarketplace.json';
+import marketplaceJson from '../../backend/artifacts/contracts/Marketplace.sol/Marketplace.json';
+import { marketplaceAddress, storeMarketplaceAddress } from "../../backend/config";
 
-import * as marketplaceJson from '../../backend/artifacts/contracts/Marketplace.sol/Marketplace.json';
-const marketplaceAddress = '0x37B6411fc59E7ed50dd5a0571Db6e6e579009Bf2';
-
-export default function Storefront() {
+export default function Storefront({ storeData }) {
     return (
         <div className="flex flex-col w-full items-center bg-background h-full space-y-4">
             <TopSpacer />
-            <StorefrontNavBar />
+            <StorefrontNavBar storeData={storeData} />
             <div className="flex flex-col h-full w-full max-w-[90rem] space-y-8 px-6 md:px-14">
                 <SearchBar />
                 <SortingItemList />

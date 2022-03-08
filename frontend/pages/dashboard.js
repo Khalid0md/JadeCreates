@@ -7,6 +7,7 @@ import NavButton from "../components/NavButton";
 import { HiOutlineChevronRight } from "react-icons/hi";
 import testStoresData from "../testData/testStoresData";
 import { DashboardNavBar, TopSpacer } from "../components/NavBar";
+import LoadingIndicator from "../components/LoadingIndicator";
 
 export default function DashboardLoginHandler() {
 
@@ -40,11 +41,13 @@ export default function DashboardLoginHandler() {
         )
     } else {
         return (
-            <div>
-                Loading . . .
-            </div>
+            <LoadingIndicator />
         )
     }
+}
+
+async function GetMyStores() {
+    
 }
 
 function Dashboard() {

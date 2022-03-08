@@ -10,41 +10,23 @@ import { useWallet } from "../utils/WalletSessionProvider";
 import { useEffect, useState } from "react";
 const Web3 = require("web3");
 import { TwitterPicker } from 'react-color';
+import { useWalletConnect } from "../utils/WalletConnectProvider";
 
 // for ipfs upload
 import { create as ipfsHttpClient } from 'ipfs-http-client'
 const ipfs = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0')
 
 // reference store marketplace contract
-import * as storeMarketplaceJson from '../../backend/artifacts/contracts/StoreMarketplace.sol/StoreMarketplace.json';
-const storeMarketplaceAddress = '0x508843B0a232c827CF6c40a4Af5e4f63da27906e';
+import storeMarketplaceJson from '../../backend/artifacts/contracts/StoreMarketplace.sol/StoreMarketplace.json';
+import { marketplaceAddress, storeMarketplaceAddress } from "../../backend/config";
 
 export default function GetStarted() {
 
     // setup modal for configuring store
     const modalController = useModal()
 
-    const walletSession = useWallet();
-
-    function CheckLogin() {
-        if (!walletSession.isLoaded) { return }
-
-        while (!walletSession.isLoaded) { }
-
-        if (walletSession.walletAddress) {
-            //router.push('/dashboard')
-        } else {
-            //router.push('/')
-        }
-    }
-
-    useEffect(() => {
-        CheckLogin()
-    }, [walletSession.walletAddress])
-
-    useEffect(() => {
-        CheckLogin()
-    }, [walletSession.isLoaded])
+    //const walletSession = useWallet();
+    const walletConnectSession = useWalletConnect();
 
     return (
         <div className="flex flex-col w-full items-center bg-background h-full space-y-4">
@@ -53,9 +35,9 @@ export default function GetStarted() {
             <div className="flex flex-col items-center h-full w-full max-w-[90rem] space-y-8 px-6 md:px-14">
                 <PlansHeader />
                 <div className="flex items-center justify-center w-full space-x-8 py-14 bg-background">
-                    <BasicPlan modalController={modalController} walletSession={walletSession} />
-                    <UnlimitedPlan modalController={modalController} walletSession={walletSession} />
-                    <ProPlan modalController={modalController} walletSession={walletSession} />
+                    <BasicPlan modalController={modalController} walletSession={walletConnectSession} />
+                    <UnlimitedPlan modalController={modalController} walletSession={walletConnectSession} />
+                    <ProPlan modalController={modalController} walletSession={walletConnectSession} />
                 </div>
             </div>
         </div>
@@ -101,16 +83,16 @@ function BasicPlan({ modalController, walletSession }) {
                 Basic
             </p>
             <div className="translate-x-1 translate-y-1 bg-green2 rounded-xl">
-                <p className="-translate-x-2 -translate-y-2 flex space-x-2 bg-green1 p-4 mb-0 mr-0 rounded-xl text-white justify-center items-end">
-                    <p className="text-5xl numbers-font font-black" >
+                <div className="-translate-x-2 -translate-y-2 flex space-x-2 bg-green1 p-4 mb-0 mr-0 rounded-xl text-white justify-center items-end">
+                    <div className="text-5xl numbers-font font-black" >
                         <div className="inline-block h-full align-text-baseline" />
                         500
-                    </p>
-                    <p className="text-3xl nunito-font font-black">
+                    </div>
+                    <div className="text-3xl nunito-font font-black">
                         <div className="inline-block h-full align-text-baseline" />
                         ONE
-                    </p>
-                </p>
+                    </div>
+                </div>
             </div>
             <div className="flex grow justify-center">
                 <div className="flex flex-col grow justify-center max-w-min space-y-6">
@@ -145,16 +127,16 @@ function UnlimitedPlan({ modalController, walletSession }) {
                 Unlimited
             </p>
             <div className="translate-x-1 translate-y-1 bg-green2 rounded-xl">
-                <p className="-translate-x-2 -translate-y-2 flex space-x-2 bg-green1 p-4 mb-0 mr-0 rounded-xl text-white justify-center items-end">
-                    <p className="text-5xl numbers-font font-black" >
+                <div className="-translate-x-2 -translate-y-2 flex space-x-2 bg-green1 p-4 mb-0 mr-0 rounded-xl text-white justify-center items-end">
+                    <div className="text-5xl numbers-font font-black" >
                         <div className="inline-block h-full align-text-baseline" />
                         2000
-                    </p>
-                    <p className="text-3xl nunito-font font-black">
+                    </div>
+                    <div className="text-3xl nunito-font font-black">
                         <div className="inline-block h-full align-text-baseline" />
                         ONE
-                    </p>
-                </p>
+                    </div>
+                </div>
             </div>
             <div className="flex grow justify-center">
                 <div className="flex flex-col grow justify-center max-w-min space-y-8">
@@ -186,16 +168,16 @@ function ProPlan({ modalController, walletSession }) {
                 Pro
             </p>
             <div className="translate-x-1 translate-y-1 bg-green2 rounded-xl">
-                <p className="-translate-x-2 -translate-y-2 flex space-x-2 bg-green1 p-4 mb-0 mr-0 rounded-xl text-white justify-center items-end">
-                    <p className="text-5xl numbers-font font-black" >
+                <div className="-translate-x-2 -translate-y-2 flex space-x-2 bg-green1 p-4 mb-0 mr-0 rounded-xl text-white justify-center items-end">
+                    <div className="text-5xl numbers-font font-black" >
                         <div className="inline-block h-full align-text-baseline" />
                         1000
-                    </p>
-                    <p className="text-3xl nunito-font font-black">
+                    </div>
+                    <div className="text-3xl nunito-font font-black">
                         <div className="inline-block h-full align-text-baseline" />
                         ONE
-                    </p>
-                </p>
+                    </div>
+                </div>
             </div>
             <div className="flex grow justify-center">
                 <div className="flex flex-col grow justify-center max-w-min space-y-6">
