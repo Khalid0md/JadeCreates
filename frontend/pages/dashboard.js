@@ -8,18 +8,17 @@ import { HiOutlineChevronRight } from "react-icons/hi";
 import testStoresData from "../testData/testStoresData";
 import { DashboardNavBar, TopSpacer } from "../components/NavBar";
 import LoadingIndicator from "../components/LoadingIndicator";
+import { useWalletConnect } from "../utils/WalletConnectProvider";
 
 export default function DashboardLoginHandler() {
 
-    const walletSession = useWallet();
+    const walletConnectSession = useWalletConnect();
     const router = useRouter();
 
     function CheckLogin() {
-        if (!walletSession.isLoaded) { return }
+        if (walletConnectSession.connector.pending) { return }
 
-        while (!walletSession.isLoaded) { }
-
-        if (walletSession.walletAddress) {
+        if (walletConnectSession.connector.accounts[0]) {
             router.push('/dashboard')
         } else {
             router.push('/')
@@ -29,13 +28,13 @@ export default function DashboardLoginHandler() {
     useEffect(() => {
         console.log("address changed")
         CheckLogin()
-    }, [walletSession.walletAddress])
+    }, [walletConnectSession.connector && walletConnectSession.connector.accounts])
 
     useEffect(() => {
         CheckLogin()
-    }, [walletSession.isLoaded])
+    }, [walletConnectSession.connector && walletConnectSession.connector.pending])
 
-    if (walletSession.walletAddress) {
+    if (walletConnectSession.connector && walletConnectSession.connector.accounts[0]) {
         return (
             <Dashboard />
         )

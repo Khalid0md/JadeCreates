@@ -84,7 +84,7 @@ export function StorefrontNavBar({ storeData }) {
                 }}
             />
             <div className="flex grow" />
-            <div className={`bg-[#${storeData.colourHex}] p-4 px-16 rounded-2xl `} >
+            <div className={`bg-[#${storeData && storeData.colourHex}] p-4 px-16 rounded-2xl `} >
 
             </div>
             {/*<NavButton text={'Button 1'} bgColor={'white'} textColor={'mainBlack'} link={'/storefront'} /> */}
