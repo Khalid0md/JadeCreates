@@ -26,13 +26,7 @@ async function main() {
   await store.deployed()
   console.log("store deployed to: " + store.address)
 
-  fs.writeFileSync('./config.js', `
-  export const marketplaceAddress = "${market.address}"
-  `)
-
-  fs.writeFileSync('./config.js', `
-  export const storeMarketplaceAddress = "${store.address}"
-  `)
+  fs.writeFileSync('./config.js', `export const marketplaceAddress = "${market.address}"\nexport const storeMarketplaceAddress = "${store.address}"`)
 
   //fs.writeFileSync('./config.js', `
   //export const nftAddress = "${nft.address}"
