@@ -1,14 +1,14 @@
 import Logo from "./logo"
 import NavButton from "./NavButton"
 import { useWallet } from "../utils/WalletSessionProvider";
-import { useContext } from "react"
+import { useContext, useEffect, useReducer, useState } from "react"
 import { useRouter } from "next/router";
 import { useModal } from "../utils/ModalContext";
 import { CustomLogo } from "./logo";
 //import WalletConnectProvider from "@walletconnect/web3-provider";
 import WalletConnect from "@walletconnect/client";
 import QRCodeModal from "@walletconnect/qrcode-modal";
-import { useWalletConnect } from "../utils/WalletConnectProvider";
+import { useWalletConnect } from "../utils/WalletConnectSessionProvider";
 const walletConnectLogo = require('../public/walletconnect-logo.png')
 
 function NavBar(props) {
@@ -26,15 +26,15 @@ export function MainNavBar({ showGetStarted }) {
     const walletConnectSession = useWalletConnect();
     const router = useRouter();
     const modalController = useModal();
-
+    
     return (
         <NavBar>
             <Logo />
             <div className="flex grow" />
             <NavButton 
-                text={walletConnectSession.connector && walletConnectSession.connector.connected ? 'Go to Dashboard' : 'Log in with WalletConnect'}
+                text={walletConnectSession.isConnected ? 'Go to Dashboard' : 'Log in with WalletConnect'}
                 bgColor={'white'} textColor={'mainBlack'}
-                iconRight={<img src="/walletconnect-logo.png" className="h-5 pl-4 -mr-2 -mt-1" />}
+                iconRight={!walletConnectSession.isConnected && <img src="/walletconnect-logo.png" className="h-5 pl-4 -mr-2 -mt-1" />}
                 onClick={async () => {
                 /*
                 modalController.setContent(
@@ -53,10 +53,11 @@ export function MainNavBar({ showGetStarted }) {
                 }
                 */
 
-                if (walletConnectSession.connector.connected) {
+                if (walletConnectSession.provider.connected) {
                     router.push('/dashboard')
                 } else {
-                    await walletConnectSession.connector.createSession()
+                    //await walletConnectSession.connector.createSession()
+                    await walletConnectSession.provider.enable();
                 }
             }} />
             {

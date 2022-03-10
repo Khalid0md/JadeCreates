@@ -8,7 +8,12 @@ import { HiOutlineChevronRight } from "react-icons/hi";
 import testStoresData from "../testData/testStoresData";
 import { DashboardNavBar, TopSpacer } from "../components/NavBar";
 import LoadingIndicator from "../components/LoadingIndicator";
-import { useWalletConnect } from "../utils/WalletConnectProvider";
+import { useWalletConnect } from "../utils/WalletConnectSessionProvider";
+import Web3 from "web3";
+
+// reference contracts
+import { storeMarketplaceAddress } from "../../backend/config";
+import storeMarketplaceJson from '../../backend/artifacts/contracts/StoreMarketplace.sol/StoreMarketplace.json';
 
 export default function DashboardLoginHandler() {
 
@@ -16,9 +21,10 @@ export default function DashboardLoginHandler() {
     const router = useRouter();
 
     function CheckLogin() {
-        if (walletConnectSession.connector.pending) { return }
+        if (!walletConnectSession.provider) { return }
+        if (walletConnectSession.provider.isConnecting) { return }
 
-        if (walletConnectSession.connector.accounts[0]) {
+        if (walletConnectSession.provider.accounts[0]) {
             router.push('/dashboard')
         } else {
             router.push('/')
@@ -28,15 +34,15 @@ export default function DashboardLoginHandler() {
     useEffect(() => {
         console.log("address changed")
         CheckLogin()
-    }, [walletConnectSession.connector && walletConnectSession.connector.accounts])
+    }, [walletConnectSession.provider && walletConnectSession.provider.accounts])
 
     useEffect(() => {
         CheckLogin()
-    }, [walletConnectSession.connector && walletConnectSession.connector.pending])
+    }, [walletConnectSession.provider && walletConnectSession.provider.isConnecting])
 
-    if (walletConnectSession.connector && walletConnectSession.connector.accounts[0]) {
+    if (walletConnectSession.provider && walletConnectSession.provider.accounts[0]) {
         return (
-            <Dashboard />
+            <Dashboard walletConnectSession={walletConnectSession} />
         )
     } else {
         return (
@@ -45,11 +51,7 @@ export default function DashboardLoginHandler() {
     }
 }
 
-async function GetMyStores() {
-    
-}
-
-function Dashboard() {
+function Dashboard({ walletConnectSession }) {
 
     const [selectedStore, setSelectedStore] = useState();  //{ storeName: 'My New Store' })
 
@@ -82,29 +84,47 @@ function Dashboard() {
                         ?
                         <DashboardStoreContent />
                         :
-                        <DashboardMainContent setSelectedStore={setSelectedStore} />
+                        <DashboardMainContent walletConnectSession={walletConnectSession} setSelectedStore={setSelectedStore} />
                 }
             </div>
         </div>
     )
 }
 
-function DashboardMainContent({ setSelectedStore }) {
+function DashboardMainContent({ walletConnectSession, setSelectedStore }) {
+
+    const [storeDomains, setStoreDomains] = useState();
+
+    useEffect(() => {
+        // init web3 provider
+        const web3 = new Web3(walletConnectSession.provider)
+        
+        // get store contract
+        const storeMarketplace = new web3.eth.Contract(storeMarketplaceJson.abi, storeMarketplaceAddress)
+
+        storeMarketplace.methods.getSubdomainsFromSender().call()
+            .then((domains) => {
+                setStoreDomains(domains)
+                console.log(domains)
+            })
+    }, [])
+
     return (
         <div className="flex flex-col space-y-4">
             <p className="nunito-font text-2xl font-black">
                 My Stores
             </p>
-            <StoresList stores={testStoresData} setSelectedStore={setSelectedStore} />
+            <StoresList storeDomains={testStoresData} setSelectedStore={setSelectedStore} />
         </div>
     )
 }
 
-function StoresList({ stores, setSelectedStore }) {
+function StoresList({ storeDomains, setSelectedStore }) {
+
     return (
         <div className="pb-12 grid gap-8 store-grid">
             {
-                stores.map(store => {
+                storeDomains.map(store => {
                     return (
                         <SmallStoreDisplay store={store} logoUri={store.logoUri} subdomain={store.subdomain} name={store.name} owner={store.owner} colourInHex={store.colourInHex} setSelectedStore={setSelectedStore} />
                     )
@@ -123,6 +143,12 @@ function SmallStoreDisplay({ store, logoUri, subdomain, name, owner, colourInHex
                 }}>
             <img src={`https://cloudflare-ipfs.com/ipfs/${logoUri}`} className="flex aspect-square flex-shrink-0 rounded-xl" />
         </button>
+    )
+}
+
+function SmallStoreDisplayLoading() {
+    return (
+        <div className="flex aspect-square w-full bg-white p-4 rounded-2xl shadow-low transition-all" />
     )
 }
 

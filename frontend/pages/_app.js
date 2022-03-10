@@ -1,6 +1,6 @@
 import '../styles/globals.css'
 import WalletSessionProvider from '../utils/WalletSessionProvider'
-import WalletConnectProvider from '../utils/WalletConnectProvider'
+import WalletConnectSessionProvider from '../utils/WalletConnectSessionProvider'
 import { useEffect } from 'react'
 import ModalProvider from '../utils/ModalContext'
 
@@ -13,9 +13,9 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <ModalProvider>
-      <WalletConnectProvider>
+      <WalletConnectSessionProvider>
         <Component {...pageProps} />
-      </WalletConnectProvider>
+      </WalletConnectSessionProvider>
     </ModalProvider >
   )
 }

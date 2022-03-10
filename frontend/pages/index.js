@@ -1,7 +1,7 @@
 
 import { MainNavBar, TopSpacer } from "../components/NavBar"
 import { WalletContext } from "../utils/WalletSessionProvider"
-import { useContext, useEffect, useState } from "react"
+import { useContext, useEffect, useReducer, useState } from "react"
 import { useRouter } from "next/router";
 import makeBlockie from 'ethereum-blockies-base64';
 import Storefront from "./storefront";
@@ -17,6 +17,7 @@ import { marketplaceAddress, storeMarketplaceAddress } from "../../backend/confi
 // reference store marketplace contract
 import storeMarketplaceJson from '../../backend/artifacts/contracts/StoreMarketplace.sol/StoreMarketplace.json';
 import LoadingIndicator from "../components/LoadingIndicator";
+import { useWalletConnect } from "../utils/WalletConnectSessionProvider";
 //const storeMarketplaceAddress = '0x02DfcEFB6069f27b89f041b6Be92dC3e2185c9bB';
 
 async function getStoreData() {
@@ -90,6 +91,7 @@ function LandingPage() {
 
   const [offsetY, setOffsetY] = useState(0);
   const handleScroll = () => setOffsetY(window.pageYOffset);
+  const walletConnectSession = useWalletConnect();
 
   // hook to track scrolling
   useEffect(() => {
@@ -144,7 +146,7 @@ function NFTParallax({ offsetY }) {
         <NFTCard number={1234} blockSeed={'qetuoadgjlxvn'} offsetY={offsetY} />
         <NFTCard number={1234} blockSeed={'iuqwerhf'} offsetY={offsetY} />
         <NFTCard number={1234} blockSeed={'oiqwuernf'} offsetY={offsetY} />
-        <NFTCard number={1234} blockSeed={'ljiq2h34'}offsetY={offsetY} />
+        <NFTCard number={1234} blockSeed={'ljiq2h34'} offsetY={offsetY} />
       </div>
       <div
         className="flex flex-col space-y-6"
@@ -165,11 +167,11 @@ function NFTCard({ number, blockSeed, offsetY }) {
     <div className="flex flex-col p-4 space-y-4 bg-white rounded-2xl glow-low flex-shrink-0 min-w-max">
       {
         <div className="flex rounded-xl w-64 h-64 opacity-80 flex-shrink-0 overflow-clip -p-16">
-          <div 
-            className="bg-gradient-to-b from-green1 to-green2 flex grow -m-16 animate-spin" 
+          <div
+            className="bg-gradient-to-b from-green1 to-green2 flex grow -m-16 animate-spin"
           />
         </div>
-        
+
       }
       {
         /*

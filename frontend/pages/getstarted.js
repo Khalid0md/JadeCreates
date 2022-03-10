@@ -10,7 +10,7 @@ import { useWallet } from "../utils/WalletSessionProvider";
 import { useEffect, useState } from "react";
 const Web3 = require("web3");
 import { TwitterPicker } from 'react-color';
-import { useWalletConnect } from "../utils/WalletConnectProvider";
+import { useWalletConnect } from "../utils/WalletConnectSessionProvider";
 
 // for ipfs upload
 import { create as ipfsHttpClient } from 'ipfs-http-client'
