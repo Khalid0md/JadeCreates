@@ -43,7 +43,7 @@ async function getStoreData() {
 
     // remove subdomain and return null
     splitHost.shift()
-    window.location.replace('http://' + splitHost)
+    window.location.replace('http://' + splitHost.join('.'))
     return null;
   }
 
