@@ -41,8 +41,13 @@ async function getStoreData() {
       if (storeData.subdomain === subdomain) { return storeData }
     }
 
+    // remove subdomain and return null
+    splitHost.shift()
+    window.location.replace('http://' + splitHost)
     return null;
   }
+
+  return null;
 }
 
 export default function CheckDomain() {
