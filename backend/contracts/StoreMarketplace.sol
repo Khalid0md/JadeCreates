@@ -75,7 +75,7 @@ contract StoreMarketplace is ERC721, ReentrancyGuard, Ownable {
         string memory plan,
         string memory logoURI
     ) external payable nonReentrant {
-        require(nameAvailable(subdomainIn) == true);
+        require(nameAvailable(subdomainIn) == true, "Name not available.");
         if (
             keccak256(abi.encodePacked(plan)) ==
             keccak256(abi.encodePacked("basic"))
@@ -178,12 +178,12 @@ contract StoreMarketplace is ERC721, ReentrancyGuard, Ownable {
     }
 
     //takes in owner address and returns a set of store ids
-    function getSubdomainsFromSender()
+    function getSubdomainsFromWalletAddress(address ownerAddress)
         public
         view
         returns (string[] memory)
     {
-        return ownerAddressToSubdomains[msg.sender];
+        return ownerAddressToSubdomains[ownerAddress];
     }
 
     //takes in store object, store colour in hex, updates store colour

@@ -31,7 +31,7 @@ export default function WalletConnectSessionProvider(props) {
             new WalletConnectProvider({
                 rpc: {
                     //1: 'https://api.s0.t.hmny.io/', // harmony mainnet
-                    1: 'https://api.s0.b.hmny.io' // harmony testnet
+                    1666700000: 'https://api.s0.b.hmny.io' // harmony testnet
                 },
                 qrcodeModalOptions: {
                     mobileLinks: [

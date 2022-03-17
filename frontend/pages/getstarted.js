@@ -20,6 +20,15 @@ const ipfs = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0')
 import storeMarketplaceJson from '../../backend/artifacts/contracts/StoreMarketplace.sol/StoreMarketplace.json';
 import { marketplaceAddress, storeMarketplaceAddress } from "../../backend/config";
 
+// set page props
+export async function getStaticProps(context) {
+    return {
+        props: {
+            mainDomainRoute: true
+        }
+    };
+}
+
 export default function GetStarted() {
 
     // setup modal for configuring store
@@ -215,33 +224,53 @@ function ListItem({ icon, text, space }) {
     )
 }
 
+/*
+<div className="flex grow max-w-[90rem] items-center justify-center nunito-font font-black m-4 p-8 bg-white shadow-high rounded-2xl">
+                <div className="flex flex-col grow space-y-4">
+                    <div className="flex w-full text-4xl nunito-font font-black text-green1" >
+                        <p>
+                            {plan}
+                        </p>
+                        <div className="flex grow" />
+                        <button className="aspect-square h-full text-mainBlack"
+                            onClick={() => {
+                                modalController.setIsShown(false);
+                            }}>
+                            <HiOutlineX />
+                        </button>
+                    </div>
+                    <CreateStoreForm plan={plan.toLowerCase()} price={price} walletSession={walletSession} />
+                </div>
+            </div>
+            */
+
 function ConfigureStoreModalContent({ plan, price, walletSession, modalController }) {
 
-    return (
-        <div className="flex items-center justify-center nunito-font font-black p-4 max-w-[75rem]">
-            {
-                walletSession && walletSession.walletAddress
-                    ?
-                    <div className="flex flex-col w-full space-y-4">
-                        <div className="flex w-full text-4xl nunito-font font-black text-green1" >
-                            <p>
-                                {plan}
-                            </p>
-                            <div className="flex grow" />
-                            <button className="aspect-square h-full text-mainBlack"
-                                onClick={() => {
-                                    modalController.setIsShown(false);
-                                }}>
-                                <HiOutlineX />
-                            </button>
-                        </div>
-                        <CreateStoreForm plan={plan.toLowerCase()} price={price} walletSession={walletSession} />
-                    </div>
-                    :
+    if (walletSession && walletSession.provider && walletSession.provider.accounts[0]) {
+        return (
+            <div className="flex grow max-w-[80rem] flex-col items-center justify-center nunito-font font-black m-4 p-8 bg-background shadow-high rounded-2xl">
+                <div className="flex w-full text-4xl nunito-font font-black text-green1" >
                     <p>
-                        Please log in with MetaMask.
+                        {plan}
                     </p>
-            }
+                    <div className="flex grow" />
+                    <button className="text-4xl text-mainBlack"
+                        onClick={() => {
+                            modalController.setIsShown(false);
+                        }}>
+                        <HiOutlineX />
+                    </button>
+                </div>
+                <div className="flex w-full flex-col grow space-y-4 px-32 py-16">
+                    <CreateStoreForm plan={plan.toLowerCase()} price={price} walletSession={walletSession} />
+                </div>
+            </div>
+        )
+    }
+
+    return (
+        <div className="flex items-center justify-center nunito-font font-black m-4 p-8 bg-white shadow-high rounded-2xl">
+            Please log in with MetaMask.
         </div>
     )
 }//<div className="w-64 h-24 flex items-center justify-center nunito-font font-black">
@@ -253,6 +282,7 @@ function CreateStoreForm({ plan, price, walletSession }) {
     const [subdomain, setSubdomain] = useState()
     const [logoUri, setLogoUri] = useState()
     const [colourInHex, setColourInHex] = useState('FFFFFF')
+    const walletConnectSession = useWalletConnect();
 
     const onSubmit = async (e) => {
         // prevents form from submitting early
@@ -263,11 +293,23 @@ function CreateStoreForm({ plan, price, walletSession }) {
             // we should have all info
             // TODO: *** perform any checks on the data (if necessary)
 
+            /* METAMASK: (reintegrate later)
             if (window.ethereum && uri && walletSession.walletAddress) {
                 const web3 = new Web3(window.ethereum);
                 const payableAmount = web3.utils.toWei(price, "ether")
                 const storeMarketplace = new web3.eth.Contract(storeMarketplaceJson.abi, storeMarketplaceAddress)
                 const transaction = await storeMarketplace.methods.createStore(subdomain, colourInHex, plan, uri).send({ from: walletSession.walletAddress, value: payableAmount })
+                console.log(transaction)
+            }
+            */
+
+            // walletconnect:
+            if (uri && walletSession.provider && walletSession.provider.accounts[0]) {
+                //const web3 = new Web3(walletSession.provider);
+                const web3 = new Web3(window.ethereum);
+                const payableAmount = web3.utils.toWei(price, "ether")
+                const storeMarketplace = new web3.eth.Contract(storeMarketplaceJson.abi, storeMarketplaceAddress)
+                const transaction = await storeMarketplace.methods.createStore(subdomain, colourInHex, plan, uri).send({ from: walletSession.provider.accounts[0], value: payableAmount })
                 console.log(transaction)
             }
         })
@@ -301,9 +343,26 @@ function CreateStoreForm({ plan, price, walletSession }) {
     return (
         <div className="w-full rounded-2xl">
             <form className="flex flex-col space-y-4" onSubmit={e => onSubmit(e)}>
-                <input type="file" onChange={(e) => createPreview(e)} />
                 <div className="flex">
-                    <ImagePreview imgSrc={imagePreview} />
+                    <div className="flex items-center justify-center flex-shrink-0 grow aspect-square rounded-2xl border-2 shadow-inner border-accentGray overflow-clip bg-white">
+                        {
+                            imagePreview
+                                ?
+                                <img src={imagePreview} className="max-h-14 object-contain p-2 border-2 rounded-xl" />
+                                :
+                                <label class="flex h-full grow items-center justify-center text-secondaryGray hover:bg-mainBlack/5 cursor-pointer">
+                                    <input type="file" onChange={(e) => createPreview(e)} className="hidden" />
+                                    <div className="flex flex-col items-center">
+                                        <p className="text-5xl font-light">
+                                            +
+                                        </p>
+                                        <p className="text-lg font-extrabold">
+                                            Add Logo
+                                        </p>
+                                    </div>
+                                </label>
+                        }
+                    </div>
                     <div className="flex flex-col space-y-4 grow pl-4">
                         <input
                             name="name"
@@ -311,7 +370,7 @@ function CreateStoreForm({ plan, price, walletSession }) {
                             placeholder="name"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
-                            className="form-text-field"
+                            className="form-text-field bg-white"
                         />
                         <input
                             name="subdomain"
@@ -319,7 +378,7 @@ function CreateStoreForm({ plan, price, walletSession }) {
                             placeholder="subdomain (ex. yoursubdomain.martazo.com)"
                             value={subdomain}
                             onChange={(e) => setSubdomain(e.target.value)}
-                            className="form-text-field"
+                            className="form-text-field bg-white"
                         />
                         {/*
                         <input
@@ -331,7 +390,10 @@ function CreateStoreForm({ plan, price, walletSession }) {
                             className="form-text-field"
                         />
                         */}
-                        <TwitterPicker triangle={"hide"} />
+                        <div className="flex space-x-4">
+                            <div style={{ backgroundColor: "#" + colourInHex }} className="flex grow rounded-2xl border-2 border-mainBlack/10 shadow-low transition-all" />
+                            <TwitterPicker triangle={"hide"} onChange={(e) => setColourInHex(e.hex.substring(1)) } />
+                        </div>
                         <div className="flex justify-end">
                             <button type="submit" fill={true} className="flex h-16 px-8 text-lg nunito-font text-background whitespace-nowrap bg-mainBlack rounded-xl items-center justify-center font-extrabold max-w-min" >
                                 Buy - {price} ONE
@@ -346,8 +408,23 @@ function CreateStoreForm({ plan, price, walletSession }) {
 
 function ImagePreview({ imgSrc }) {
     return (
-        <div className="flex items-center justify-center p-8 w-[18rem] flex-shrink-0 grow aspect-square rounded-xl border-2 shadow-inner border-accentGray overflow-clip">
-            <img src={imgSrc} className="min-w-full h-fit rounded-xl" />
+        <div className="flex items-center justify-center flex-shrink-0 grow aspect-square rounded-xl border-2 shadow-inner border-accentGray overflow-clip bg-white">
+            {
+                imgSrc
+                    ?
+                    <img src={imgSrc} className="min-w-full h-fit rounded-xl m-8" />
+                    :
+                    <button className="flex h-full grow items-center justify-center text-secondaryGray">
+                        <div className="flex flex-col">
+                            <p className="text-5xl font-light">
+                                +
+                            </p>
+                            <p className="text-lg font-extrabold">
+                                Add Photo
+                            </p>
+                        </div>
+                    </button>
+            }
         </div>
     )
 }
