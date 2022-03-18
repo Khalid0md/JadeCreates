@@ -397,23 +397,6 @@ function ListingsList({ store, walletSession }) {
                                             <AddListingModalContent store={store} walletSession={walletSession} modalController={modalController} mmWalletSession={mmWalletSession} />
                                         )
                                         modalController.setIsShown(true);
-
-
-                                        /*
-                                        //const address = '0x70a335Aea0321D2245950caB4bB147DCda23D760';
-                                        //const address = '0x356bBc0Bbc37D50a4bcd0062768CCf10b70Cf19A';
-                                        const address = '0x91416CF432B49b30b486BA0a5f501a69a714c3A0';
-                                        const web3 = new Web3(walletSession.provider)
-                                        const payableAmount = web3.utils.toWei('1', "ether")
-                                        //const marketplace = new web3.eth.Contract(nfTestJson.abi, address)
-                                        const marketplace = new web3.eth.Contract(createERC721Json.abi, address)
-                                        const transaction = await marketplace.methods.mint(
-                                            walletSession.provider.accounts[0]
-                                        ).send({
-                                            from: walletSession.provider.accounts[0]
-                                        })
-                                        console.log(transaction)
-                                        */
                                     }}
                                 >
                                     <p className="nunito-font text-3xl font-extrabold text-center">
@@ -490,8 +473,8 @@ function AddListingModalContent({ store, walletSession, modalController, mmWalle
     }
 
     return (
-       // <div className="flex items-center justify-center nunito-font font-black p-4 w-full">
-       <div className="flex grow max-w-[60rem] flex-col items-center justify-center nunito-font font-black m-4 p-8 bg-background shadow-high rounded-2xl">
+        // <div className="flex items-center justify-center nunito-font font-black p-4 w-full">
+        <div className="flex grow max-w-[60rem] flex-col items-center justify-center nunito-font font-black m-4 p-8 bg-background shadow-high rounded-2xl">
             {
                 //metamask: walletSession && walletSession.walletAddress
                 walletSession && walletSession.provider && walletSession.provider.accounts[0]
@@ -536,7 +519,35 @@ function AddListingModalContent({ store, walletSession, modalController, mmWalle
                                         onChange={(e) => setListingPrice(e.target.value)}
                                         className="form-text-field bg-white"
                                     />
-                                    <div className="flex justify-end">
+                                    <div className="flex justify-end space-x-4">
+                                        <button
+                                            className="flex h-16 px-8 text-lg nunito-font text-background whitespace-nowrap bg-mainBlack rounded-xl items-center justify-center font-extrabold max-w-min"
+                                            onClick={async (e) => {
+                                                //prevent form submit
+                                                e.preventDefault()
+
+                                                // mint hrc721 token to metamask address
+                                                const address = '0x91416CF432B49b30b486BA0a5f501a69a714c3A0';
+                                                if (!mmWalletSession.walletAddress) {
+                                                    await mmWalletSession.connectWallet();
+                                                }
+                                                const web3 = new Web3(window.ethereum)
+                                                const marketplace = new web3.eth.Contract(createERC721Json.abi, address)
+
+                                                // get metamask accounts
+                                                const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                                                const account = accounts[0];
+
+                                                const transaction = await marketplace.methods.mint(
+                                                    account
+                                                ).send({
+                                                    from: account
+                                                })
+                                                console.log(transaction)
+                                            }}
+                                        >
+                                            Mint HRC721
+                                        </button>
                                         <button type="submit" fill={true} className="flex h-16 px-8 text-lg nunito-font text-background whitespace-nowrap bg-mainBlack rounded-xl items-center justify-center font-extrabold max-w-min" >
                                             Submit
                                         </button>
