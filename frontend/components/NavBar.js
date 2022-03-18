@@ -1,10 +1,15 @@
 import Logo from "./logo"
 import NavButton from "./NavButton"
 import { useWallet } from "../utils/WalletSessionProvider";
-import { useContext } from "react"
+import { useContext, useEffect, useReducer, useState } from "react"
 import { useRouter } from "next/router";
 import { useModal } from "../utils/ModalContext";
 import { CustomLogo } from "./logo";
+//import WalletConnectProvider from "@walletconnect/web3-provider";
+import WalletConnect from "@walletconnect/client";
+import QRCodeModal from "@walletconnect/qrcode-modal";
+import { useWalletConnect } from "../utils/WalletConnectSessionProvider";
+const walletConnectLogo = require('../public/walletconnect-logo.png')
 
 function NavBar(props) {
     return (
@@ -18,15 +23,19 @@ function NavBar(props) {
 
 export function MainNavBar({ showGetStarted }) {
 
-    const walletSession = useWallet();
+    const walletConnectSession = useWalletConnect();
     const router = useRouter();
     const modalController = useModal();
-
+    
     return (
         <NavBar>
             <Logo />
             <div className="flex grow" />
-            <NavButton text={walletSession.walletAddress ? 'Go to Dashboard' : 'Log in with MetaMask'} bgColor={'white'} textColor={'mainBlack'} onClick={async () => {
+            <NavButton 
+                text={walletConnectSession.isConnected ? 'Go to Dashboard' : 'Log in with WalletConnect'}
+                bgColor={'white'} textColor={'mainBlack'}
+                iconRight={!walletConnectSession.isConnected && <img src="/walletconnect-logo.png" className="h-5 pl-4 -mr-2 -mt-1" />}
+                onClick={async () => {
                 /*
                 modalController.setContent(
                     <div className="w-64 h-24 flex items-center justify-center nunito-font font-black">
@@ -36,35 +45,50 @@ export function MainNavBar({ showGetStarted }) {
                 modalController.setIsShown(true);
                 */
 
+                /*
                 if (walletSession.walletAddress) {
                     router.push('/dashboard')
                 } else {
                     const sessionStatus = await walletSession.connectWallet();
                 }
-
-                /*
-                console.log(sessionStatus)
-    
-                if (sessionStatus.isConnected) { router.push('/dashboard') }
                 */
+
+                if (walletConnectSession.provider.connected) {
+                    router.push('/dashboard')
+                } else {
+                    //await walletConnectSession.connector.createSession()
+                    await walletConnectSession.provider.enable();
+                }
             }} />
             {
                 showGetStarted
-                ?
-                <NavButton text={'Get Started'} bgColor={'mainBlack'} textColor={'white'} shadow={'high'} link={'/getstarted'} />
-                :
-                <NavButton text={'Back'} bgColor={'mainBlack'} textColor={'white'} shadow={'high'} link={'/'} />
+                    ?
+                    <NavButton text={'Get Started'} bgColor={'mainBlack'} textColor={'white'} shadow={'high'} link={'/getstarted'} />
+                    :
+                    <NavButton text={'Back'} bgColor={'mainBlack'} textColor={'white'} shadow={'high'} link={'/'} />
             }
         </NavBar>
     )
 }
 
-export function StorefrontNavBar() {
+export function StorefrontNavBar({ storeData }) {
+
+    const router = useRouter();
+
     return (
         <NavBar>
-            <CustomLogo />
+            <img
+                src={storeData && storeData.logoURI}
+                className="max-h-14 object-contain p-2 cursor-pointer"
+                onClick={() => {
+                    router.push('/')
+                }}
+            />
             <div className="flex grow" />
-            <NavButton text={'Button 1'} bgColor={'white'} textColor={'mainBlack'} link={'/storefront'} />
+            <div className={`bg-[#${storeData && storeData.colourHex}] p-4 px-16 rounded-2xl `} >
+
+            </div>
+            {/*<NavButton text={'Button 1'} bgColor={'white'} textColor={'mainBlack'} link={'/storefront'} /> */}
             {/*<NavButton text={'Button 2'} bgColor={'mainBlack'} textColor={'white'} shadow={'high'} link={'/storefront'} />*/}
         </NavBar>
     )

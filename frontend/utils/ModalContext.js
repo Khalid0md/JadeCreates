@@ -16,7 +16,7 @@ export default function ModalProvider(props) {
     const [content, setContent] = useState()
 
     function clearContent() {
-        
+
     }
 
     return (
@@ -35,11 +35,13 @@ function Modal(props) {
     return (
         <div>
             <button onClick={() => { props.setIsShown(false) }} className={"flex items-center justify-center absolute w-screen h-screen backdrop-blur-none z-40 transition-all duration-300 cursor-default " + (props.isShown ? "backdrop-blur-[4px] bg-gray-500/30" : "backdrop-blur-none bg-transparent invisible")} />
-            <div className={ "flex items-center justify-center absolute w-screen h-screen " + (!props.isShown && "invisible") } >
-                <div className="flex items-center justify-center text-center bg-white p-4 rounded-2xl shadow-high z-50" >
+            <div className={"flex items-center justify-center absolute w-screen h-screen " + (!props.isShown && "invisible")} >
+                <div className="flex grow items-center justify-center z-50">
                     {props.children}
                 </div>
             </div>
         </div>
     )
 }
+//<div className="flex grow items-center justify-center z-50 bg-white rounded-2xl shadow-high m-4">
+//<div className="flex items-center justify-center text-center bg-white p-4 rounded-2xl shadow-high z-50" >

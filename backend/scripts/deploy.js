@@ -29,13 +29,40 @@ async function main() {
   //await store.deployed()
   //console.log("store deployed to: " + store.address)
 
-  fs.writeFileSync('./config.js', `
-  export const marketplaceAddress = "${market.address}"
-  `)
+  /*
+    Marketplace and store contracts
+  */
+  /*
+  const Market = await ethers.getContractFactory("Marketplace")
+  const market = await Market.deploy()
+  await market.deployed()
+  console.log("marketplace deployed to: " + market.address)
 
-  fs.writeFileSync('./config.js', `
-  export const storeMarketplaceAddress = "${store.address}"
-  `)
+  const Store = await ethers.getContractFactory("StoreMarketplace")
+  const store = await Store.deploy("newBaseUri", "name", "blah")
+  await store.deployed()
+  console.log("store deployed to: " + store.address)
+
+  fs.writeFileSync('./config.js', `export const marketplaceAddress = "${market.address}"\nexport const storeMarketplaceAddress = "${store.address}"`)
+  */
+
+  /*
+    NFT minting old - doesn't work?
+  */
+  /*
+   const NFT = await ethers.getContractFactory("NFTest")
+   const nft = await NFT.deploy("name", "symbol", "baseUri", "notRevealedUri")
+   await nft.deployed()
+   console.log("nft deployed to: " + nft.address)
+   */
+
+  /*
+    NFT minting that works
+  */
+  const NFT = await ethers.getContractFactory("ERC721PresetMinterPauserAutoId")
+  const nft = await NFT.deploy("TestContract", "TST", "https://gateway.pinata.cloud/ipfs/QmVkDbc6NPni1uzQq3gsiocUc3YGZjF7QGcM37hMcBqNmv")
+  await nft.deployed()
+  console.log("nft deployed to: " + nft.address)
 
   //fs.writeFileSync('./config.js', `
   //export const nftAddress = "${nft.address}"

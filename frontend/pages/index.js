@@ -1,21 +1,26 @@
 
 import { MainNavBar, TopSpacer } from "../components/NavBar"
 import { WalletContext } from "../utils/WalletSessionProvider"
-import { useContext, useEffect, useState } from "react"
+import { useContext, useEffect, useReducer, useState } from "react"
 import { useRouter } from "next/router";
 import makeBlockie from 'ethereum-blockies-base64';
+import Storefront from "./storefront";
 const Web3 = require("web3");
 //
-var fs = require("fs")
-const market = fs.readFileSync("market.txt").toString()
-const store = fs.readFileSync("store.txt").toString()
+//const fs = require("fs")
+//const market = fs.readFileSync("market.txt").toString()
+//const store = fs.readFileSync("store.txt").toString()
 //
 
-// reference store marketplace contract
-import * as storeMarketplaceJson from '../../backend/artifacts/contracts/StoreMarketplace.sol/StoreMarketplace.json';
-const storeMarketplaceAddress = '0x02DfcEFB6069f27b89f041b6Be92dC3e2185c9bB';
+import { marketplaceAddress, storeMarketplaceAddress } from "../../backend/config";
 
-async function getPageData() {
+// reference store marketplace contract
+import storeMarketplaceJson from '../../backend/artifacts/contracts/StoreMarketplace.sol/StoreMarketplace.json';
+import LoadingIndicator from "../components/LoadingIndicator";
+import { useWalletConnect } from "../utils/WalletConnectSessionProvider";
+//const storeMarketplaceAddress = '0x02DfcEFB6069f27b89f041b6Be92dC3e2185c9bB';
+
+async function getStoreData() {
   const { host } = window.location;
   let splitHost = host.split('.');
 
@@ -25,105 +30,60 @@ async function getPageData() {
       return null;
     }
 
-    
     // Check subdomain validity here:
     const web3 = new Web3('https://api.s0.b.hmny.io');
-    //const web3 = new Web3(window.ethereum);
     const storeMarketplace = new web3.eth.Contract(storeMarketplaceJson.abi, storeMarketplaceAddress)
 
-    console.log(storeMarketplace)
+    const isAvailable = await storeMarketplace.methods.nameAvailable(subdomain).call()
 
-    // teststore, mystore?, ?, opensea
+    if (!isAvailable) {
+      const storeData = await storeMarketplace.methods.getStoreWithSubdomain(subdomain).call()
 
-    await storeMarketplace.methods.getStoreWithId(2).call()
-      .then((store) => {
-        console.log(store);
-      })
-
-    await storeMarketplace.methods.nameAvailable('teststore').call()
-      .then((store) => {
-        console.log(store);
-      })
-
-      /*
-    await storeMarketplace.methods.getStoreWithSubdomain("").call()
-      .then((store) => {
-        console.log(store);
-      })
-      */
-
-      /*
-      await storeMarketplace.methods.getStoreWithId(2).call()
-      .then((store) => {
-        console.log(store);
-      })
-
-      await storeMarketplace.methods.nameAvailable(subdomain).call()
-      .then((store) => {
-        console.log(store);
-      })
-      */
-    
-
-
-    //const transaction = await storeMarketplace.methods.createStore(subdomain, colourInHex, plan, uri).send({ from: walletSession.walletAddress, value: payableAmount })
-    //console.log(transaction)
-
-
-    /*
-    let res = await fetch(`/api/get-page?page=${page}`);
-
-    if (res.status === 200) {
-      let { html, allowEdit, token } = await res.json();
-      return { html, allowEdit, editLink: `${href}?edit=${token}` };
+      if (storeData.subdomain === subdomain) { return storeData }
     }
 
-    if (res.status === 404) {
-      let { html, token } = await res.json();
-      return { html, editLink: `${href}?edit=${token}` };
-    }
-
-    if (!res.ok && res.status !== 404) {
-      let { stack, message } = await res.json();
-      return { errorCode: res.status, stack, message };
-    }
-    */
+    // remove subdomain and return null
+    splitHost.shift()
+    window.location.replace('http://' + splitHost.join('.'))
+    return null;
   }
+
+  return null;
 }
 
 export default function CheckDomain() {
 
-  const [pageData, setPageData] = useState();
+  const [storeData, setStoreData] = useState();
+  const [loaded, setLoaded] = useState(false);
   const router = useRouter();
 
-  useEffect(() => {
-    if (!pageData) {
-      getPageData()
-      /*
-      .then(data => {
-        if (!data) {
-          setPageData(null);
-          return;
-        }
-        if (data.errorCode) {
-          let { errorCode, stack, message } = data;
-          setError({ errorCode, stack, message });
-          return;
-        }
-        let { html, allowEdit, editLink } = data;
-        setPageData({ html, allowEdit, editLink });
-        return;
-      })
-      .catch(e => {
-        setError({ message: e.message, stack: e.stack });
-      });
-      */
+  useEffect(async () => {
+    if (!storeData) {
+      const data = await getStoreData()
+
+      if (data) { setStoreData(data) }
+      setLoaded(true)
     }
-    //return () => { };
-  }, [pageData]);
+  }, [storeData]);
 
   return (
-    <LandingPage />
+    <div>
+      {
+        loaded
+          ?
+          <div>
+            {
+              storeData
+                ?
+                <Storefront storeData={storeData} />
+                :
+                <LandingPage />
+            }
+          </div>
+          :
+          <LoadingIndicator />
+      }
+    </div>
   )
 }
 
@@ -131,6 +91,7 @@ function LandingPage() {
 
   const [offsetY, setOffsetY] = useState(0);
   const handleScroll = () => setOffsetY(window.pageYOffset);
+  const walletConnectSession = useWalletConnect();
 
   // hook to track scrolling
   useEffect(() => {
@@ -182,37 +143,40 @@ function NFTParallax({ offsetY }) {
         className="flex flex-col space-y-6"
         style={{ transform: `translateY(${offsetY * -0.75}px)` }}
       >
-        <NFTCard number={1234} blockSeed={'qetuoadgjlxvn'} />
-        <NFTCard number={1234} blockSeed={'iuqwerhf'} />
-        <NFTCard number={1234} blockSeed={'oiqwuernf'} />
-        <NFTCard number={1234} blockSeed={'ljiq2h34'} />
+        <NFTCard number={1234} blockSeed={'qetuoadgjlxvn'} offsetY={offsetY} />
+        <NFTCard number={1234} blockSeed={'iuqwerhf'} offsetY={offsetY} />
+        <NFTCard number={1234} blockSeed={'oiqwuernf'} offsetY={offsetY} />
+        <NFTCard number={1234} blockSeed={'ljiq2h34'} offsetY={offsetY} />
       </div>
       <div
         className="flex flex-col space-y-6"
         style={{ transform: `translateY(${offsetY * -1}px)` }}
       >
-        <NFTCard number={1234} blockSeed={'askldfhlkja'} />
-        <NFTCard number={1234} blockSeed={'klwefjkasdf'} />
-        <NFTCard number={1234} blockSeed={'aiousdfh423'} />
-        <NFTCard number={1234} blockSeed={'23k4jhsdfa'} />
-        <NFTCard number={1234} blockSeed={'as9o8d7fk2j3'} />
+        <NFTCard number={1234} blockSeed={'askldfhlkja'} offsetY={offsetY} />
+        <NFTCard number={1234} blockSeed={'klwefjkasdf'} offsetY={offsetY} />
+        <NFTCard number={1234} blockSeed={'aiousdfh423'} offsetY={offsetY} />
+        <NFTCard number={1234} blockSeed={'23k4jhsdfa'} offsetY={offsetY} />
+        <NFTCard number={1234} blockSeed={'as9o8d7fk2j3'} offsetY={offsetY} />
       </div>
     </div>
   )
 }
 
-function NFTCard({ number, blockSeed }) {
+function NFTCard({ number, blockSeed, offsetY }) {
   return (
     <div className="flex flex-col p-4 space-y-4 bg-white rounded-2xl glow-low flex-shrink-0 min-w-max">
       {
-        /*
         <div className="flex rounded-xl w-64 h-64 opacity-80 flex-shrink-0 overflow-clip -p-16">
-          <div className="bg-gradient-to-tr from-green1 to-green-600 flex grow -m-16 animate-spin" />
+          <div
+            className="bg-gradient-to-b from-green1 to-green2 flex grow -m-16 animate-spin"
+          />
         </div>
-        */
+
       }
       {
+        /*
         <img src={makeBlockie(blockSeed)} className="flex rounded-xl w-64 h-64 opacity-80 flex-shrink-0" />
+        */
       }
       <div className="flex space-x-4" >
         <p className="bg-accentGray text-secondaryGray text-2xl numbers-font italic font-black rounded-xl px-4 py-2 w-24">

@@ -21,6 +21,7 @@ contract StoreMarketplace is ERC721, ReentrancyGuard, Ownable {
         string plan;
         address payable owner;
         string logoURI;
+        bool isInitialized;
     }
 
     event StoreCreated(
@@ -29,10 +30,13 @@ contract StoreMarketplace is ERC721, ReentrancyGuard, Ownable {
         string colourHex,
         string plan,
         address owner,
-        string logoURI
+        string logoURI,
+        bool isInitialized
     );
 
-    mapping(uint256 => Store) private idToStore;
+    //mapping(uint256 => Store) private idToStore;
+    mapping(string => Store) private subdomainToStore;
+    mapping(address => string[]) private ownerAddressToSubdomains;
 
     constructor(
         string memory newBaseURI,
@@ -43,6 +47,7 @@ contract StoreMarketplace is ERC721, ReentrancyGuard, Ownable {
     }
 
     //internal function, used by the contract to search if a name is taken or not before completing many procedures
+    /*
     function nameAvailable(string memory name) public view returns (bool) {
         uint256 itemCount = _storeIds.current();
         for (uint256 i = 0; i <= itemCount; i++) {
@@ -55,6 +60,12 @@ contract StoreMarketplace is ERC721, ReentrancyGuard, Ownable {
         }
         return true;
     }
+    */
+    function nameAvailable(string memory subdomain) public view returns (bool) {
+        // check if key's value exists
+        if (subdomainToStore[subdomain].isInitialized) { return false; }
+        return true;
+    }
 
     //?use enums
     //creates a store and mints a Martazo token to the store owner
@@ -64,7 +75,7 @@ contract StoreMarketplace is ERC721, ReentrancyGuard, Ownable {
         string memory plan,
         string memory logoURI
     ) external payable nonReentrant {
-        require(nameAvailable(subdomainIn) == true);
+        require(nameAvailable(subdomainIn) == true, "Name not available.");
         if (
             keccak256(abi.encodePacked(plan)) ==
             keccak256(abi.encodePacked("basic"))
@@ -87,14 +98,18 @@ contract StoreMarketplace is ERC721, ReentrancyGuard, Ownable {
         _storeIds.increment();
         uint256 id = _storeIds.current();
 
-        idToStore[id] = Store(
+        //idToStore[id] = Store(
+        subdomainToStore[subdomainIn] = Store(
             id,
             subdomainIn,
             colourhex,
             plan,
             payable(msg.sender),
-            logoURI
+            logoURI,
+            true
         );
+
+        ownerAddressToSubdomains[msg.sender].push(subdomainIn);
 
         emit StoreCreated(
             id,
@@ -102,7 +117,8 @@ contract StoreMarketplace is ERC721, ReentrancyGuard, Ownable {
             colourhex,
             plan,
             msg.sender,
-            logoURI
+            logoURI,
+            true
         );
 
         _safeMint(msg.sender, id);
@@ -131,11 +147,14 @@ contract StoreMarketplace is ERC721, ReentrancyGuard, Ownable {
     }
 
     //takes in id and returns store object
+    /*
     function getStoreWithId(uint256 id) public view returns (Store memory) {
         return idToStore[id];
     }
+    */
 
     //takes in subdomain and returns store object
+    /*
     function getStoreWithSubdomain(string memory subdomainIn)
         public
         view
@@ -152,6 +171,20 @@ contract StoreMarketplace is ERC721, ReentrancyGuard, Ownable {
             }
         }
     }
+    */
+    function getStoreWithSubdomain(string memory subdomain) public view returns (Store memory) {
+        require(nameAvailable(subdomain) == false);
+        return subdomainToStore[subdomain];
+    }
+
+    //takes in owner address and returns a set of store ids
+    function getSubdomainsFromWalletAddress(address ownerAddress)
+        public
+        view
+        returns (string[] memory)
+    {
+        return ownerAddressToSubdomains[ownerAddress];
+    }
 
     //takes in store object, store colour in hex, updates store colour
     function editStoreColour(Store memory storeIn, string memory newHexColour)
@@ -160,7 +193,8 @@ contract StoreMarketplace is ERC721, ReentrancyGuard, Ownable {
     {
         require(msg.sender == storeIn.owner);
         storeIn.colourHex = newHexColour;
-        idToStore[storeIn.storeId] = storeIn;
+        //idToStore[storeIn.storeId] = storeIn;
+        subdomainToStore[storeIn.subdomain] = storeIn;
     }
 
     //takes in subdomain, store colour in hex, updates store colour
@@ -169,10 +203,11 @@ contract StoreMarketplace is ERC721, ReentrancyGuard, Ownable {
         string memory newHexColour
     ) external payable {
         Store memory currentStore = getStoreWithSubdomain(subdomainIn);
-        uint256 id = currentStore.storeId;
+        //uint256 id = currentStore.storeId;
         require(msg.sender == currentStore.owner);
         currentStore.colourHex = newHexColour;
-        idToStore[id] = currentStore;
+        //idToStore[id] = currentStore;
+        subdomainToStore[subdomainIn] = currentStore;
     }
 
     //takes in subdomain, new logoURI, updates logo for particular subdomain
@@ -181,9 +216,10 @@ contract StoreMarketplace is ERC721, ReentrancyGuard, Ownable {
         payable
     {
         Store memory currentStore = getStoreWithSubdomain(subdomainIn);
-        uint256 id = currentStore.storeId;
+        //uint256 id = currentStore.storeId;
         require(msg.sender == currentStore.owner);
         currentStore.logoURI = newLogoURI;
-        idToStore[id] = currentStore;
+        //idToStore[id] = currentStore;
+        subdomainToStore[subdomainIn] = currentStore;
     }
 }
