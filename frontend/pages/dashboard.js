@@ -448,7 +448,7 @@ function AddListingModalContent({ store, walletSession, modalController, mmWalle
             const approveAbi = [{ "constant": false, "inputs": [{ "internalType": "address", "name": "to", "type": "address" }, { "internalType": "uint256", "name": "tokenId", "type": "uint256" }], "name": "approve", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }]
             const originalAddress = '0x356bbc0bbc37d50a4bcd0062768ccf10b70cf19a'
             const originalContract = new web3.eth.Contract(approveAbi, originalAddress)
-            const transaction1 = await originalContract.methods.setApprovalForAll(marketplaceAddress, 3).send({ from: walletSession.provider.accounts[0] })
+            const transaction1 = await originalContract.methods.setApprovalForAll(marketplaceAddress, true).send({ from: walletSession.provider.accounts[0] })
 
             // get store contract d
             const marketplace = new web3.eth.Contract(marketplaceJson.abi, marketplaceAddress)
