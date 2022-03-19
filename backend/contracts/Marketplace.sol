@@ -29,6 +29,7 @@ contract Marketplace is ReentrancyGuard, Ownable {
 
     //mapping id to Listing
     mapping(uint256 => Listing) private idToListing;
+    mapping(string => uint256[]) private subdomainToListingIds;
     //?
     //mapping(address => mapping(uint256 => mapping(address => uint256))) public bids;
 
@@ -67,6 +68,7 @@ contract Marketplace is ReentrancyGuard, Ownable {
         );
 
         IERC721(nftContract).transferFrom(msg.sender, address(this), tokenId);
+        subdomainToListingIds[subdomain].push(itemId);
 
         emit ListingCreated(
             itemId,
@@ -166,6 +168,7 @@ contract Marketplace is ReentrancyGuard, Ownable {
         return items;
     }
 
+    /** 
     //returns an array of unsold listing id's by subdomain
     function getListingIdsBySubDomain(string memory subdomainIn)
         public
@@ -179,9 +182,8 @@ contract Marketplace is ReentrancyGuard, Ownable {
         uint256[] memory items = new uint256[](unsoldItemCount);
         for (uint256 i = 0; i < itemCount; i++) {
             if (
-                idToListing[i + 1].owner == address(0) &&
-                (keccak256(abi.encodePacked(idToListing[i + 1].subdomain)) ==
-                    keccak256(abi.encodePacked(subdomainIn)))
+                keccak256(abi.encodePacked(idToListing[i + 1].subdomain)) ==
+                keccak256(abi.encodePacked(subdomainIn))
             ) {
                 uint256 currentId = i + 1;
                 uint256 currentItem = idToListing[currentId].itemId;
@@ -190,6 +192,15 @@ contract Marketplace is ReentrancyGuard, Ownable {
             }
         }
         return items;
+    }
+    */
+
+    function getListingIdsBySubdomain(string memory subdomainIn)
+        public
+        view
+        returns (uint256[] memory)
+    {
+        return subdomainToListingIds[subdomainIn];
     }
 
     function getListing(uint256 id) external view returns (Listing memory) {
