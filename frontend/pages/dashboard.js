@@ -467,9 +467,9 @@ function AddListingModalContent({ store, walletSession, modalController, mmWalle
             //onst approveAbi = [{ "constant": false, "inputs": [{ "internalType": "address", "name": "to", "type": "address" }, { "internalType": "uint256", "name": "tokenId", "type": "uint256" }], "name": "approve", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }]
             const originalAddress = '0x356bbc0bbc37d50a4bcd0062768ccf10b70cf19a'
             const originalContract = new web3.eth.Contract(approveAbi, originalAddress)
-            const transaction1 = await originalContract.methods.approve(originalAddress, 1).send({ from: walletSession.provider.accounts[0] })
+            const transaction1 = await originalContract.methods.setApprovalForAll(marketplaceAddress, true).send({ from: walletSession.provider.accounts[0] })
 
-            // get store contract
+            // get store contract d
             const marketplace = new web3.eth.Contract(marketplaceJson.abi, marketplaceAddress)
 
             // get listing fee
@@ -481,7 +481,7 @@ function AddListingModalContent({ store, walletSession, modalController, mmWalle
             // create listing
             const transaction = await marketplace.methods.createListing(
                 store.subdomain,
-                0,
+                3,
                 1,
                 contractAddress
             ).send({

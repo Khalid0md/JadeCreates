@@ -10,6 +10,24 @@ const fs = require("fs")
 
 async function main() {
 
+  //const Market = await ethers.getContractFactory("Marketplace")
+  //const market = await Market.deploy()
+  //await market.deployed()
+  //console.log("marketplace deployed to: " + market.address)
+
+
+  const NFT = await ethers.getContractFactory("NFTest")
+  const nft = await NFT.deploy("name", "symbol", "baseUri", "notRevealedUri")
+  await nft.deployed()
+  console.log("nft deployed to: " + nft.address)
+
+  await nft.connect(0xBF8698DfB723AF6eB0A6D696eb9EFBe5D1899a82).mint(1, { value: auctionPrice })
+
+
+  //const Store = await ethers.getContractFactory("StoreMarketplace")
+  //const store = await Store.deploy("newBaseUri", "name", "blah")
+  //await store.deployed()
+  //console.log("store deployed to: " + store.address)
 
   /*
     Marketplace and store contracts
@@ -31,12 +49,12 @@ async function main() {
   /*
     NFT minting old - doesn't work?
   */
- /*
-  const NFT = await ethers.getContractFactory("NFTest")
-  const nft = await NFT.deploy("name", "symbol", "baseUri", "notRevealedUri")
-  await nft.deployed()
-  console.log("nft deployed to: " + nft.address)
-  */
+  /*
+   const NFT = await ethers.getContractFactory("NFTest")
+   const nft = await NFT.deploy("name", "symbol", "baseUri", "notRevealedUri")
+   await nft.deployed()
+   console.log("nft deployed to: " + nft.address)
+   */
 
   /*
     NFT minting that works
