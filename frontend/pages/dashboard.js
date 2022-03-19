@@ -445,8 +445,28 @@ function AddListingModalContent({ store, walletSession, modalController, mmWalle
             }
             const web3 = new Web3(window.ethereum)
 
-            const approveAbi = [{ "constant": false, "inputs": [{ "internalType": "address", "name": "to", "type": "address" }, { "internalType": "uint256", "name": "tokenId", "type": "uint256" }], "name": "approve", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }]
-            const originalAddress = '0x356bbc0bbc37d50a4bcd0062768ccf10b70cf19a'
+            //const approveAbi = [{ "constant": false, "inputs": [{ "internalType": "address", "name": "to", "type": "address" }, { "internalType": "uint256", "name": "tokenId", "type": "uint256" }], "name": "approve", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }]
+            //
+            const approveAbi = [{
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "operator",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "approved",
+                        "type": "bool"
+                    }
+                ],
+                "name": "setApprovalForAll",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            }]
+            //
+            const originalAddress = '0x91416cf432b49b30b486ba0a5f501a69a714c3a0'
             const originalContract = new web3.eth.Contract(approveAbi, originalAddress)
             const transaction1 = await originalContract.methods.setApprovalForAll(marketplaceAddress, true).send({ from: walletSession.provider.accounts[0] })
 
@@ -462,9 +482,9 @@ function AddListingModalContent({ store, walletSession, modalController, mmWalle
             // create listing
             const transaction = await marketplace.methods.createListing(
                 store.subdomain,
-                3,
-                1,
-                contractAddress
+                2, //*token ID need to be pulled from UI
+                1, // price need to be pulled from UI
+                originalAddress //address needs to be pulled from UI
             ).send({
                 from: walletSession.provider.accounts[0],
                 value: listingFee
