@@ -13,7 +13,7 @@ const walletConnectLogo = require('../public/walletconnect-logo.png')
 
 function NavBar(props) {
     return (
-        <div className="sticky flex justify-center w-full top-0 space-x-4 flex-shrink-0 bg-background/90 backdrop-blur-xl z-30 py-4">
+        <div className="sticky flex justify-center w-full top-0 space-x-4 flex-shrink-0 bg-background/70 backdrop-blur-xl z-30 py-4">
             <div className="flex grow max-w-[90rem] px-6 md:px-14 space-x-4">
                 {props.children}
             </div>

@@ -558,12 +558,14 @@ function AddListingModalContent({ store, walletSession, modalController, mmWalle
                                                 const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
                                                 const account = accounts[0];
 
+                                                /*
                                                 const transaction = await marketplace.methods.mint(
                                                     account
                                                 ).send({
                                                     from: account
                                                 })
                                                 console.log(transaction)
+                                                */
                                             }}
                                         >
                                             Mint HRC721

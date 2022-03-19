@@ -397,7 +397,7 @@ function CreateStoreForm({ plan, price, walletSession, mmWalletSession }) {
                         />
                         */}
                         <div className="flex space-x-4">
-                            <div style={{ backgroundColor: "#" + colourInHex }} className="flex grow rounded-2xl border-2 border-mainBlack/10 shadow-low transition-all" />
+                            <div style={{ backgroundColor: "#" + colourInHex }} className="flex grow rounded-2xl border-2 border-mainBlack/10 transition-colors duration-300" />
                             <TwitterPicker triangle={"hide"} onChange={(e) => setColourInHex(e.hex.substring(1)) } />
                         </div>
                         <div className="flex justify-end">
