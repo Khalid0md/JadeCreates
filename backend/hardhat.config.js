@@ -17,8 +17,8 @@ module.exports = {
     testnet: {
       url: `https://api.s0.b.hmny.io`,
       accounts: [privateKey],
-      gas: 2500000,
-      gasPrice: 8000000000
+      gasPrice: 35000000000,
+      saveDeployments: true
     },
 
   },
