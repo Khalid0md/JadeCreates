@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import makeBlockie from 'ethereum-blockies-base64';
 import Storefront from "./storefront";
 const Web3 = require("web3");
+import { ParallaxProvider, useParallax } from 'react-scroll-parallax';
 //
 //const fs = require("fs")
 //const market = fs.readFileSync("market.txt").toString()
@@ -90,6 +91,7 @@ export default function CheckDomain() {
 function LandingPage() {
 
   const [offsetY, setOffsetY] = useState(0);
+  const [enableCall, setEnableCall] = useState(false);
   const handleScroll = () => setOffsetY(window.pageYOffset);
   const walletConnectSession = useWalletConnect();
 
@@ -99,6 +101,7 @@ function LandingPage() {
 
     return () => window.removeEventListener("scroll", handleScroll);
   }, [])
+
 
   return (
     <div className="flex flex-col w-full items-center bg-background h-full space-y-4">
@@ -158,12 +161,16 @@ function LandingContent3({ offsetY }) {
       <div
         id='howitworks'
         className={
-          (inView ? ' text-green1 ' : ' text-accentGray ') +
-          (bgInView ? ' bg-white shadow-wide ' : ' ' ) + 
-          "max-w-fit -ml-8 p-8 nunito-font font-black text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl rounded-3xl transition-colors duration-500"
+          (bgInView ? ' bg-white shadow-wide2 ' : ' shadow-none ') +
+          "max-w-fit -ml-8 p-8 nunito-font font-black text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl rounded-3xl transition-all duration-500"
         }
       >
-        How it works:
+          <p className={ (inView ? ' opacity-100 ' : ' opacity-0 ') + "absolute bg-clip-text bg-gradient-to-bl from-green2 via-green1 to-green2 text-transparent transition-all duration-500"} >
+            How it works:
+          </p>
+          <p className={ (inView ? ' opacity-0 ' : ' opacity-100 ') + "text-accentGray transition-all duration-500"} >
+            How it works:
+          </p>
       </div>
     </div>
   )
@@ -174,7 +181,7 @@ function NFTParallax({ offsetY }) {
     <div className="flex space-x-6 overflow-hidden h-[40rem] rounded-2xl glow-wide flex-shrink-0">
       <div
         className="flex flex-col space-y-6"
-        style={{ transform: `translateY(${offsetY * -0.75}px)` }}
+        style={{ willChange: 'transform', transform: `translateY(${offsetY * -0.75}px)` }}
       >
         <NFTCard number={1234} blockSeed={'qetuoadgjlxvn'} offsetY={offsetY} />
         <NFTCard number={1234} blockSeed={'iuqwerhf'} offsetY={offsetY} />
@@ -183,7 +190,7 @@ function NFTParallax({ offsetY }) {
       </div>
       <div
         className="flex flex-col space-y-6"
-        style={{ transform: `translateY(${offsetY * -1}px)` }}
+        style={{ willChange: 'transform', transform: `translateY(${offsetY * -1}px)` }}
       >
         <NFTCard number={1234} blockSeed={'askldfhlkja'} offsetY={offsetY} />
         <NFTCard number={1234} blockSeed={'klwefjkasdf'} offsetY={offsetY} />

@@ -90,7 +90,7 @@ function PlansHeader() {
 
 function BasicPlan({ modalController, walletSession, mmWalletSession }) {
     return (
-        <div className="flex flex-col w-[18rem] aspect-[3/5] bg-white rounded-2xl drop-shadow-xl transition-all duration-300 hover:scale-105 hover:drop-shadow-2xl px-6 py-6 group space-y-4">
+        <div className="flex flex-col w-[18rem] aspect-[3/5] bg-white rounded-2xl shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl px-6 py-6 group space-y-4">
             <p className="-translate-x-2 flex w-full text-4xl nunito-font font-black text-accentGray group-hover:text-green1 transition-all duration-300 justify-center" >
                 Basic
             </p>
@@ -134,7 +134,7 @@ function BasicPlan({ modalController, walletSession, mmWalletSession }) {
 
 function UnlimitedPlan({ modalController, walletSession, mmWalletSession }) {
     return (
-        <div className="flex flex-col w-[20rem] aspect-[3/5] bg-white rounded-2xl drop-shadow-2xl transition-all duration-300 hover:scale-105 px-6 py-6 group space-y-4">
+        <div className="flex flex-col w-[20rem] aspect-[3/5] bg-white rounded-2xl shadow-2xl transition-all duration-300 hover:scale-105 px-6 py-6 group space-y-4">
             <p className="-translate-x-2 flex w-full text-4xl nunito-font font-black text-accentGray group-hover:text-green1 transition-all duration-300 justify-center" >
                 Unlimited
             </p>
@@ -175,7 +175,7 @@ function UnlimitedPlan({ modalController, walletSession, mmWalletSession }) {
 
 function ProPlan({ modalController, walletSession, mmWalletSession }) {
     return (
-        <div className="flex flex-col w-[18rem] aspect-[3/5] bg-white rounded-2xl drop-shadow-xl transition-all duration-300 hover:scale-105 hover:drop-shadow-2xl px-6 py-6 group space-y-4">
+        <div className="flex flex-col w-[18rem] aspect-[3/5] bg-white rounded-2xl shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl px-6 py-6 group space-y-4">
             <p className="-translate-x-2 flex w-full text-4xl nunito-font font-black text-accentGray group-hover:text-green1 transition-all duration-300 justify-center" >
                 Pro
             </p>

@@ -64,7 +64,6 @@ export default function DashboardLoginHandler() {
     }
 
     useEffect(() => {
-        console.log("address changed")
         CheckLogin()
     }, [walletConnectSession.provider && walletConnectSession.provider.accounts])
 
@@ -137,7 +136,6 @@ function DashboardMainContent({ walletConnectSession, setSelectedStore }) {
         storeMarketplace.methods.getSubdomainsFromWalletAddress(walletConnectSession.provider.accounts[0]).call()
             .then((domains) => {
                 setStoreDomains(domains)
-                console.log(domains)
             })
     }, [])
 
@@ -259,7 +257,6 @@ function SmallStoreDisplay({ subdomain, setSelectedStore, walletConnectSession }
         storeMarketplace.methods.getStoreWithSubdomain(subdomain).call()
             .then((store) => {
                 setStore(store)
-                console.log(store)
             })
     }, [])
 
@@ -368,7 +365,29 @@ function ListingsList({ store, walletSession }) {
     // setup modal for adding listing
     const modalController = useModal()
 
+    // metamask
     const mmWalletSession = useWallet();
+
+    // get listings
+    const [listingIds, setListingIds] = useState();
+    useEffect(async () => {
+        if (walletSession.provider && walletSession.provider.accounts[0]) {
+            // init web3 provider
+            const web3 = new Web3(walletSession.provider)
+
+            // get store contract
+            const marketplace = new web3.eth.Contract(marketplaceJson.abi, marketplaceAddress)
+
+            // get listing ids
+            setListingIds(await marketplace.methods.getListingIdsBySubDomain(store.subdomain).call())
+            console.log(listingIds)
+            /*
+            if (listingIds.length > 0) {
+                console.log(await marketplace.methods.getListing(3).call())
+            }
+            */
+        }
+    }, [])
 
     return (
         <div>
@@ -377,13 +396,13 @@ function ListingsList({ store, walletSession }) {
                     ?
                     <div className="pb-12">
                         {
-                            false
+                            listingIds && listingIds.length > 0
                                 ?
                                 <div className="pb-12 grid gap-8 store-grid">
                                     {
-                                        storeDomains.map(subdomain => {
+                                        listingIds.map(id => {
                                             return (
-                                                <SmallStoreDisplay subdomain={subdomain} setSelectedStore={setSelectedStore} walletConnectSession={walletConnectSession} />
+                                                <ListingDisplay id={id} />
                                             )
                                         })
                                     }
@@ -411,6 +430,14 @@ function ListingsList({ store, walletSession }) {
                     :
                     <LoadingIndicator />
             }
+        </div>
+    )
+}
+
+function ListingDisplay({ id }) {
+    return (
+        <div>
+            listing
         </div>
     )
 }
@@ -445,46 +472,97 @@ function AddListingModalContent({ store, walletSession, modalController, mmWalle
             }
             const web3 = new Web3(window.ethereum)
 
-            //const approveAbi = [{ "constant": false, "inputs": [{ "internalType": "address", "name": "to", "type": "address" }, { "internalType": "uint256", "name": "tokenId", "type": "uint256" }], "name": "approve", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }]
-            //
-            const approveAbi = [{
-                "inputs": [
-                    {
-                        "internalType": "address",
-                        "name": "operator",
-                        "type": "address"
-                    },
-                    {
-                        "internalType": "bool",
-                        "name": "approved",
-                        "type": "bool"
-                    }
-                ],
-                "name": "setApprovalForAll",
-                "outputs": [],
-                "stateMutability": "nonpayable",
-                "type": "function"
-            }]
-            //
-            const originalAddress = '0x91416cf432b49b30b486ba0a5f501a69a714c3a0'
-            const originalContract = new web3.eth.Contract(approveAbi, originalAddress)
-            const transaction1 = await originalContract.methods.setApprovalForAll(marketplaceAddress, true).send({ from: walletSession.provider.accounts[0] })
+            // get abi for required erc721 methods and get original contract
+            const erc721Abi = [
+                {
+                    "inputs": [
+                        {
+                            "internalType": "address",
+                            "name": "operator",
+                            "type": "address"
+                        },
+                        {
+                            "internalType": "bool",
+                            "name": "approved",
+                            "type": "bool"
+                        }
+                    ],
+                    "name": "setApprovalForAll",
+                    "outputs": [],
+                    "stateMutability": "nonpayable",
+                    "type": "function"
+                },
+                {
+                    "inputs": [
+                        {
+                            "internalType": "uint256",
+                            "name": "tokenId",
+                            "type": "uint256"
+                        }
+                    ],
+                    "name": "ownerOf",
+                    "outputs": [
+                        {
+                            "internalType": "address",
+                            "name": "",
+                            "type": "address"
+                        }
+                    ],
+                    "stateMutability": "view",
+                    "type": "function"
+                },
+                {
+                    "inputs": [
+                        {
+                            "internalType": "address",
+                            "name": "owner",
+                            "type": "address"
+                        },
+                        {
+                            "internalType": "address",
+                            "name": "operator",
+                            "type": "address"
+                        }
+                    ],
+                    "name": "isApprovedForAll",
+                    "outputs": [
+                        {
+                            "internalType": "bool",
+                            "name": "",
+                            "type": "bool"
+                        }
+                    ],
+                    "stateMutability": "view",
+                    "type": "function"
+                }
+            ]
+            //onst originalAddress = '0x91416cf432b49b30b486ba0a5f501a69a714c3a0'
+            const originalContract = new web3.eth.Contract(erc721Abi, contractAddress)
 
-            // get store contract d
+            // check that user owns token
+            if (await originalContract.methods.ownerOf(parseInt(tokenId, 10)).call() != walletSession.provider.accounts[0]) {
+                // throw some kind of error (temp console log for now)
+                console.log('You dont own this token (check the token id)')
+                return;
+            }
+
+            // approve all tokens for this contract (check not already approved first)
+            if (await originalContract.methods.isApprovedForAll(walletSession.provider.accounts[0], contractAddress) != true) {
+                await originalContract.methods.setApprovalForAll(marketplaceAddress, true).send({ from: walletSession.provider.accounts[0] })
+            }
+
+            // get store contract
             const marketplace = new web3.eth.Contract(marketplaceJson.abi, marketplaceAddress)
 
             // get listing fee
             const listingFee = await marketplace.methods.getFee().call()
 
-            //parseInt(tokenId, 10),
-
-            //store.subdomain,
             // create listing
-            const transaction = await marketplace.methods.createListing(
+            await marketplace.methods.createListing(
                 store.subdomain,
-                2, //*token ID need to be pulled from UI
-                1, // price need to be pulled from UI
-                originalAddress //address needs to be pulled from UI
+                parseInt(tokenId, 10),
+                parseInt(listingPrice, 10),
+                contractAddress
             ).send({
                 from: walletSession.provider.accounts[0],
                 value: listingFee

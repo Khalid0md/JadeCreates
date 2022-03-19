@@ -70,8 +70,14 @@ html, body {
         @apply z-20 shadow-none drop-shadow-xl 
     }
 
+    /*
     .shadow-wide {
         @apply z-20 shadow-none drop-shadow-2xl 
+    }
+    */
+
+    .shadow-wide {
+        @apply z-20 shadow-2xl
     }
 
     .glow-low {
