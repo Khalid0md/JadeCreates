@@ -462,7 +462,7 @@ function AddListingModalContent({ store, walletSession, modalController, mmWalle
             // create listing
             const transaction = await marketplace.methods.createListing(
                 store.subdomain,
-                0,
+                3,
                 1,
                 contractAddress
             ).send({
