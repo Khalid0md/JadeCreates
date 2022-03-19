@@ -123,4 +123,9 @@ html, body {
     html {
         overflow-x: hidden;
     }
+
+    body {
+        -webkit-overflow-scrolling: touch;
+    }
+
 }

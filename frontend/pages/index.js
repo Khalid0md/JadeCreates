@@ -107,6 +107,7 @@ function LandingPage() {
       <div className="space-y-24">
         <LandingContent1 />
         <LandingContent2 offsetY={offsetY} />
+        <LandingContent3 offsetY={offsetY} />
       </div>
       <div className="h-[100rem]" />
     </div>
@@ -136,9 +137,41 @@ function LandingContent2({ offsetY }) {
   )
 }
 
+function LandingContent3({ offsetY }) {
+
+  const [inView, setInView] = useState(false)
+  const [bgInView, setBgInView] = useState(false)
+
+  useEffect(() => {
+
+    // get element's position
+    const rect = document.getElementById('howitworks').getBoundingClientRect();
+
+    // apply effects
+    setInView(rect.y < screen.height / 2)
+    setBgInView(rect.y < screen.height / 2 - 100)
+
+  }, [offsetY])
+
+  return (
+    <div className="flex flex-col h-full w-full max-w-[90rem] px-10 md:px-24">
+      <div
+        id='howitworks'
+        className={
+          (inView ? ' text-green1 ' : ' text-accentGray ') +
+          (bgInView ? ' bg-white shadow-wide ' : ' ' ) + 
+          "max-w-fit -ml-8 p-8 nunito-font font-black text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl rounded-3xl transition-colors duration-500"
+        }
+      >
+        How it works:
+      </div>
+    </div>
+  )
+}
+
 function NFTParallax({ offsetY }) {
   return (
-    <div className="flex space-x-6 overflow-clip h-[40rem] rounded-2xl glow-wide flex-shrink-0">
+    <div className="flex space-x-6 overflow-hidden h-[40rem] rounded-2xl glow-wide flex-shrink-0">
       <div
         className="flex flex-col space-y-6"
         style={{ transform: `translateY(${offsetY * -0.75}px)` }}
@@ -166,7 +199,7 @@ function NFTCard({ number, blockSeed, offsetY }) {
   return (
     <div className="flex flex-col p-4 space-y-4 bg-white rounded-2xl glow-low flex-shrink-0 min-w-max">
       {
-        <div className="flex rounded-xl w-64 h-64 opacity-80 flex-shrink-0 overflow-clip -p-16">
+        <div className="flex rounded-xl w-64 h-64 opacity-80 flex-shrink-0 overflow-hidden -p-16">
           <div
             className="bg-gradient-to-b from-green1 to-green2 flex grow -m-16 animate-spin"
           />

@@ -445,7 +445,26 @@ function AddListingModalContent({ store, walletSession, modalController, mmWalle
             }
             const web3 = new Web3(window.ethereum)
 
-            const approveAbi = [{ "constant": false, "inputs": [{ "internalType": "address", "name": "to", "type": "address" }, { "internalType": "uint256", "name": "tokenId", "type": "uint256" }], "name": "approve", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }]
+            const approveAbi = [{
+                    "inputs": [
+                        {
+                            "internalType": "address",
+                            "name": "operator",
+                            "type": "address"
+                        },
+                        {
+                            "internalType": "bool",
+                            "name": "approved",
+                            "type": "bool"
+                        }
+                    ],
+                    "name": "setApprovalForAll",
+                    "outputs": [],
+                    "stateMutability": "nonpayable",
+                    "type": "function"
+            }]
+
+            //onst approveAbi = [{ "constant": false, "inputs": [{ "internalType": "address", "name": "to", "type": "address" }, { "internalType": "uint256", "name": "tokenId", "type": "uint256" }], "name": "approve", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }]
             const originalAddress = '0x356bbc0bbc37d50a4bcd0062768ccf10b70cf19a'
             const originalContract = new web3.eth.Contract(approveAbi, originalAddress)
             const transaction1 = await originalContract.methods.approve(originalAddress, 1).send({ from: walletSession.provider.accounts[0] })
@@ -538,12 +557,14 @@ function AddListingModalContent({ store, walletSession, modalController, mmWalle
                                                 const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
                                                 const account = accounts[0];
 
+                                                /*
                                                 const transaction = await marketplace.methods.mint(
                                                     account
                                                 ).send({
                                                     from: account
                                                 })
                                                 console.log(transaction)
+                                                */
                                             }}
                                         >
                                             Mint HRC721
