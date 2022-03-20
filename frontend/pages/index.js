@@ -183,26 +183,26 @@ function NFTParallax({ offsetY }) {
         className="flex flex-col space-y-6"
         style={{ willChange: 'transform', transform: `translateY(${offsetY * -0.75}px)` }}
       >
-        <NFTCard number={1234} blockSeed={'qetuoadgjlxvn'} offsetY={offsetY} />
-        <NFTCard number={1234} blockSeed={'iuqwerhf'} offsetY={offsetY} />
-        <NFTCard number={1234} blockSeed={'oiqwuernf'} offsetY={offsetY} />
-        <NFTCard number={1234} blockSeed={'ljiq2h34'} offsetY={offsetY} />
+        <PseudoNFTCard number={1234} blockSeed={'qetuoadgjlxvn'} offsetY={offsetY} />
+        <PseudoNFTCard number={1234} blockSeed={'iuqwerhf'} offsetY={offsetY} />
+        <PseudoNFTCard number={1234} blockSeed={'oiqwuernf'} offsetY={offsetY} />
+        <PseudoNFTCard number={1234} blockSeed={'ljiq2h34'} offsetY={offsetY} />
       </div>
       <div
         className="flex flex-col space-y-6"
         style={{ willChange: 'transform', transform: `translateY(${offsetY * -1}px)` }}
       >
-        <NFTCard number={1234} blockSeed={'askldfhlkja'} offsetY={offsetY} />
-        <NFTCard number={1234} blockSeed={'klwefjkasdf'} offsetY={offsetY} />
-        <NFTCard number={1234} blockSeed={'aiousdfh423'} offsetY={offsetY} />
-        <NFTCard number={1234} blockSeed={'23k4jhsdfa'} offsetY={offsetY} />
-        <NFTCard number={1234} blockSeed={'as9o8d7fk2j3'} offsetY={offsetY} />
+        <PseudoNFTCard number={1234} blockSeed={'askldfhlkja'} offsetY={offsetY} />
+        <PseudoNFTCard number={1234} blockSeed={'klwefjkasdf'} offsetY={offsetY} />
+        <PseudoNFTCard number={1234} blockSeed={'aiousdfh423'} offsetY={offsetY} />
+        <PseudoNFTCard number={1234} blockSeed={'23k4jhsdfa'} offsetY={offsetY} />
+        <PseudoNFTCard number={1234} blockSeed={'as9o8d7fk2j3'} offsetY={offsetY} />
       </div>
     </div>
   )
 }
 
-function NFTCard({ number, blockSeed, offsetY }) {
+function PseudoNFTCard({ number, blockSeed, offsetY }) {
   return (
     <div className="flex flex-col p-4 space-y-4 bg-white rounded-2xl glow-low flex-shrink-0 min-w-max">
       {

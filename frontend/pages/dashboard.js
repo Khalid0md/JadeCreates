@@ -19,6 +19,7 @@ import storeMarketplaceJson from '../../backend/artifacts/contracts/StoreMarketp
 //import nfTestJson from '../../backend/artifacts/contracts/NFTest.sol/NFTest.json';
 import createERC721Json from '../../backend/artifacts/contracts/CreateERC721.sol/CreateERC721.json';
 import { useModal } from "../utils/ModalContext";
+import NFTCard from "../components/NFTCard";
 
 // get tatum function
 //import { Currency, getNFTsByAddress } from '@tatumio/tatum'
@@ -369,6 +370,7 @@ function ListingsList({ store, walletSession }) {
     const mmWalletSession = useWallet();
 
     // get listings
+    const [isLoaded, setIsLoaded] = useState(false);
     const [listingIds, setListingIds] = useState();
     useEffect(async () => {
         if (walletSession.provider && walletSession.provider.accounts[0]) {
@@ -379,30 +381,25 @@ function ListingsList({ store, walletSession }) {
             const marketplace = new web3.eth.Contract(marketplaceJson.abi, marketplaceAddress)
 
             // get listing ids
-            setListingIds(await marketplace.methods.getListingIdsBySubDomain(store.subdomain).call())
-            console.log(listingIds)
-            /*
-            if (listingIds.length > 0) {
-                console.log(await marketplace.methods.getListing(3).call())
-            }
-            */
+            setListingIds(await marketplace.methods.getListingIdsBySubdomain(store.subdomain).call())
+            setIsLoaded(true)
         }
     }, [])
 
     return (
         <div>
             {
-                true
+                isLoaded
                     ?
                     <div className="pb-12">
                         {
                             listingIds && listingIds.length > 0
                                 ?
-                                <div className="pb-12 grid gap-8 store-grid">
+                                <div className="pb-12 grid gap-8 nft-grid">
                                     {
                                         listingIds.map(id => {
                                             return (
-                                                <ListingDisplay id={id} />
+                                                <NFTCard listingId={id} mmWalletSession={mmWalletSession} />
                                             )
                                         })
                                     }
@@ -540,18 +537,24 @@ function AddListingModalContent({ store, walletSession, modalController, mmWalle
             const originalContract = new web3.eth.Contract(erc721Abi, contractAddress)
 
             // check that user owns token
-            if (await originalContract.methods.ownerOf(parseInt(tokenId, 10)).call() != walletSession.provider.accounts[0]) {
-                // throw some kind of error (temp console log for now)
-                console.log('You dont own this token (check the token id)')
+            try {
+                if (await originalContract.methods.ownerOf(parseInt(tokenId, 10)).call() != walletSession.provider.accounts[0]) {
+                    // throw some kind of error (temp console log for now)
+                    console.log('You dont own this token (check the token id)')
+                    return;
+                }
+            } catch {
+                console.log('Error: token likely doesnt exist')
                 return;
             }
 
             // approve all tokens for this contract (check not already approved first)
+
             if (await originalContract.methods.isApprovedForAll(walletSession.provider.accounts[0], contractAddress) != true) {
                 await originalContract.methods.setApprovalForAll(marketplaceAddress, true).send({ from: walletSession.provider.accounts[0] })
             }
 
-            // get store contract
+            // get marketplace contract
             const marketplace = new web3.eth.Contract(marketplaceJson.abi, marketplaceAddress)
 
             // get listing fee
