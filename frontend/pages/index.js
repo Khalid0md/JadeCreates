@@ -4,7 +4,7 @@ import { WalletContext } from "../utils/WalletSessionProvider"
 import { useContext, useEffect, useReducer, useState } from "react"
 import { useRouter } from "next/router";
 import makeBlockie from 'ethereum-blockies-base64';
-import Storefront from "./storefront";
+import Storefront from "../components/Storefront";
 const Web3 = require("web3");
 import { ParallaxProvider, useParallax } from 'react-scroll-parallax';
 //

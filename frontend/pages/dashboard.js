@@ -20,6 +20,7 @@ import storeMarketplaceJson from '../../backend/artifacts/contracts/StoreMarketp
 import createERC721Json from '../../backend/artifacts/contracts/CreateERC721.sol/CreateERC721.json';
 import { useModal } from "../utils/ModalContext";
 import NFTCard from "../components/NFTCard";
+import ListingsList from "../components/ListingsList";
 
 // get tatum function
 //import { Currency, getNFTsByAddress } from '@tatumio/tatum'
@@ -357,84 +358,6 @@ function DashboardStoreContent({ store, walletSession }) {
                 Listings
             </p>
             <ListingsList store={store} walletSession={walletSession} />
-        </div>
-    )
-}
-
-function ListingsList({ store, walletSession }) {
-
-    // setup modal for adding listing
-    const modalController = useModal()
-
-    // metamask
-    const mmWalletSession = useWallet();
-
-    // get listings
-    const [isLoaded, setIsLoaded] = useState(false);
-    const [listingIds, setListingIds] = useState();
-    useEffect(async () => {
-        if (walletSession.provider && walletSession.provider.accounts[0]) {
-            // init web3 provider
-            const web3 = new Web3(walletSession.provider)
-
-            // get store contract
-            const marketplace = new web3.eth.Contract(marketplaceJson.abi, marketplaceAddress)
-
-            // get listing ids
-            setListingIds(await marketplace.methods.getListingIdsBySubdomain(store.subdomain).call())
-            setIsLoaded(true)
-        }
-    }, [])
-
-    return (
-        <div>
-            {
-                isLoaded
-                    ?
-                    <div className="pb-12">
-                        {
-                            listingIds && listingIds.length > 0
-                                ?
-                                <div className="pb-12 grid gap-8 nft-grid">
-                                    {
-                                        listingIds.map(id => {
-                                            return (
-                                                <NFTCard listingId={id} mmWalletSession={mmWalletSession} />
-                                            )
-                                        })
-                                    }
-                                </div>
-                                :
-                                <button
-                                    className="flex flex-col items-center justify-center w-full h-64 bg-white rounded-2xl space-y-4 px-10 hover:scale-105 hover:shadow-high transition-all"
-                                    onClick={async () => {
-
-                                        modalController.setContent(
-                                            <AddListingModalContent store={store} walletSession={walletSession} modalController={modalController} mmWalletSession={mmWalletSession} />
-                                        )
-                                        modalController.setIsShown(true);
-                                    }}
-                                >
-                                    <p className="nunito-font text-3xl font-extrabold text-center">
-                                        No listings yet.
-                                    </p>
-                                    <p className="nunito-font font-bold text-secondaryGray text-center">
-                                        Click me to add your first listing!
-                                    </p>
-                                </button>
-                        }
-                    </div>
-                    :
-                    <LoadingIndicator />
-            }
-        </div>
-    )
-}
-
-function ListingDisplay({ id }) {
-    return (
-        <div>
-            listing
         </div>
     )
 }

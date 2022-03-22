@@ -1,12 +1,14 @@
 import { useRouter } from "next/router"
-import NavButton from "../components/NavButton";
+import NavButton from "./NavButton";
 import { FiSearch } from "react-icons/fi";
-import NFT from "../components/nft";
+import NFT from "./nft";
 import testNftData from "../testData/testNftData";
-import { StorefrontNavBar, TopSpacer } from "../components/NavBar";
+import { StorefrontNavBar, TopSpacer } from "./NavBar";
 import { useModal } from "../utils/ModalContext"
 import { useWallet } from "../utils/WalletSessionProvider";
 import { useState } from "react";
+import NFTCard from "./NFTCard";
+import ListingsList from "./ListingsList";
 
 // reference store and marketplace contracts
 import storeMarketplaceJson from '../../backend/artifacts/contracts/StoreMarketplace.sol/StoreMarketplace.json';
@@ -14,14 +16,18 @@ import marketplaceJson from '../../backend/artifacts/contracts/Marketplace.sol/M
 import { marketplaceAddress, storeMarketplaceAddress } from "../../backend/config";
 
 export default function Storefront({ storeData }) {
+
+    //const mmWalletSession = useWallet()
+
     return (
         <div className="flex flex-col w-full items-center bg-background h-full space-y-4">
             <TopSpacer />
             <StorefrontNavBar storeData={storeData} />
             <div className="flex flex-col h-full w-full max-w-[90rem] space-y-8 px-6 md:px-14">
                 <SearchBar />
-                <SortingItemList />
-                <NFTGrid nfts={testNftData} />
+                {/*<SortingItemList />*/}
+                {/*<NFTGrid nfts={testNftData} />*/}
+                <ListingsList store={storeData} walletSession={true} isStorefrontDisplay={true} />
             </div>
         </div>
     )
@@ -75,11 +81,12 @@ function NFTGrid({ nfts, expectedBatchSize = 1 }) {
                         nftData &&
                         nftData.number && nftData.imgSrc &&
                         <NFT number={nftData.number} imgSrc={nftData.imgSrc} isAuction={nftData.isAuction} />
+                        
                     )
                 })
             }
         </div>
-    )
+    )//{/*<NFTCard listingId={} mmWalletSession={} isStorefrontDisplay={} />*/}
 }//auto-rows-min auto-cols-min
 //overflow-y-scroll
 

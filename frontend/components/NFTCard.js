@@ -44,17 +44,13 @@ function NFTCard2({ listingId, mmWalletSession }) {
     )
 }
 
-export default function NFTCard({ listingId, mmWalletSession, isStorefrontDisplay }) {
+export default function NFTCard({ listingId, provider, isStorefrontDisplay }) {
 
     // load data from listing id (displays placeholder card in meantime)
     const [listingData, setListingData] = useState();
     useEffect(async () => {
 
-        // login metamask if not / get web3 provider
-        if (!mmWalletSession.walletAddress) {
-            await mmWalletSession.connectWallet();
-        }
-        const web3 = new Web3(window.ethereum)
+        const web3 = new Web3(provider)
 
         // get marketplace contract
         const marketplace = new web3.eth.Contract(marketplaceJson.abi, marketplaceAddress)
@@ -75,16 +71,21 @@ export default function NFTCard({ listingId, mmWalletSession, isStorefrontDispla
             {
                 listingData
                     ?
-                    <div className="aspect-[square] flex flex-col p-4 space-y-4 bg-white rounded-3xl shadow-high flex-shrink-0">
+                    <div 
+                        className={
+                            (isStorefrontDisplay && ' hover:scale-105 hover:shadow-wide transition-all duration-500 ')
+                            + "aspect-[square] flex flex-col p-4 space-y-4 bg-white rounded-3xl shadow-high flex-shrink-0"
+                        }
+                    >
                         <img src={false && listingData.whatDoIPutHere} className="flex aspect-square flex-shrink-0 rounded-xl bg-accentGray" />
                         <div className="flex space-x-4" >
-                            <p className="bg-background text-secondaryGray text-2xl numbers-font italic font-black rounded-xl px-4 py-2 max-w-min whitespace-nowrap">
+                            <p className="flex bg-background text-secondaryGray text-2xl numbers-font italic font-black rounded-xl px-4 py-2 max-w-min whitespace-nowrap">
                                 {'#' + (listingData.tokenId && zeroPad(listingData.tokenId, maxTokenIdLength - listingData.tokenId.toString().length))}
                             </p>
                             {
                                 isStorefrontDisplay
                                     ?
-                                    <div>
+                                    <div className='flex grow'>
                                         {
                                             false //TODO: add auction functionality and check if auction here
                                                 ?
@@ -125,7 +126,7 @@ function NFTCardLoading({ isStorefrontDisplay }) {
 
 function BuyButton() {
     return (
-        <button className="bg-mainBlack text-white text-xl nunito-font font-black rounded-xl px-4 py-2 w-full whitespace-nowrap" >
+        <button className="flex items-center justify-center grow bg-mainBlack text-white text-xl nunito-font font-black rounded-xl h-full whitespace-nowrap" >
             Buy Now
         </button>
     )
