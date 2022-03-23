@@ -400,8 +400,9 @@ function CreateStoreForm({ plan, price, walletSession, mmWalletSession }) {
                             <div style={{ backgroundColor: "#" + colourInHex }} className="flex grow rounded-2xl border-2 border-mainBlack/10 transition-colors duration-300" />
                             <TwitterPicker triangle={"hide"} onChange={(e) => setColourInHex(e.hex.substring(1)) } />
                         </div>
+                        <div className="flex grow" />
                         <div className="flex justify-end">
-                            <button type="submit" fill={true} className="flex h-16 px-8 text-lg nunito-font text-background whitespace-nowrap bg-mainBlack rounded-xl items-center justify-center font-extrabold max-w-min" >
+                            <button type="submit" fill={true} className="shadow-wide flex h-16 px-8 text-lg nunito-font text-background whitespace-nowrap bg-mainBlack rounded-xl items-center justify-center font-extrabold max-w-min" >
                                 Buy - {price} ONE
                             </button>
                         </div>

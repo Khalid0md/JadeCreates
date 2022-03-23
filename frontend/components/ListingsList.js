@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import LoadingIndicator from "./LoadingIndicator";
 import Web3 from "web3";
 import NFTCard from "./NFTCard";
+import AddListingModalContent from "./AddListingModalContent";
 
 // reference contract
 import { marketplaceAddress, storeMarketplaceAddress } from "../../backend/config";
@@ -55,12 +56,35 @@ export default function ListingsList({ store, walletSession, isStorefrontDisplay
                                 ?
                                 <div className="pb-12 grid gap-8 nft-grid">
                                     {
+                                        !isStorefrontDisplay &&
+                                        <button
+                                            className="w-full h-full bg-white rounded-3xl shadow-low hover:shadow-high hover:scale-105 transition-all"
+                                            onClick={async () => {
+
+                                                modalController.setContent(
+                                                    <AddListingModalContent store={store} walletSession={walletSession} modalController={modalController} mmWalletSession={mmWalletSession} />
+                                                )
+                                                modalController.setIsShown(true);
+                                            }}
+                                        >
+                                            <div className="flex flex-col items-center space-y-2 text-secondaryGray py-4">
+                                                <p className="text-5xl font-light">
+                                                    +
+                                                </p>
+                                                <p className="text-lg font-extrabold">
+                                                    Add Listing
+                                                </p>
+                                            </div>
+                                        </button>
+                                    }
+                                    {
                                         listingIds.map(id => {
                                             return (
                                                 <NFTCard listingId={id} mmWalletSession={mmWalletSession} provider={provider} isStorefrontDisplay={isStorefrontDisplay} />
                                             )
                                         })
                                     }
+                                    
                                 </div>
                                 :
                                 <div>
