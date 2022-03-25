@@ -75,6 +75,10 @@ export function StorefrontNavBar({ storeData }) {
 
     const router = useRouter();
 
+    useEffect(() => {
+        console.log(storeData.logoURI)
+    }, [])
+
     return (
         <NavBar>
             <img

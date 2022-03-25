@@ -1,5 +1,10 @@
 import { useState } from "react"
 import { HiOutlineX } from "react-icons/hi"
+import Web3 from "web3"
+
+// reference contract
+import { marketplaceAddress } from "../../backend/config";
+import marketplaceJson from '../../backend/artifacts/contracts/Marketplace.sol/Marketplace.json';
 
 export default function AddListingModalContent({ store, walletSession, modalController, mmWalletSession }) {
 

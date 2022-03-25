@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 // reference contracts
 import { marketplaceAddress } from "../../backend/config";
@@ -48,6 +49,7 @@ export default function NFTCard({ listingId, provider, isStorefrontDisplay }) {
 
     // load data from listing id (displays placeholder card in meantime)
     const [listingData, setListingData] = useState();
+    const [imageUri, setImageUri] = useState();
     useEffect(async () => {
 
         const web3 = new Web3(provider)
@@ -56,7 +58,50 @@ export default function NFTCard({ listingId, provider, isStorefrontDisplay }) {
         const marketplace = new web3.eth.Contract(marketplaceJson.abi, marketplaceAddress)
 
         // create listing
-        setListingData(await marketplace.methods.getListing(listingId).call());
+        const data = await marketplace.methods.getListing(listingId).call()
+        setListingData(data);
+
+        // get image uri
+        if (data && data.nftContract && data.tokenId) {
+            const erc721Abi = [
+                {
+                    "inputs": [
+                        {
+                            "internalType": "uint256",
+                            "name": "tokenId",
+                            "type": "uint256"
+                        }
+                    ],
+                    "name": "tokenURI",
+                    "outputs": [
+                        {
+                            "internalType": "string",
+                            "name": "",
+                            "type": "string"
+                        }
+                    ],
+                    "stateMutability": "view",
+                    "type": "function"
+                }
+            ]
+
+            const originalContract = new web3.eth.Contract(erc721Abi, data.nftContract)
+            const tokenURI = await originalContract.methods.tokenURI(data.tokenId).call()
+            //setImageUri("https://ipfs.infura.io/ipfs/" + tokenURI.substring(7))
+            //console.log(tokenURI.substring(7))
+
+            //https://ipfs.infura.io/ipfs/QmT9UFT4okuSNg4xsT3arxxSvv3CbJJghrFU9n1raRZCnu
+            if (tokenURI.length > 10) {
+                try {
+                    const meta = await fetch("https://ipfs.infura.io/ipfs/" + tokenURI.substring(7))
+                    const data = await meta.json()
+                    setImageUri(data && data.image && ("https://ipfs.infura.io/ipfs/" + data.image.substring(7)))
+                } catch {
+                    console.log("Error loading imageURI / imageURI doesn't exist")
+                }
+            }
+
+        }
     }, [])
 
     // function for padding tokenId with zeros
@@ -71,13 +116,25 @@ export default function NFTCard({ listingId, provider, isStorefrontDisplay }) {
             {
                 listingData
                     ?
-                    <div 
+                    <div
                         className={
                             (isStorefrontDisplay && ' hover:scale-105 hover:shadow-wide transition-all duration-500 ')
                             + "aspect-[square] flex flex-col p-4 space-y-4 bg-white rounded-3xl shadow-high flex-shrink-0"
                         }
                     >
-                        <img src={false && listingData.whatDoIPutHere} className="flex aspect-square flex-shrink-0 rounded-xl bg-accentGray" />
+                        <div
+                            className={
+                                //(!imageUri && ' animate-pulse ') +
+                                "flex aspect-square flex-shrink-0 rounded-xl bg-accentGray"
+                            }
+                        >
+                            <img
+                                src={imageUri && imageUri}
+                            />
+                            <div className='absolute left-0 top-0 p-4 w-full h-full pointer-events-none'>
+                                <div className='flex aspect-square flex-shrink-0 rounded-xl shadow-inner' />
+                            </div>
+                        </div>
                         <div className="flex space-x-4" >
                             <p className="flex bg-background text-secondaryGray text-2xl numbers-font italic font-black rounded-xl px-4 py-2 max-w-min whitespace-nowrap">
                                 {'#' + (listingData.tokenId && zeroPad(listingData.tokenId, maxTokenIdLength - listingData.tokenId.toString().length))}

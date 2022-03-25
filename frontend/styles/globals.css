@@ -134,4 +134,16 @@ html, body {
         -webkit-overflow-scrolling: touch;
     }
 
+    .test::after
+    {
+        margin: 4;
+        box-shadow: inset 0px 0px 10px 0 #000000;
+        content: '';
+        display: block;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+    }
 }

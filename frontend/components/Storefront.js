@@ -9,6 +9,7 @@ import { useWallet } from "../utils/WalletSessionProvider";
 import { useState } from "react";
 import NFTCard from "./NFTCard";
 import ListingsList from "./ListingsList";
+import Web3 from "web3";
 
 // reference store and marketplace contracts
 import storeMarketplaceJson from '../../backend/artifacts/contracts/StoreMarketplace.sol/StoreMarketplace.json';
