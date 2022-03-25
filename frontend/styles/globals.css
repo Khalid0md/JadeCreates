@@ -66,8 +66,14 @@ html, body {
         font-family: 'Hind', sans-serif;
     }
 
+    /*
     .shadow-high {
         @apply z-20 shadow-none drop-shadow-xl 
+    }
+    */
+
+    .shadow-high {
+        @apply z-20 shadow-xl 
     }
 
     /*
