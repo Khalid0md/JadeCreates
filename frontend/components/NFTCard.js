@@ -131,9 +131,11 @@ export default function NFTCard({ listingId, provider, isStorefrontDisplay }) {
                             <img
                                 src={imageUri && imageUri}
                             />
+                            {/*
                             <div className='absolute left-0 top-0 p-4 w-full h-full pointer-events-none'>
                                 <div className='flex aspect-square flex-shrink-0 rounded-xl shadow-inner' />
                             </div>
+                        */}
                         </div>
                         <div className="flex space-x-4" >
                             <p className="flex bg-background text-secondaryGray text-2xl numbers-font italic font-black rounded-xl px-4 py-2 max-w-min whitespace-nowrap">
