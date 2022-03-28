@@ -1,17 +1,20 @@
-# JadeCreates
-project
-# Basic Sample Hardhat Project
+# Martazo
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, a sample script that deploys that contract, and an example of a task implementation, which simply lists the available accounts.
+## Contract Addresses of Harmony NFTs
+Harmony Punks: 0xb938147a4f7A17e0C722eB82B82Fb4436AE64d58
 
-Try running some of the following tasks:
+Cosmic Wizards: 0x37f47c343bfaf27a52bc1bd468b49d8e5ef89d67
 
-```shell
-npx hardhat accounts
-npx hardhat compile
-npx hardhat clean
-npx hardhat test
-npx hardhat node
-node scripts/sample-script.js
-npx hardhat help
-```
+WenLambo: 0x728523c45fab916c4a4b3b8ba60e631555f89e9e
+
+Mars Colony: 0x0bC0cdFDd36fc411C83221A348230Da5D3DfA89e 
+
+Harmoonies: 0xcdffd2d1ce72aa4140eb3345941ce8d26e38c464
+
+Harmonauts: 0xc29ca7c72da0873693bf2d686544c17222ec2659
+
+Dingos: 0x577bf396818f14868641045e93b0248f5550d892
+
+The Frey: 0xd9d6b8c7f63cc2f5d5df5f3a77b2f596a66230d2
+
+CryptoPigs: 0xe5fd335819edb8da8395f8ec48beca747a0790ab
