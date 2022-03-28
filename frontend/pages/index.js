@@ -1,6 +1,5 @@
 
 import { MainNavBar, TopSpacer } from "../components/NavBar"
-import { WalletContext } from "../utils/WalletSessionProvider"
 import { useContext, useEffect, useReducer, useState } from "react"
 import { useRouter } from "next/router";
 import makeBlockie from 'ethereum-blockies-base64';
@@ -18,7 +17,6 @@ import { marketplaceAddress, storeMarketplaceAddress } from "../../backend/confi
 // reference store marketplace contract
 import storeMarketplaceJson from '../../backend/artifacts/contracts/StoreMarketplace.sol/StoreMarketplace.json';
 import LoadingIndicator from "../components/LoadingIndicator";
-import { useWalletConnect } from "../utils/WalletConnectSessionProvider";
 //const storeMarketplaceAddress = '0x02DfcEFB6069f27b89f041b6Be92dC3e2185c9bB';
 
 async function getStoreData() {
@@ -91,9 +89,7 @@ export default function CheckDomain() {
 function LandingPage() {
 
   const [offsetY, setOffsetY] = useState(0);
-  const [enableCall, setEnableCall] = useState(false);
   const handleScroll = () => setOffsetY(window.pageYOffset);
-  const walletConnectSession = useWalletConnect();
 
   // hook to track scrolling
   useEffect(() => {

@@ -10,6 +10,8 @@ import WalletConnect from "@walletconnect/client";
 import QRCodeModal from "@walletconnect/qrcode-modal";
 import { useWalletConnect } from "../utils/WalletConnectSessionProvider";
 const walletConnectLogo = require('../public/walletconnect-logo.png')
+import { IoWallet } from "react-icons/io5";
+import { HiOutlineGlobe, HiOutlineGlobeAlt, HiViewGrid, HiViewGridAdd, HiCreditCard, HiReceiptTax } from "react-icons/hi";
 
 function NavBar(props) {
     return (
@@ -23,43 +25,47 @@ function NavBar(props) {
 
 export function MainNavBar({ showGetStarted }) {
 
-    const walletConnectSession = useWalletConnect();
+    //const walletConnectSession = useWalletConnect();
+    const walletSession = useWallet();
     const router = useRouter();
     const modalController = useModal();
-    
+
     return (
         <NavBar>
             <Logo />
             <div className="flex grow" />
-            <NavButton 
-                text={walletConnectSession.isConnected ? 'Go to Dashboard' : 'Log in with WalletConnect'}
+            <NavButton
+                text={walletSession.isConnected ? 'Go to Dashboard' : 'Connect Wallet'}
                 bgColor={'white'} textColor={'mainBlack'}
-                iconRight={!walletConnectSession.isConnected && <img src="/walletconnect-logo.png" className="h-5 pl-4 -mr-2 -mt-1" />}
+                //iconRight={!walletConnectSession.isConnected && <img src="/walletconnect-logo.png" className="h-5 pl-4 -mr-2 -mt-1" />}
+                iconRight={!walletSession.isConnected && <IoWallet size={25} className="text-green2 ml-4 -mt-1 -mr-2" />}
                 onClick={async () => {
-                /*
-                modalController.setContent(
-                    <div className="w-64 h-24 flex items-center justify-center nunito-font font-black">
-                        Issue with Metamask.
-                    </div>
-                )
-                modalController.setIsShown(true);
-                */
+                    /*
+                    modalController.setContent(
+                        <div className="w-64 h-24 flex items-center justify-center nunito-font font-black">
+                            Issue with Metamask.
+                        </div>
+                    )
+                    modalController.setIsShown(true);
+                    */
 
-                /*
-                if (walletSession.walletAddress) {
-                    router.push('/dashboard')
-                } else {
-                    const sessionStatus = await walletSession.connectWallet();
-                }
-                */
+                    /*
+                    if (walletSession.walletAddress) {
+                        router.push('/dashboard')
+                    } else {
+                        const sessionStatus = await walletSession.connectWallet();
+                    }
+                    */
 
-                if (walletConnectSession.provider.connected) {
-                    router.push('/dashboard')
-                } else {
-                    //await walletConnectSession.connector.createSession()
-                    await walletConnectSession.provider.enable();
-                }
-            }} />
+                    if (walletSession.isConnected) {
+                        router.push('/dashboard')
+                    } else {
+                        //await walletConnectSession.connector.createSession()
+                        //await walletConnectSession.provider.enable();
+                        await walletSession.showConnectModal()
+                    }
+                }}
+            />
             {
                 showGetStarted
                     ?
@@ -74,10 +80,6 @@ export function MainNavBar({ showGetStarted }) {
 export function StorefrontNavBar({ storeData }) {
 
     const router = useRouter();
-
-    useEffect(() => {
-        console.log(storeData.logoURI)
-    }, [])
 
     return (
         <NavBar>

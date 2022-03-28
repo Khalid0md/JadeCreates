@@ -9,6 +9,7 @@
   },
   "main": "next.config.js",
   "dependencies": {
+    "@metamask/detect-provider": "^1.2.0",
     "@walletconnect/client": "^1.7.4",
     "@walletconnect/qrcode-modal": "^1.7.4",
     "@walletconnect/web3-provider": "^1.7.4",
@@ -338,6 +339,7 @@
     "react-icons": "^4.3.1",
     "react-is": "^16.13.1",
     "react-native-crypto-js": "^1.0.0",
+    "react-remove-scroll-bar": "^2.2.0",
     "react-scroll-parallax": "^3.0.5",
     "readable-stream": "^3.6.0",
     "readdirp": "^3.6.0",

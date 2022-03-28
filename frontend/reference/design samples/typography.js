@@ -1,5 +1,5 @@
-import Logo from "../components/logo"
-import NFT from "../components/nft"
+import Logo from "../../components/logo"
+import NFT from "../../components/nft"
 
 export default function Typography() {
   return (

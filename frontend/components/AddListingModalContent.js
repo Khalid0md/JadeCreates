@@ -6,7 +6,7 @@ import Web3 from "web3"
 import { marketplaceAddress } from "../../backend/config";
 import marketplaceJson from '../../backend/artifacts/contracts/Marketplace.sol/Marketplace.json';
 
-export default function AddListingModalContent({ store, walletSession, modalController, mmWalletSession }) {
+export default function AddListingModalContent({ store, walletSession, modalController }) {
 
     // states for form
     const [tokenId, setTokenId] = useState()
@@ -28,13 +28,9 @@ export default function AddListingModalContent({ store, walletSession, modalCont
         e.preventDefault();
 
         // check parameters and submit request
-        if (store && store.subdomain && walletSession.provider && walletSession.provider.accounts[0]) {
+        if (store && store.subdomain && walletSession.provider && walletSession.address) {
             // init web3 provider
-            //const web3 = new Web3(walletSession.provider)
-            if (!mmWalletSession.walletAddress) {
-                await mmWalletSession.connectWallet();
-            }
-            const web3 = new Web3(window.ethereum)
+            const web3 = new Web3(walletSession.provider)
 
             // get abi for required erc721 methods and get original contract
             const erc721Abi = [
@@ -105,7 +101,7 @@ export default function AddListingModalContent({ store, walletSession, modalCont
 
             // check that user owns token
             try {
-                if (await originalContract.methods.ownerOf(parseInt(tokenId, 10)).call() != walletSession.provider.accounts[0]) {
+                if (await originalContract.methods.ownerOf(parseInt(tokenId, 10)).call() != walletSession.address) {
                     // throw some kind of error (temp console log for now)
                     console.log('You dont own this token (check the token id)')
                     return;
@@ -117,8 +113,8 @@ export default function AddListingModalContent({ store, walletSession, modalCont
 
             // approve all tokens for this contract (check not already approved first)
 
-            if (await originalContract.methods.isApprovedForAll(walletSession.provider.accounts[0], contractAddress) != true) {
-                await originalContract.methods.setApprovalForAll(marketplaceAddress, true).send({ from: walletSession.provider.accounts[0] })
+            if (await originalContract.methods.isApprovedForAll(walletSession.address, contractAddress) != true) {
+                await originalContract.methods.setApprovalForAll(marketplaceAddress, true).send({ from: walletSession.address })
             }
 
             // get marketplace contract
@@ -134,7 +130,7 @@ export default function AddListingModalContent({ store, walletSession, modalCont
                 parseInt(listingPrice, 10),
                 contractAddress
             ).send({
-                from: walletSession.provider.accounts[0],
+                from: walletSession.address,
                 value: listingFee
             })
         }
@@ -144,8 +140,7 @@ export default function AddListingModalContent({ store, walletSession, modalCont
         // <div className="flex items-center justify-center nunito-font font-black p-4 w-full">
         <div className="flex grow max-w-[60rem] flex-col items-center justify-center nunito-font font-black m-4 p-8 bg-background shadow-high rounded-2xl">
             {
-                //metamask: walletSession && walletSession.walletAddress
-                walletSession && walletSession.provider && walletSession.provider.accounts[0]
+                walletSession && walletSession.provider && walletSession.address
                     ?
                     <div className="flex flex-col w-full space-y-4">
                         <div className="flex w-full text-4xl nunito-font font-black text-green1" >
@@ -188,37 +183,7 @@ export default function AddListingModalContent({ store, walletSession, modalCont
                                         className="form-text-field bg-white"
                                     />
                                     <div className="flex justify-end space-x-4">
-                                        <button
-                                            className="flex h-16 px-8 text-lg nunito-font text-background whitespace-nowrap bg-mainBlack rounded-xl items-center justify-center font-extrabold max-w-min"
-                                            onClick={async (e) => {
-                                                //prevent form submit
-                                                e.preventDefault()
-
-                                                // mint hrc721 token to metamask address
-                                                const address = '0x91416CF432B49b30b486BA0a5f501a69a714c3A0';
-                                                if (!mmWalletSession.walletAddress) {
-                                                    await mmWalletSession.connectWallet();
-                                                }
-                                                const web3 = new Web3(window.ethereum)
-                                                const marketplace = new web3.eth.Contract(createERC721Json.abi, address)
-
-                                                // get metamask accounts
-                                                const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-                                                const account = accounts[0];
-
-                                                /*
-                                                const transaction = await marketplace.methods.mint(
-                                                    account
-                                                ).send({
-                                                    from: account
-                                                })
-                                                console.log(transaction)
-                                                */
-                                            }}
-                                        >
-                                            Mint HRC721
-                                        </button>
-                                        <button type="submit" fill={true} className="flex h-16 px-8 text-lg nunito-font text-background whitespace-nowrap bg-mainBlack rounded-xl items-center justify-center font-extrabold max-w-min" >
+                                        <button type="submit" className="flex h-16 px-8 text-lg nunito-font text-background whitespace-nowrap bg-mainBlack rounded-xl items-center justify-center font-extrabold max-w-min" >
                                             Submit
                                         </button>
                                     </div>

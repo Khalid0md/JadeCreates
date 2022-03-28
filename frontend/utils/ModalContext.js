@@ -15,10 +15,6 @@ export default function ModalProvider(props) {
     const [isShown, setIsShown] = useState(false)
     const [content, setContent] = useState()
 
-    function clearContent() {
-
-    }
-
     useEffect(async () => {
         if (isShown) {
             (await import('./ScrollLock')).enable()
@@ -28,12 +24,11 @@ export default function ModalProvider(props) {
     }, [isShown])
 
     return (
-        <ModalContext.Provider value={{ isShown, setIsShown, setContent, clearContent }}>
-
+        <ModalContext.Provider value={{ isShown, setIsShown, setContent }}>
             <Modal isShown={isShown} setIsShown={setIsShown} >
                 {content}
             </Modal>
-                
+
             {props.children}
         </ModalContext.Provider>
     )

@@ -43,13 +43,9 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <ModalProvider>
-
-      <WalletConnectSessionProvider>
-        <WalletSessionProvider>
-          <Component {...pageProps} />
-        </WalletSessionProvider>
-      </WalletConnectSessionProvider>
-
+      <WalletSessionProvider>
+        <Component {...pageProps} />
+      </WalletSessionProvider>
     </ModalProvider >
   )
 }

@@ -50,6 +50,7 @@ export default function NFTCard({ listingId, provider, isStorefrontDisplay }) {
     // load data from listing id (displays placeholder card in meantime)
     const [listingData, setListingData] = useState();
     const [imageUri, setImageUri] = useState();
+    const [name, setName] = useState();
     useEffect(async () => {
 
         const web3 = new Web3(provider)
@@ -87,6 +88,7 @@ export default function NFTCard({ listingId, provider, isStorefrontDisplay }) {
 
             const originalContract = new web3.eth.Contract(erc721Abi, data.nftContract)
             const tokenURI = await originalContract.methods.tokenURI(data.tokenId).call()
+            console.log("https://ipfs.infura.io/ipfs/" + tokenURI.substring(7))
             //setImageUri("https://ipfs.infura.io/ipfs/" + tokenURI.substring(7))
             //console.log(tokenURI.substring(7))
 
@@ -95,6 +97,7 @@ export default function NFTCard({ listingId, provider, isStorefrontDisplay }) {
                 try {
                     const meta = await fetch("https://ipfs.infura.io/ipfs/" + tokenURI.substring(7))
                     const data = await meta.json()
+                    setName(data && data.name)
                     setImageUri(data && data.image && ("https://ipfs.infura.io/ipfs/" + data.image.substring(7)))
                 } catch {
                     console.log("Error loading imageURI / imageURI doesn't exist")
@@ -126,9 +129,21 @@ export default function NFTCard({ listingId, provider, isStorefrontDisplay }) {
                             src={imageUri && imageUri}
                             className={
                                 (!imageUri && ' animate-pulse ') +
-                                "flex aspect-square flex-shrink-0 rounded-xl bg-accentGray"
+                                "flex aspect-square flex-shrink-0 rounded-xl bg-accentGray border-2"
                             }
                         />
+                        <div className='flex space-x-4 nunito-font font-extrabold text-mainBlack bg-background py-2 px-4 rounded-xl'>
+                            <p className=''>
+                                {name}
+                            </p>
+                            <div className='flex grow' />
+                            <div className='flex items-center space-x-2'>
+                                <p className=''>
+                                    {listingData.price}
+                                </p>
+                                <img src={'/harmony-one-logo.svg'} className='flex h-5 mb-[0.1rem]' />
+                            </div>
+                        </div>
                         <div className="flex space-x-4" >
                             <p className="flex bg-background text-secondaryGray text-2xl numbers-font italic font-black rounded-xl px-4 py-2 max-w-min whitespace-nowrap">
                                 {'#' + (listingData.tokenId && zeroPad(listingData.tokenId, maxTokenIdLength - listingData.tokenId.toString().length))}
@@ -146,7 +161,9 @@ export default function NFTCard({ listingId, provider, isStorefrontDisplay }) {
                                         }
                                     </div>
                                     :
-                                    <div />
+                                    <div className='flex grow'>
+                                        <CancelListingButton />
+                                    </div>
                             }
                         </div>
                     </div>
@@ -172,6 +189,14 @@ function NFTCardLoading({ isStorefrontDisplay }) {
                 }
             </div>
         </div>
+    )
+}
+
+function CancelListingButton() {
+    return (
+        <button className="flex items-center justify-center grow bg-mainBlack text-white text-xl nunito-font font-black rounded-xl h-full whitespace-nowrap" >
+            Remove
+        </button>
     )
 }
 

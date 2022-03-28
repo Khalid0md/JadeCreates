@@ -2,6 +2,9 @@ const $body = document.querySelector('body');
 let scrollPosition = 0;
 
 export function enable() {
+    const pad = window.innerWidth - document.documentElement.clientWidth;
+    $body.style.paddingRight = pad + 'px';
+    
     scrollPosition = window.pageYOffset;
     $body.style.overflow = 'hidden';
     $body.style.position = 'fixed';
@@ -10,6 +13,7 @@ export function enable() {
 }
 
 export function disable() {
+    $body.style.paddingRight = '0px';
     $body.style.removeProperty('overflow');
     $body.style.removeProperty('position');
     $body.style.removeProperty('top');

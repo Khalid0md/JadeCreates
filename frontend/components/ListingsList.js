@@ -16,9 +16,6 @@ export default function ListingsList({ store, walletSession, isStorefrontDisplay
     // setup modal for adding listing
     const modalController = useModal()
 
-    // metamask
-    const mmWalletSession = useWallet();
-
     // get listings
     const [isLoaded, setIsLoaded] = useState(false);
     const [listingIds, setListingIds] = useState();
@@ -27,7 +24,7 @@ export default function ListingsList({ store, walletSession, isStorefrontDisplay
 
         // if logged in, use account as provider
         // otherwise, use standard provider only if on storefront (storefront doesn't require that you be logged in)
-        const provider = (walletSession.provider != undefined && walletSession.provider.accounts[0]) ? walletSession.provider : (isStorefrontDisplay && 'https://api.s0.b.hmny.io')
+        const provider = (walletSession.provider != undefined ? walletSession.provider : (isStorefrontDisplay && 'https://api.s0.b.hmny.io'))
         setProvider(provider);
 
         // fetch listings data
@@ -62,7 +59,7 @@ export default function ListingsList({ store, walletSession, isStorefrontDisplay
                                             onClick={async () => {
 
                                                 modalController.setContent(
-                                                    <AddListingModalContent store={store} walletSession={walletSession} modalController={modalController} mmWalletSession={mmWalletSession} />
+                                                    <AddListingModalContent store={store} walletSession={walletSession} modalController={modalController} />
                                                 )
                                                 modalController.setIsShown(true);
                                             }}
@@ -80,7 +77,7 @@ export default function ListingsList({ store, walletSession, isStorefrontDisplay
                                     {
                                         listingIds.map(id => {
                                             return (
-                                                <NFTCard listingId={id} mmWalletSession={mmWalletSession} provider={provider} isStorefrontDisplay={isStorefrontDisplay} />
+                                                <NFTCard key={id} listingId={id} provider={provider} isStorefrontDisplay={isStorefrontDisplay} />
                                             )
                                         })
                                     }
@@ -105,7 +102,7 @@ export default function ListingsList({ store, walletSession, isStorefrontDisplay
                                                 onClick={async () => {
 
                                                     modalController.setContent(
-                                                        <AddListingModalContent store={store} walletSession={walletSession} modalController={modalController} mmWalletSession={mmWalletSession} />
+                                                        <AddListingModalContent store={store} walletSession={walletSession} modalController={modalController} />
                                                     )
                                                     modalController.setIsShown(true);
                                                 }}

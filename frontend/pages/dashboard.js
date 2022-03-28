@@ -51,8 +51,43 @@ export async function getServerSideProps(context) {
 
 export default function DashboardLoginHandler() {
 
-    const walletConnectSession = useWalletConnect();
+    const walletSession = useWallet();
+    
     const router = useRouter();
+
+    // Redirects if loaded and not connected
+    function CheckLogin() {
+        if (!walletSession.isLoaded) { return }
+
+        if (walletSession.isConnected) {
+            router.push('/dashboard')
+        } else {
+            router.push('/')
+        }
+    }
+
+    // Check login every time there is an update to the connection status
+    useEffect(() => {
+        CheckLogin()
+    }, [walletSession.isLoaded, walletSession.isConnected])
+
+    if (walletSession.isLoaded && walletSession.isConnected) {
+        /*
+        return (
+            <Dashboard walletConnectSession={walletConnectSession} />
+        )
+        */
+        return (
+            <Dashboard walletSession={walletSession} />
+        )
+    } else {
+        return (
+            <LoadingIndicator />
+        )
+    }
+
+    /*
+    const walletConnectSession = useWalletConnect();
 
     function CheckLogin() {
         if (!walletConnectSession.provider) { return }
@@ -82,11 +117,12 @@ export default function DashboardLoginHandler() {
             <LoadingIndicator />
         )
     }
+    */
 }
 
-function Dashboard({ walletConnectSession }) {
+function Dashboard({ walletSession }) {
 
-    const [selectedStore, setSelectedStore] = useState();  //{ storeName: 'My New Store' })
+    const [selectedStore, setSelectedStore] = useState();
 
     return (
         <div className="flex flex-col w-full items-center bg-background h-full space-y-4">
@@ -115,30 +151,33 @@ function Dashboard({ walletConnectSession }) {
                 {
                     selectedStore
                         ?
-                        <DashboardStoreContent store={selectedStore} walletSession={walletConnectSession} />
+                        <DashboardStoreContent store={selectedStore} walletSession={walletSession} />
                         :
-                        <DashboardMainContent walletConnectSession={walletConnectSession} setSelectedStore={setSelectedStore} />
+                        <DashboardMainContent walletSession={walletSession} setSelectedStore={setSelectedStore} />
                 }
             </div>
         </div>
     )
 }
 
-function DashboardMainContent({ walletConnectSession, setSelectedStore }) {
+function DashboardMainContent({ walletSession, setSelectedStore }) {
 
     const [storeDomains, setStoreDomains] = useState();
 
     useEffect(() => {
-        // init web3 provider
-        const web3 = new Web3(walletConnectSession.provider)
+        console.log(walletSession)
+        if (walletSession.provider && walletSession.address) {
+            // init web3 provider
+            const web3 = new Web3(walletSession.provider)
 
-        // get store contract
-        const storeMarketplace = new web3.eth.Contract(storeMarketplaceJson.abi, storeMarketplaceAddress)
+            // get store contract
+            const storeMarketplace = new web3.eth.Contract(storeMarketplaceJson.abi, storeMarketplaceAddress)
 
-        storeMarketplace.methods.getSubdomainsFromWalletAddress(walletConnectSession.provider.accounts[0]).call()
-            .then((domains) => {
-                setStoreDomains(domains)
-            })
+            storeMarketplace.methods.getSubdomainsFromWalletAddress(walletSession.address).call()
+                .then((domains) => {
+                    setStoreDomains(domains)
+                })
+        }
     }, [])
 
     return (
@@ -146,26 +185,26 @@ function DashboardMainContent({ walletConnectSession, setSelectedStore }) {
             <p className="nunito-font text-2xl font-black text-mainBlack/50">
                 My Wallet
             </p>
-            <WalletOptions walletConnectSession={walletConnectSession} />
+            <WalletOptions walletSession={walletSession} />
             <p className="nunito-font text-2xl font-black text-mainBlack/50">
                 My Stores
             </p>
-            <StoresList storeDomains={storeDomains} setSelectedStore={setSelectedStore} walletConnectSession={walletConnectSession} />
+            <StoresList storeDomains={storeDomains} setSelectedStore={setSelectedStore} walletSession={walletSession} />
         </div>
     )
 }
 
-function WalletOptions({ walletConnectSession }) {
+function WalletOptions({ walletSession }) {
 
     const [userBalance, setUserBalance] = useState('---');
 
     useEffect(() => {
-        if (walletConnectSession.provider && walletConnectSession.provider.accounts[0]) {
+        if (walletSession.provider && walletSession.address) {
             // init web3 provider
-            const web3 = new Web3(walletConnectSession.provider)
+            const web3 = new Web3(walletSession.provider)
 
             // get balance
-            web3.eth.getBalance(walletConnectSession.provider.accounts[0])
+            web3.eth.getBalance(walletSession.address)
                 .then((balance) => {
                     const formattedBalance = parseFloat(web3.utils.fromWei(balance, "ether")).toFixed(2);
                     setUserBalance(formattedBalance);
@@ -179,7 +218,7 @@ function WalletOptions({ walletConnectSession }) {
                 Address
             </p>
             <p className="numbers-font text-xl font-black text-white pb-4 text-ellipsis overflow-clip">
-                {walletConnectSession.provider.accounts[0]}
+                {walletSession.address}
             </p>
             <p className="nunito-font font-extrabold text-white/80">
                 Balance
@@ -200,7 +239,7 @@ function WalletOptions({ walletConnectSession }) {
     )//bg-gradient-to-bl from-green1/0 to-green2/0
 }
 
-function StoresList({ storeDomains, setSelectedStore, walletConnectSession }) {
+function StoresList({ storeDomains, setSelectedStore, walletSession }) {
     return (
         <div>
             {
@@ -213,13 +252,8 @@ function StoresList({ storeDomains, setSelectedStore, walletConnectSession }) {
                                 <div className="pb-12 grid gap-8 store-grid">
                                     {
                                         storeDomains.map(subdomain => {
-                                            /*
                                             return (
-                                                <SmallStoreDisplay store={store} logoUri={store.logoURI} subdomain={store.subdomain} name={store.name} owner={store.owner} colourInHex={store.colourInHex} setSelectedStore={setSelectedStore} />
-                                            )
-                                            */
-                                            return (
-                                                <SmallStoreDisplay subdomain={subdomain} setSelectedStore={setSelectedStore} walletConnectSession={walletConnectSession} />
+                                                <SmallStoreDisplay key={subdomain} subdomain={subdomain} setSelectedStore={setSelectedStore} walletSession={walletSession} />
                                             )
                                         })
                                     }
@@ -240,26 +274,27 @@ function StoresList({ storeDomains, setSelectedStore, walletConnectSession }) {
             }
         </div>
     )
-}//<div className="pb-12 grid gap-8 nft-grid scrollbar">
-//<div className="flex space-x-8 overflow-x-scroll p-8">
+}
 
-function SmallStoreDisplay({ subdomain, setSelectedStore, walletConnectSession }) {
+function SmallStoreDisplay({ subdomain, setSelectedStore, walletSession }) {
 
     // State for store
     const [store, setStore] = useState()
 
     // Retrieve store metadata
     useEffect(() => {
-        // init web3 provider
-        const web3 = new Web3(walletConnectSession.provider)
+        if (walletSession.provider) {
+            // init web3 provider
+            const web3 = new Web3(walletSession.provider)
 
-        // get store contract
-        const storeMarketplace = new web3.eth.Contract(storeMarketplaceJson.abi, storeMarketplaceAddress)
+            // get store contract
+            const storeMarketplace = new web3.eth.Contract(storeMarketplaceJson.abi, storeMarketplaceAddress)
 
-        storeMarketplace.methods.getStoreWithSubdomain(subdomain).call()
-            .then((store) => {
-                setStore(store)
-            })
+            storeMarketplace.methods.getStoreWithSubdomain(subdomain).call()
+                .then((store) => {
+                    setStore(store)
+                })
+        }
     }, [])
 
     return (

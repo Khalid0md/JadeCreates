@@ -1,6 +1,5 @@
 
 import { MainNavBar, TopSpacer } from "../components/NavBar"
-import { AiFillCheckCircle } from "react-icons/ai";
 import { GrDomain } from "react-icons/gr";
 import { HiOutlineGlobe, HiOutlineGlobeAlt, HiViewGrid, HiViewGridAdd, HiCreditCard, HiReceiptTax } from "react-icons/hi";
 import { FiDollarSign } from "react-icons/fi";
@@ -10,7 +9,6 @@ import { useWallet } from "../utils/WalletSessionProvider";
 import { useEffect, useState } from "react";
 const Web3 = require("web3");
 import { TwitterPicker } from 'react-color';
-import { useWalletConnect } from "../utils/WalletConnectSessionProvider";
 
 // for ipfs upload
 import { create as ipfsHttpClient } from 'ipfs-http-client'
@@ -34,11 +32,7 @@ export default function GetStarted() {
     // setup modal for configuring store
     const modalController = useModal()
 
-    //const walletSession = useWallet();
-    const walletConnectSession = useWalletConnect();
-
-    // metamask
-    const mmWalletSession = useWallet();
+    const walletSession = useWallet();
 
     return (
         <div className="flex flex-col w-full items-center bg-background h-full space-y-4">
@@ -47,9 +41,9 @@ export default function GetStarted() {
             <div className="flex flex-col items-center h-full w-full max-w-[90rem] space-y-8 px-6 md:px-14">
                 <PlansHeader />
                 <div className="flex items-center justify-center w-full space-x-8 py-14 bg-background">
-                    <BasicPlan modalController={modalController} walletSession={walletConnectSession} mmWalletSession={mmWalletSession} />
-                    <UnlimitedPlan modalController={modalController} walletSession={walletConnectSession} mmWalletSession={mmWalletSession} />
-                    <ProPlan modalController={modalController} walletSession={walletConnectSession} mmWalletSession={mmWalletSession} />
+                    <BasicPlan modalController={modalController} walletSession={walletSession} />
+                    <UnlimitedPlan modalController={modalController} walletSession={walletSession} />
+                    <ProPlan modalController={modalController} walletSession={walletSession} />
                 </div>
             </div>
         </div>
@@ -88,7 +82,7 @@ function PlansHeader() {
     )
 }
 
-function BasicPlan({ modalController, walletSession, mmWalletSession }) {
+function BasicPlan({ modalController, walletSession }) {
     return (
         <div className="flex flex-col w-[18rem] aspect-[3/5] bg-white rounded-2xl shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl px-6 py-6 group space-y-4">
             <p className="-translate-x-2 flex w-full text-4xl nunito-font font-black text-accentGray group-hover:text-green1 transition-all duration-300 justify-center" >
@@ -117,10 +111,7 @@ function BasicPlan({ modalController, walletSession, mmWalletSession }) {
             <button className="w-full h-14 bg-mainBlack rounded-2xl shadow-low"
                 onClick={() => {
                     modalController.setContent(
-                        <div />
-                    )
-                    modalController.setContent(
-                        <ConfigureStoreModalContent plan="Basic" price={'500'} walletSession={walletSession} modalController={modalController} mmWalletSession={mmWalletSession} />
+                        <ConfigureStoreModalContent plan="Basic" price={'500'} walletSession={walletSession} modalController={modalController} />
                     )
                     modalController.setIsShown(true);
                 }}>
@@ -132,7 +123,7 @@ function BasicPlan({ modalController, walletSession, mmWalletSession }) {
     )
 }
 
-function UnlimitedPlan({ modalController, walletSession, mmWalletSession }) {
+function UnlimitedPlan({ modalController, walletSession }) {
     return (
         <div className="flex flex-col w-[20rem] aspect-[3/5] bg-white rounded-2xl shadow-2xl transition-all duration-300 hover:scale-105 px-6 py-6 group space-y-4">
             <p className="-translate-x-2 flex w-full text-4xl nunito-font font-black text-accentGray group-hover:text-green1 transition-all duration-300 justify-center" >
@@ -161,7 +152,7 @@ function UnlimitedPlan({ modalController, walletSession, mmWalletSession }) {
             <button className="w-full h-14 bg-mainBlack rounded-2xl shadow-low"
                 onClick={() => {
                     modalController.setContent(
-                        <ConfigureStoreModalContent plan="Unlimited" price={'2000'} walletSession={walletSession} modalController={modalController} mmWalletSession={mmWalletSession} />
+                        <ConfigureStoreModalContent plan="Unlimited" price={'2000'} walletSession={walletSession} modalController={modalController} />
                     )
                     modalController.setIsShown(true);
                 }}>
@@ -173,7 +164,7 @@ function UnlimitedPlan({ modalController, walletSession, mmWalletSession }) {
     )
 }
 
-function ProPlan({ modalController, walletSession, mmWalletSession }) {
+function ProPlan({ modalController, walletSession }) {
     return (
         <div className="flex flex-col w-[18rem] aspect-[3/5] bg-white rounded-2xl shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl px-6 py-6 group space-y-4">
             <p className="-translate-x-2 flex w-full text-4xl nunito-font font-black text-accentGray group-hover:text-green1 transition-all duration-300 justify-center" >
@@ -202,7 +193,7 @@ function ProPlan({ modalController, walletSession, mmWalletSession }) {
             <button className="w-full h-14 bg-mainBlack rounded-2xl shadow-low"
                 onClick={() => {
                     modalController.setContent(
-                        <ConfigureStoreModalContent plan="Pro" price={'1000'} walletSession={walletSession} modalController={modalController} mmWalletSession={mmWalletSession} />
+                        <ConfigureStoreModalContent plan="Pro" price={'1000'} walletSession={walletSession} modalController={modalController} />
                     )
                     modalController.setIsShown(true);
                 }}>
@@ -227,29 +218,9 @@ function ListItem({ icon, text, space }) {
     )
 }
 
-/*
-<div className="flex grow max-w-[90rem] items-center justify-center nunito-font font-black m-4 p-8 bg-white shadow-high rounded-2xl">
-                <div className="flex flex-col grow space-y-4">
-                    <div className="flex w-full text-4xl nunito-font font-black text-green1" >
-                        <p>
-                            {plan}
-                        </p>
-                        <div className="flex grow" />
-                        <button className="aspect-square h-full text-mainBlack"
-                            onClick={() => {
-                                modalController.setIsShown(false);
-                            }}>
-                            <HiOutlineX />
-                        </button>
-                    </div>
-                    <CreateStoreForm plan={plan.toLowerCase()} price={price} walletSession={walletSession} />
-                </div>
-            </div>
-            */
+function ConfigureStoreModalContent({ plan, price, walletSession, modalController }) {
 
-function ConfigureStoreModalContent({ plan, price, walletSession, modalController, mmWalletSession }) {
-
-    if (walletSession && walletSession.provider && walletSession.provider.accounts[0]) {
+    if (walletSession && walletSession.provider && walletSession.address) {
         return (
             <div className="flex grow max-w-[80rem] flex-col items-center justify-center nunito-font font-black m-4 p-8 bg-background shadow-high rounded-2xl">
                 <div className="flex w-full text-4xl nunito-font font-black text-green1" >
@@ -265,7 +236,7 @@ function ConfigureStoreModalContent({ plan, price, walletSession, modalControlle
                     </button>
                 </div>
                 <div className="flex w-full flex-col grow space-y-4 px-32 py-16">
-                    <CreateStoreForm plan={plan.toLowerCase()} price={price} walletSession={walletSession} mmWalletSession={mmWalletSession} />
+                    <CreateStoreForm plan={plan.toLowerCase()} price={price} walletSession={walletSession} />
                 </div>
             </div>
         )
@@ -273,19 +244,18 @@ function ConfigureStoreModalContent({ plan, price, walletSession, modalControlle
 
     return (
         <div className="flex items-center justify-center nunito-font font-black m-4 p-8 bg-white shadow-high rounded-2xl">
-            Please log in with MetaMask.
+            Please connect a wallet.
         </div>
     )
-}//<div className="w-64 h-24 flex items-center justify-center nunito-font font-black">
+}
 
-function CreateStoreForm({ plan, price, walletSession, mmWalletSession }) {
+function CreateStoreForm({ plan, price, walletSession }) {
 
     // form states
     const [name, setName] = useState()
     const [subdomain, setSubdomain] = useState()
     const [logoUri, setLogoUri] = useState()
     const [colourInHex, setColourInHex] = useState('FFFFFF')
-    const walletConnectSession = useWalletConnect();
 
     const onSubmit = async (e) => {
         // prevents form from submitting early
@@ -296,27 +266,12 @@ function CreateStoreForm({ plan, price, walletSession, mmWalletSession }) {
             // we should have all info
             // TODO: *** perform any checks on the data (if necessary)
 
-            /* METAMASK: (reintegrate later)
-            if (window.ethereum && uri && walletSession.walletAddress) {
-                const web3 = new Web3(window.ethereum);
-                const payableAmount = web3.utils.toWei(price, "ether")
-                const storeMarketplace = new web3.eth.Contract(storeMarketplaceJson.abi, storeMarketplaceAddress)
-                const transaction = await storeMarketplace.methods.createStore(subdomain, colourInHex, plan, uri).send({ from: walletSession.walletAddress, value: payableAmount })
-                console.log(transaction)
-            }
-            */
-
             // walletconnect:
-            if (uri && walletSession.provider && walletSession.provider.accounts[0]) {
-                //const web3 = new Web3(walletSession.provider);
-                if (!mmWalletSession.walletAddress) {
-                    await mmWalletSession.connectWallet();
-                }
-                const web3 = new Web3(window.ethereum);
+            if (uri && walletSession.provider && walletSession.address) {
+                const web3 = new Web3(walletSession.provider);
                 const payableAmount = web3.utils.toWei(price, "ether")
                 const storeMarketplace = new web3.eth.Contract(storeMarketplaceJson.abi, storeMarketplaceAddress)
-                const transaction = await storeMarketplace.methods.createStore(subdomain, colourInHex, plan, uri).send({ from: walletSession.provider.accounts[0], value: payableAmount })
-                console.log(transaction)
+                const transaction = await storeMarketplace.methods.createStore(subdomain, colourInHex, plan, uri).send({ from: walletSession.address, value: payableAmount })
             }
         })
     }
@@ -356,7 +311,7 @@ function CreateStoreForm({ plan, price, walletSession, mmWalletSession }) {
                                 ?
                                 <img src={imagePreview} className="max-h-14 object-contain p-2 border-2 rounded-xl" />
                                 :
-                                <label class="flex h-full grow items-center justify-center text-secondaryGray hover:bg-mainBlack/5 cursor-pointer">
+                                <label className="flex h-full grow items-center justify-center text-secondaryGray hover:bg-mainBlack/5 cursor-pointer">
                                     <input type="file" onChange={(e) => createPreview(e)} className="hidden" />
                                     <div className="flex flex-col items-center">
                                         <p className="text-5xl font-light">
@@ -402,7 +357,7 @@ function CreateStoreForm({ plan, price, walletSession, mmWalletSession }) {
                         </div>
                         <div className="flex grow" />
                         <div className="flex justify-end">
-                            <button type="submit" fill={true} className="shadow-wide flex h-16 px-8 text-lg nunito-font text-background whitespace-nowrap bg-mainBlack rounded-xl items-center justify-center font-extrabold max-w-min" >
+                            <button type="submit" className="shadow-wide flex h-16 px-8 text-lg nunito-font text-background whitespace-nowrap bg-mainBlack rounded-xl items-center justify-center font-extrabold max-w-min" >
                                 Buy - {price} ONE
                             </button>
                         </div>
