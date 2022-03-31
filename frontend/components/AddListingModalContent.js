@@ -5,6 +5,7 @@ import Web3 from "web3"
 // reference contract
 import { marketplaceAddress } from "../../backend/config";
 import marketplaceJson from '../../backend/artifacts/contracts/Marketplace.sol/Marketplace.json';
+import TransactionPendingModalContent from "./TransactionPendingModalContent";
 
 export default function AddListingModalContent({ store, walletSession, modalController }) {
 
@@ -101,38 +102,54 @@ export default function AddListingModalContent({ store, walletSession, modalCont
 
             // check that user owns token
             try {
-                if (await originalContract.methods.ownerOf(parseInt(tokenId, 10)).call() != walletSession.address) {
+                if ((await originalContract.methods.ownerOf(parseInt(tokenId, 10)).call()).toLowerCase() != walletSession.address.toLowerCase()) {
                     // throw some kind of error (temp console log for now)
                     console.log('You dont own this token (check the token id)')
                     return;
                 }
             } catch {
+                /** TODO: display error in UI */
                 console.log('Error: token likely doesnt exist')
                 return;
             }
 
-            // approve all tokens for this contract (check not already approved first)
+            // show loading modal
+            modalController.setContent(
+                <TransactionPendingModalContent modalController={modalController} />
+            )
+            modalController.setIsShown(true)
 
-            if (await originalContract.methods.isApprovedForAll(walletSession.address, contractAddress) != true) {
-                await originalContract.methods.setApprovalForAll(marketplaceAddress, true).send({ from: walletSession.address })
+            try {
+                // approve all tokens for this contract (check not already approved first)
+                const tx1 = { status: true };
+                if (await originalContract.methods.isApprovedForAll(walletSession.address, contractAddress) != true) {
+                    tx1 = await originalContract.methods.setApprovalForAll(marketplaceAddress, true).send({ from: walletSession.address })
+                }
+
+                // get marketplace contract
+                const marketplace = new web3.eth.Contract(marketplaceJson.abi, marketplaceAddress)
+
+                // get listing fee
+                const listingFee = await marketplace.methods.getFee().call()
+
+                // create listing
+                const tx2 = await marketplace.methods.createListing(
+                    store.subdomain,
+                    parseInt(tokenId, 10),
+                    parseInt(listingPrice, 10),
+                    contractAddress
+                ).send({
+                    from: walletSession.address,
+                    value: listingFee
+                })
+                modalController.setContent(
+                    <TransactionPendingModalContent modalController={modalController} isSuccessful={tx1.status ? tx2.status : false} />
+                )
+            } catch {
+                modalController.setContent(
+                    <TransactionPendingModalContent modalController={modalController} isSuccessful={false} />
+                )
             }
-
-            // get marketplace contract
-            const marketplace = new web3.eth.Contract(marketplaceJson.abi, marketplaceAddress)
-
-            // get listing fee
-            const listingFee = await marketplace.methods.getFee().call()
-
-            // create listing
-            await marketplace.methods.createListing(
-                store.subdomain,
-                parseInt(tokenId, 10),
-                parseInt(listingPrice, 10),
-                contractAddress
-            ).send({
-                from: walletSession.address,
-                value: listingFee
-            })
         }
     }
 

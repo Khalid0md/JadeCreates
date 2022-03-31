@@ -1,51 +1,16 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useModal } from '../utils/ModalContext';
 
 // reference contracts
 import { marketplaceAddress } from "../../backend/config";
 import marketplaceJson from '../../backend/artifacts/contracts/Marketplace.sol/Marketplace.json';
 import Web3 from 'web3';
+import TransactionPendingModalContent from './TransactionPendingModalContent';
 
-function NFTCard2({ listingId, mmWalletSession }) {
+export default function NFTCard({ listingId, provider, isStorefrontDisplay, walletIsConnected, walletSession, storeData }) {
 
-    // load data from listing id (displays placeholder card in meantime)
-    const [listingData, setListingData] = useState();
-    useEffect(async () => {
-
-        // login metamask if not / get web3 provider
-        if (!mmWalletSession.walletAddress) {
-            await mmWalletSession.connectWallet();
-        }
-        const web3 = new Web3(window.ethereum)
-
-        // get marketplace contract
-        const marketplace = new web3.eth.Contract(marketplaceJson.abi, marketplaceAddress)
-
-        // create listing
-        setListingData(await marketplace.methods.getListing(listingId).call());
-    }, [])
-
-    return (
-        <div className="flex flex-col p-4 space-y-4 bg-white rounded-2xl glow-low flex-shrink-0 min-w-max">
-            {
-                <div className="flex rounded-xl w-64 h-64 opacity-80 flex-shrink-0 overflow-hidden -p-16">
-                    <div
-                        className="bg-gradient-to-b from-green1 to-green2 flex grow -m-16 animate-spin"
-                    />
-                </div>
-
-            }
-            <div className="flex space-x-4" >
-                <p className="bg-accentGray text-secondaryGray text-2xl numbers-font italic font-black rounded-xl px-4 py-2 w-24">
-                    {/*'#' + number*/}
-                </p>
-                <div className="w-full h-12 bg-accentGray rounded-xl" />
-            </div>
-        </div>
-    )
-}
-
-export default function NFTCard({ listingId, provider, isStorefrontDisplay }) {
+    const modalController = useModal();
 
     // load data from listing id (displays placeholder card in meantime)
     const [listingData, setListingData] = useState();
@@ -53,14 +18,17 @@ export default function NFTCard({ listingId, provider, isStorefrontDisplay }) {
     const [name, setName] = useState();
     useEffect(async () => {
 
-        const web3 = new Web3(provider)
+        const web3 = new Web3('https://api.s0.b.hmny.io')  //provider)
 
         // get marketplace contract
         const marketplace = new web3.eth.Contract(marketplaceJson.abi, marketplaceAddress)
 
-        // create listing
+        // get listings data
         const data = await marketplace.methods.getListing(listingId).call()
+
+        // if storefront display, hide sold nfts
         setListingData(data);
+        if (isStorefrontDisplay && data.sold) { return }
 
         // get image uri
         if (data && data.nftContract && data.tokenId) {
@@ -88,11 +56,7 @@ export default function NFTCard({ listingId, provider, isStorefrontDisplay }) {
 
             const originalContract = new web3.eth.Contract(erc721Abi, data.nftContract)
             const tokenURI = await originalContract.methods.tokenURI(data.tokenId).call()
-            console.log("https://ipfs.infura.io/ipfs/" + tokenURI.substring(7))
-            //setImageUri("https://ipfs.infura.io/ipfs/" + tokenURI.substring(7))
-            //console.log(tokenURI.substring(7))
 
-            //https://ipfs.infura.io/ipfs/QmT9UFT4okuSNg4xsT3arxxSvv3CbJJghrFU9n1raRZCnu
             if (tokenURI.length > 10) {
                 try {
                     const meta = await fetch("https://ipfs.infura.io/ipfs/" + tokenURI.substring(7))
@@ -103,7 +67,6 @@ export default function NFTCard({ listingId, provider, isStorefrontDisplay }) {
                     console.log("Error loading imageURI / imageURI doesn't exist")
                 }
             }
-
         }
     }, [])
 
@@ -113,6 +76,8 @@ export default function NFTCard({ listingId, provider, isStorefrontDisplay }) {
         if (places >= 1) { return num.padStart(places, '0') }
         return num;
     }
+
+    if (listingData && listingData.sold && isStorefrontDisplay) { return null }
 
     return (
         <div>
@@ -157,12 +122,18 @@ export default function NFTCard({ listingId, provider, isStorefrontDisplay }) {
                                                 ?
                                                 <AuctionButton />
                                                 :
-                                                <BuyButton />
+                                                <BuyButton listingData={listingData} modalController={modalController} walletSession={walletSession} storeData={storeData} />
                                         }
                                     </div>
                                     :
                                     <div className='flex grow'>
-                                        <CancelListingButton />
+                                        {
+                                            !listingData.sold
+                                                ?
+                                                <CancelListingButton />
+                                                :
+                                                <SoldTag />
+                                        }
                                     </div>
                             }
                         </div>
@@ -178,6 +149,7 @@ function NFTCardLoading({ isStorefrontDisplay }) {
     return (
         <div className="aspect-[square] flex flex-col p-4 space-y-4 bg-white rounded-3xl flex-shrink-0">
             <div className="flex aspect-square flex-shrink-0 rounded-xl bg-accentGray animate-pulse" />
+            <div className='flex bg-accentGray rounded-xl h-10 animate-pulse' />
             <div className="flex space-x-4" >
                 <div className="bg-accentGray animate-pulse rounded-xl px-4 py-2 h-12 w-1/2 whitespace-nowrap" />
                 {
@@ -200,9 +172,59 @@ function CancelListingButton() {
     )
 }
 
-function BuyButton() {
+function SoldTag() {
     return (
-        <button className="flex items-center justify-center grow bg-mainBlack text-white text-xl nunito-font font-black rounded-xl h-full whitespace-nowrap" >
+        <div className="flex items-center justify-center grow bg-gradient-to-tr from-green2 to-green1 text-white text-xl nunito-font font-black rounded-xl h-full whitespace-nowrap" >
+            Sold!
+        </div>
+    )
+}
+
+function BuyButton({ listingData, modalController, walletSession, storeData }) {
+    return (
+        <button
+            className="flex items-center justify-center grow bg-mainBlack text-white text-xl nunito-font font-black rounded-xl h-full whitespace-nowrap"
+            onClick={async () => {
+                if (!walletSession || !walletSession.isConnected || !walletSession.provider) {
+                    await walletSession.showConnectModal()
+                    return
+                }
+
+                if (!listingData || !listingData.nftContract || !listingData.itemId) {
+                    console.log('issue with item metadata')
+                    return
+                }
+
+                if (await walletSession.ensureCorrectNetwork() == false) {
+                    return
+                }
+
+                const web3 = new Web3(walletSession.provider)
+
+                // get marketplace contract
+                const marketplace = new web3.eth.Contract(marketplaceJson.abi, marketplaceAddress)
+
+                // format payment price
+                const amount = web3.utils.toWei(listingData.price, "ether")
+
+                // buy nft
+                modalController.setContent(
+                    <TransactionPendingModalContent modalController={modalController} customColourHex={storeData && storeData.colourHex} />
+                )
+                modalController.setIsShown(true)
+
+                try {
+                    const tx = await marketplace.methods.buyNow(listingData.nftContract, listingData.itemId).send({ from: walletSession.address, value: amount })
+                    modalController.setContent(
+                        <TransactionPendingModalContent modalController={modalController} customColourHex={storeData && storeData.colourHex} isSuccessful={tx.status} />
+                    )
+                } catch {
+                    modalController.setContent(
+                        <TransactionPendingModalContent modalController={modalController} customColourHex={storeData && storeData.colourHex} isSuccessful={false} />
+                    )
+                }
+            }}
+        >
             Buy Now
         </button>
     )

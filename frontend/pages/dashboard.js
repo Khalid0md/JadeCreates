@@ -165,7 +165,6 @@ function DashboardMainContent({ walletSession, setSelectedStore }) {
     const [storeDomains, setStoreDomains] = useState();
 
     useEffect(() => {
-        console.log(walletSession)
         if (walletSession.provider && walletSession.address) {
             // init web3 provider
             const web3 = new Web3(walletSession.provider)

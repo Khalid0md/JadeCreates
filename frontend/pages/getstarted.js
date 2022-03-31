@@ -17,6 +17,7 @@ const ipfs = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0')
 // reference store marketplace contract
 import storeMarketplaceJson from '../../backend/artifacts/contracts/StoreMarketplace.sol/StoreMarketplace.json';
 import { marketplaceAddress, storeMarketplaceAddress } from "../../backend/config";
+import TransactionPendingModalContent from "../components/TransactionPendingModalContent";
 
 // set page props
 export async function getStaticProps(context) {
@@ -236,7 +237,7 @@ function ConfigureStoreModalContent({ plan, price, walletSession, modalControlle
                     </button>
                 </div>
                 <div className="flex w-full flex-col grow space-y-4 px-32 py-16">
-                    <CreateStoreForm plan={plan.toLowerCase()} price={price} walletSession={walletSession} />
+                    <CreateStoreForm plan={plan.toLowerCase()} price={price} walletSession={walletSession} modalController={modalController} />
                 </div>
             </div>
         )
@@ -249,13 +250,21 @@ function ConfigureStoreModalContent({ plan, price, walletSession, modalControlle
     )
 }
 
-function CreateStoreForm({ plan, price, walletSession }) {
+// Possible form errors
+const formErrors = Object.freeze({
+    img: 'img',
+    name: 'n',
+    subdomain: 'sd'
+});
+
+function CreateStoreForm({ plan, price, walletSession, modalController }) {
 
     // form states
     const [name, setName] = useState()
     const [subdomain, setSubdomain] = useState()
     const [logoUri, setLogoUri] = useState()
     const [colourInHex, setColourInHex] = useState('FFFFFF')
+    const [inputError, setInputError] = useState()
 
     const onSubmit = async (e) => {
         // prevents form from submitting early
@@ -266,12 +275,26 @@ function CreateStoreForm({ plan, price, walletSession }) {
             // we should have all info
             // TODO: *** perform any checks on the data (if necessary)
 
-            // walletconnect:
             if (uri && walletSession.provider && walletSession.address) {
                 const web3 = new Web3(walletSession.provider);
                 const payableAmount = web3.utils.toWei(price, "ether")
                 const storeMarketplace = new web3.eth.Contract(storeMarketplaceJson.abi, storeMarketplaceAddress)
-                const transaction = await storeMarketplace.methods.createStore(subdomain, colourInHex, plan, uri).send({ from: walletSession.address, value: payableAmount })
+
+                modalController.setContent(
+                    <TransactionPendingModalContent modalController={modalController} />
+                )
+                modalController.setIsShown(true)
+
+                try {
+                    const tx = await storeMarketplace.methods.createStore(subdomain, colourInHex, plan, uri).send({ from: walletSession.address, value: payableAmount })
+                    modalController.setContent(
+                        <TransactionPendingModalContent modalController={modalController} isSuccessful={tx.status} />
+                    )
+                } catch {
+                    modalController.setContent(
+                        <TransactionPendingModalContent modalController={modalController} isSuccessful={false} />
+                    )
+                }
             }
         })
     }
@@ -353,7 +376,7 @@ function CreateStoreForm({ plan, price, walletSession }) {
                         */}
                         <div className="flex space-x-4">
                             <div style={{ backgroundColor: "#" + colourInHex }} className="flex grow rounded-2xl border-2 border-mainBlack/10 transition-colors duration-300" />
-                            <TwitterPicker triangle={"hide"} onChange={(e) => setColourInHex(e.hex.substring(1)) } />
+                            <TwitterPicker triangle={"hide"} onChange={(e) => setColourInHex(e.hex.substring(1))} />
                         </div>
                         <div className="flex grow" />
                         <div className="flex justify-end">

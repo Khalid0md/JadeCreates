@@ -12,6 +12,7 @@ import { useState, useEffect, useContext } from "react"
 import { useModal } from "./ModalContext"
 import detectEthereumProvider from '@metamask/detect-provider';
 import { HiOutlineX } from "react-icons/hi";
+import Web3 from "web3";
 
 // create context
 const WalletContext = createContext()
@@ -45,6 +46,7 @@ export default function WalletSessionProvider(props) {
     const [provider, setProvider] = useState()
     const [isConnected, setIsConnected] = useState(false)
     const [isLoaded, setIsLoaded] = useState(false)
+    const [ensureCorrectNetwork, setEnsureCorrectNetwork] = useState()
 
     // start by checking which wallet is connected (if any) and updating available wallets
     // (e.g.) metamask will not be available on safari or a mobile browser, so don't show it as an option
@@ -56,7 +58,7 @@ export default function WalletSessionProvider(props) {
         const metamaskStatus = await checkForMetamask()
         if (metamaskStatus.status != walletStatus.notAvailable) {
             setAvailableWalletTypes(oldArray => [...oldArray, walletTypes.metamask])
-            addMetamaskListeners(setWalletAddress, setIsConnected, setCurrentWalletType, setProvider)
+            addMetamaskListeners(setWalletAddress, setIsConnected, setCurrentWalletType, setProvider, setEnsureCorrectNetwork)
         }
         if (metamaskStatus.status == walletStatus.success) {
             setIsConnected(true)
@@ -64,6 +66,7 @@ export default function WalletSessionProvider(props) {
             setWalletAddress(metamaskStatus.address)
             const provider = await detectEthereumProvider();
             setProvider(provider)
+            setEnsureCorrectNetwork(() => ensureMetamaskIsOnHarmony)
 
             // if metamask is connected, return early (don't check for other wallets)
             setIsLoaded(true)
@@ -119,6 +122,7 @@ export default function WalletSessionProvider(props) {
                 provider: provider,
                 address: walletAddress,
                 showConnectModal: showConnectModal,
+                ensureCorrectNetwork: ensureCorrectNetwork,
                 isLoaded: isLoaded,
                 isConnected: isConnected
             }
@@ -207,10 +211,9 @@ const checkForWalletConnect = async () => {
 
 }
 
-
 /** Implement functions here to add listeners for each respective wallet **/
 
-function addMetamaskListeners(setWalletAddress, setIsConnected, setCurrentWalletType, setProvider) {
+function addMetamaskListeners(setWalletAddress, setIsConnected, setCurrentWalletType, setProvider, setEnsureCorrectNetwork) {
     if (window.ethereum) {
         window.ethereum.on("accountsChanged", async () => {
 
@@ -218,14 +221,13 @@ function addMetamaskListeners(setWalletAddress, setIsConnected, setCurrentWallet
             const currentStatus = await checkForMetamask()
             setWalletAddress(currentStatus.address)
 
-            console.log(currentStatus)
-
             // set connected based on status
             if (currentStatus.status == walletStatus.success) {
                 setIsConnected(true)
                 setCurrentWalletType(walletTypes.metamask)
                 const provider = await detectEthereumProvider();
                 setProvider(provider)
+                setEnsureCorrectNetwork(() => ensureMetamaskIsOnHarmony)
             } else {
                 setIsConnected(false)
             }
@@ -236,6 +238,52 @@ function addMetamaskListeners(setWalletAddress, setIsConnected, setCurrentWallet
 function addWalletConnectListeners({ setWalletAddress }) {
 
 }
+
+
+/** Implement functions to check that chain is set to harmony (and if not, ask to switch) */
+
+async function ensureMetamaskIsOnHarmony() {
+
+    //**** CHANGE TO MAINNET LATER */
+    const chainId = 1666700000
+
+    if (window.ethereum.networkVersion !== chainId) {
+        try {
+            await window.ethereum.request({
+                method: 'wallet_switchEthereumChain',
+                params: [{ chainId: Web3.utils.toHex(chainId) }],
+            });
+            return true;
+        } catch (err) {
+            // This error code indicates that the chain has not been added to MetaMask.
+            if (err.code === 4902) {
+                try {
+                    await window.ethereum.request({
+                        method: 'wallet_addEthereumChain',
+                        params: [
+                            {
+                                chainName: 'Harmony Mainnet',
+                                chainId: Web3.utils.toHex(chainId),
+                                nativeCurrency: { name: 'ONE', decimals: 18, symbol: 'ONE' },
+                                rpcUrls: ['https://api.s0.b.hmny.io'],
+                            },
+                        ],
+                    });
+                    return true;
+                } catch (err2) {
+                    return false;
+                }
+            }
+
+            return false;
+        }
+    }
+}
+
+
+
+
+
 
 /*
 function addWalletListener() {

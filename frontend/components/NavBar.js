@@ -10,8 +10,9 @@ import WalletConnect from "@walletconnect/client";
 import QRCodeModal from "@walletconnect/qrcode-modal";
 import { useWalletConnect } from "../utils/WalletConnectSessionProvider";
 const walletConnectLogo = require('../public/walletconnect-logo.png')
-import { IoWallet } from "react-icons/io5";
+import { IoWallet, IoWalletOutline } from "react-icons/io5";
 import { HiOutlineGlobe, HiOutlineGlobeAlt, HiViewGrid, HiViewGridAdd, HiCreditCard, HiReceiptTax } from "react-icons/hi";
+import makeBlockie from "ethereum-blockies-base64";
 
 function NavBar(props) {
     return (
@@ -37,31 +38,11 @@ export function MainNavBar({ showGetStarted }) {
             <NavButton
                 text={walletSession.isConnected ? 'Go to Dashboard' : 'Connect Wallet'}
                 bgColor={'white'} textColor={'mainBlack'}
-                //iconRight={!walletConnectSession.isConnected && <img src="/walletconnect-logo.png" className="h-5 pl-4 -mr-2 -mt-1" />}
                 iconRight={!walletSession.isConnected && <IoWallet size={25} className="text-green2 ml-4 -mt-1 -mr-2" />}
                 onClick={async () => {
-                    /*
-                    modalController.setContent(
-                        <div className="w-64 h-24 flex items-center justify-center nunito-font font-black">
-                            Issue with Metamask.
-                        </div>
-                    )
-                    modalController.setIsShown(true);
-                    */
-
-                    /*
-                    if (walletSession.walletAddress) {
-                        router.push('/dashboard')
-                    } else {
-                        const sessionStatus = await walletSession.connectWallet();
-                    }
-                    */
-
                     if (walletSession.isConnected) {
                         router.push('/dashboard')
                     } else {
-                        //await walletConnectSession.connector.createSession()
-                        //await walletConnectSession.provider.enable();
                         await walletSession.showConnectModal()
                     }
                 }}
@@ -79,7 +60,14 @@ export function MainNavBar({ showGetStarted }) {
 
 export function StorefrontNavBar({ storeData }) {
 
+    const walletSession = useWallet();
+    const [userBalance, setUserBalance] = useState();
     const router = useRouter();
+    const modalController = useModal();
+
+    useEffect(async () => {
+        setUserBalance(100)
+    }, [walletSession.address])
 
     return (
         <NavBar>
@@ -91,9 +79,38 @@ export function StorefrontNavBar({ storeData }) {
                 }}
             />
             <div className="flex grow" />
-            <div className={`bg-[#${storeData && storeData.colourHex}] p-4 px-16 rounded-2xl `} >
-
-            </div>
+            <NavButton
+                iconLeft={
+                    walletSession.address &&
+                    <div className='h-full py-2 pr-6 -ml-6'>
+                        <img src={makeBlockie(walletSession.address)} className='h-full rounded-xl' />
+                    </div>
+                }
+                text={walletSession.isConnected ? (walletSession.address.slice(0, 15) + '...') : 'Connect Wallet'}
+                bgColor={'white'}
+                shadow={'low'}
+                textColor={walletSession.isConnected ? 'secondaryGray' : 'mainBlack'}
+                iconRight={
+                    !walletSession.isConnected &&
+                    <div className="flex ml-4 -mt-1 -mr-2">
+                        <IoWallet
+                            size={25}
+                            style={{ color: '#' + storeData.colourHex }}
+                            className=""
+                        />
+                        <IoWalletOutline
+                            size={25}
+                            style={{ color: '#00000044' }}
+                            className="absolute"
+                        />
+                    </div>
+                }
+                onClick={async () => {
+                    if (!walletSession.isConnected) {
+                        await walletSession.showConnectModal()
+                    }
+                }}
+            />
             {/*<NavButton text={'Button 1'} bgColor={'white'} textColor={'mainBlack'} link={'/storefront'} /> */}
             {/*<NavButton text={'Button 2'} bgColor={'mainBlack'} textColor={'white'} shadow={'high'} link={'/storefront'} />*/}
         </NavBar>

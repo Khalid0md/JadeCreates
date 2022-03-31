@@ -30,7 +30,7 @@ export default function ListingsList({ store, walletSession, isStorefrontDisplay
         // fetch listings data
         if (provider) {
             // init web3 provider
-            const web3 = new Web3(provider)
+            const web3 = new Web3('https://api.s0.b.hmny.io')
 
             // get store contract
             const marketplace = new web3.eth.Contract(marketplaceJson.abi, marketplaceAddress)
@@ -77,7 +77,7 @@ export default function ListingsList({ store, walletSession, isStorefrontDisplay
                                     {
                                         listingIds.map(id => {
                                             return (
-                                                <NFTCard key={id} listingId={id} provider={provider} isStorefrontDisplay={isStorefrontDisplay} />
+                                                <NFTCard key={id} listingId={id} provider={provider} isStorefrontDisplay={isStorefrontDisplay} walletSession={walletSession} storeData={store} />
                                             )
                                         })
                                     }

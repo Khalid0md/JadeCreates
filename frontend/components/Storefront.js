@@ -18,7 +18,7 @@ import { marketplaceAddress, storeMarketplaceAddress } from "../../backend/confi
 
 export default function Storefront({ storeData }) {
 
-    //const mmWalletSession = useWallet()
+    const walletSession = useWallet()
 
     return (
         <div className="flex flex-col w-full items-center bg-background h-full space-y-4">
@@ -28,7 +28,7 @@ export default function Storefront({ storeData }) {
                 <SearchBar />
                 {/*<SortingItemList />*/}
                 {/*<NFTGrid nfts={testNftData} />*/}
-                <ListingsList store={storeData} walletSession={true} isStorefrontDisplay={true} />
+                <ListingsList store={storeData} walletSession={walletSession} isStorefrontDisplay={true} />
             </div>
         </div>
     )

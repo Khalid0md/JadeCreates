@@ -1,6 +1,6 @@
 import { useRouter } from "next/router"
 
-export default function NavButton({ text, bgColor, textColor, shadow, link, onClick, iconRight }) {
+export default function NavButton({ text, bgColor, textColor, shadow, link, onClick, iconLeft, iconRight }) {
 
     const router = useRouter();
 
@@ -14,9 +14,12 @@ export default function NavButton({ text, bgColor, textColor, shadow, link, onCl
                 }
             }}>
 
+            {iconLeft && iconLeft}
+
             <p className={"font-bold nunito-font whitespace-nowrap" + " text-" + textColor} >
                 {text}
             </p>
+            
             {iconRight && iconRight}
         </button>
     )

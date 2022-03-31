@@ -24,7 +24,7 @@ export default function ModalProvider(props) {
     }, [isShown])
 
     return (
-        <ModalContext.Provider value={{ isShown, setIsShown, setContent }}>
+        <ModalContext.Provider value={{ isShown, setIsShown, setContent,  }}>
             <Modal isShown={isShown} setIsShown={setIsShown} >
                 {content}
             </Modal>
@@ -40,30 +40,6 @@ const MODAL_STYLES = {
     left: '50%',
     transform: 'translate(-50%, -50%)',
     zIndex: 1000
-}
-
-function Modal2(props) {
-    return (
-        props.isShown
-            ?
-            createPortal(
-                <div style={MODAL_STYLES} >
-                    <div>
-                        <h5>Modal</h5>
-                        <span>
-                            Why this modal has popped up
-                        </span>
-                    </div>
-                    <button onClick={() => {
-                        props.setIsShown(false)
-                    }}>
-                        Close
-                    </button>
-                </div>,
-                document.body,
-            )
-            : null
-    )
 }
 
 function Modal(props) {
