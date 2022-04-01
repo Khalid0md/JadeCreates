@@ -250,13 +250,6 @@ function ConfigureStoreModalContent({ plan, price, walletSession, modalControlle
     )
 }
 
-// Possible form errors
-const formErrors = Object.freeze({
-    img: 'img',
-    name: 'n',
-    subdomain: 'sd'
-});
-
 function CreateStoreForm({ plan, price, walletSession, modalController }) {
 
     // form states
@@ -264,7 +257,11 @@ function CreateStoreForm({ plan, price, walletSession, modalController }) {
     const [subdomain, setSubdomain] = useState()
     const [logoUri, setLogoUri] = useState()
     const [colourInHex, setColourInHex] = useState('FFFFFF')
-    const [inputError, setInputError] = useState()
+
+    // error states
+    const [nameError, setNameError] = useState(false)
+    const [imgError, setImgError] = useState(false)
+    const [subdomainError, setSubdomainError] = useState(false)
 
     const onSubmit = async (e) => {
         // prevents form from submitting early
@@ -272,9 +269,14 @@ function CreateStoreForm({ plan, price, walletSession, modalController }) {
 
         // Upload to ipfs (the url)
         uploadFile().then(async (uri) => {
-            // we should have all info
-            // TODO: *** perform any checks on the data (if necessary)
+            
+            // do final checks on form inputs
+            setImgError(uri == null || uri == undefined)
+            setNameError(checkName(name))
+            setSubdomainError(checkSubdomain(subdomain))
+            if (imgError | nameError || subdomainError) { return } 
 
+            // perform transaction
             if (uri && walletSession.provider && walletSession.address) {
                 const web3 = new Web3(walletSession.provider);
                 const payableAmount = web3.utils.toWei(price, "ether")
@@ -324,56 +326,86 @@ function CreateStoreForm({ plan, price, walletSession, modalController }) {
         }
     }
 
+    /* Functions for testing each form field */
+    function checkName(name) {
+        if (!name) { return true }
+        if (name.length <= 0 || name.length > 50) { return true }
+        if (!/^[\x20-\x7E]*$/.test(name)) { return true }
+
+        return false
+    }
+
+    function checkSubdomain(subdomain) {
+        if (!subdomain) { return true }
+        if (subdomain.length <= 0 || subdomain.length > 20) { return true }
+        if (!/^[A-Za-z0-9]*$/.test(subdomain)) { return true }
+
+        return false
+    }
+
     return (
         <div className="w-full rounded-2xl">
             <form className="flex flex-col space-y-4" onSubmit={e => onSubmit(e)}>
                 <div className="flex">
-                    <div className="flex items-center justify-center flex-shrink-0 grow aspect-square rounded-2xl border-2 shadow-inner border-accentGray overflow-clip bg-white">
-                        {
-                            imagePreview
-                                ?
-                                <img src={imagePreview} className="max-h-14 object-contain p-2 border-2 rounded-xl" />
-                                :
-                                <label className="flex h-full grow items-center justify-center text-secondaryGray hover:bg-mainBlack/5 cursor-pointer">
-                                    <input type="file" onChange={(e) => createPreview(e)} className="hidden" />
-                                    <div className="flex flex-col items-center">
-                                        <p className="text-5xl font-light">
-                                            +
-                                        </p>
-                                        <p className="text-lg font-extrabold">
-                                            Add Logo
-                                        </p>
-                                    </div>
-                                </label>
-                        }
+                    <div className="flex flex-col grow space-y-2 aspect-square flex-shrink-0">
+                        <p className="font-bold text-sm">
+                            Logo
+                        </p>
+                        <div className={
+                            "flex items-center justify-center flex-shrink-0 grow aspect-square rounded-2xl outline outline-2 shadow-inner border-accentGray overflow-clip bg-white"
+                            + (imgError ? ' outline-red-400 ' : ' outline-accentGray ')
+                        }>
+                            {
+                                imagePreview
+                                    ?
+                                    <img src={imagePreview} className="max-h-14 object-contain p-2 border-2 rounded-xl" />
+                                    :
+                                    <label className="flex h-full grow items-center justify-center text-secondaryGray hover:bg-mainBlack/5 cursor-pointer">
+                                        <input type="file" onChange={(e) => createPreview(e)} className="hidden" />
+                                        <div className="flex flex-col items-center">
+                                            <p className="text-5xl font-light">
+                                                +
+                                            </p>
+                                            <p className="text-lg font-extrabold">
+                                                Add Logo
+                                            </p>
+                                        </div>
+                                    </label>
+                            }
+                        </div>
                     </div>
-                    <div className="flex flex-col space-y-4 grow pl-4">
+                    <div className="flex flex-col space-y-2 grow pl-4">
+                        <p className="font-bold text-sm">
+                            Store Name | Max 50 characters
+                        </p>
                         <input
                             name="name"
                             type="text"
                             placeholder="name"
                             value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            className="form-text-field bg-white"
+                            onChange={(e) => {
+                                setNameError(checkName(e.target.value))
+                                setName(e.target.value)
+                            }}
+                            className={'form-text-field bg-white' + (nameError ? ' outline-2 outline-red-400 ' : ' form-text-field-highlight ')}
                         />
+                        <p className="font-bold text-sm pt-2">
+                            Subdomain | Max 20 characters, only letters and numbers
+                        </p>
                         <input
                             name="subdomain"
                             type="text"
                             placeholder="subdomain (ex. yoursubdomain.martazo.com)"
                             value={subdomain}
-                            onChange={(e) => setSubdomain(e.target.value)}
-                            className="form-text-field bg-white"
+                            onChange={(e) => {
+                                setSubdomainError(checkSubdomain(e.target.value))
+                                setSubdomain(e.target.value)
+                            }}
+                            className={"form-text-field bg-white" + (subdomainError ? ' outline-2 outline-red-400 ' : ' form-text-field-highlight ')}
                         />
-                        {/*
-                        <input
-                            name="colourInHex"
-                            type="text"
-                            placeholder="colour (hex code)"
-                            value={colourInHex}
-                            onChange={(e) => setColourInHex(e.target.value)}
-                            className="form-text-field"
-                        />
-                        */}
+                        <p className="font-bold text-sm pt-2">
+                            Accent Colour
+                        </p>
                         <div className="flex space-x-4">
                             <div style={{ backgroundColor: "#" + colourInHex }} className="flex grow rounded-2xl border-2 border-mainBlack/10 transition-colors duration-300" />
                             <TwitterPicker triangle={"hide"} onChange={(e) => setColourInHex(e.hex.substring(1))} />
@@ -387,29 +419,6 @@ function CreateStoreForm({ plan, price, walletSession, modalController }) {
                     </div>
                 </div>
             </form>
-        </div>
-    )
-}
-
-function ImagePreview({ imgSrc }) {
-    return (
-        <div className="flex items-center justify-center flex-shrink-0 grow aspect-square rounded-xl border-2 shadow-inner border-accentGray overflow-clip bg-white">
-            {
-                imgSrc
-                    ?
-                    <img src={imgSrc} className="min-w-full h-fit rounded-xl m-8" />
-                    :
-                    <button className="flex h-full grow items-center justify-center text-secondaryGray">
-                        <div className="flex flex-col">
-                            <p className="text-5xl font-light">
-                                +
-                            </p>
-                            <p className="text-lg font-extrabold">
-                                Add Photo
-                            </p>
-                        </div>
-                    </button>
-            }
         </div>
     )
 }

@@ -14,19 +14,42 @@ export default function AddListingModalContent({ store, walletSession, modalCont
     const [contractAddress, setContractAddress] = useState()
     const [listingPrice, setListingPrice] = useState()
 
-    //0x52a47d8280af28e77e2981e2a0ca0cfc41dfd1f6
-    //0x1548c6227cbd78e51eb0a679c1f329b9a5a99beb
+    // error states
+    const [tokenidError, setTokenidError] = useState(false)
+    const [contractAddressError, setContractAddressError] = useState(false)
+    const [listingPriceError, setListingPriceError] = useState(false)
 
-    /*
-    string memory subdomain,
-    uint256 tokenId,
-    uint256 priceIn,
-    address nftContract
-    */
+    /* Functions for testing each form field */
+    function checkTokenid(tokenId) {
+        if (!tokenId || tokenId.length <= 0) { return true }
+        if (!/^[0-9]*$/.test(tokenId)) { return true }
+
+        return false
+    }
+
+    function checkContractAddress(address) {
+        if (!address || address.length <= 0) { return true }
+        if (!Web3.utils.isAddress(address)) { return true }
+
+        return false
+    }
+
+    function checkListingPrice(price) {
+        if (!price || price.length <= 0) { return true }
+        if (!/^[.0-9]*$/.test(price)) { return true }
+
+        return false
+    }
 
     const onSubmit = async (e) => {
         // prevents form from submitting early
         e.preventDefault();
+
+        // check form inputs
+        setTokenidError(checkTokenid(tokenId))
+        setContractAddressError(checkContractAddress(contractAddress))
+        setListingPriceError(checkListingPrice(listingPrice))
+        if (tokenidError || contractAddressError || listingPriceError) { return }
 
         // check parameters and submit request
         if (store && store.subdomain && walletSession.provider && walletSession.address) {
@@ -174,32 +197,50 @@ export default function AddListingModalContent({ store, walletSession, modalCont
                         </div>
                         <div className="w-full rounded-2xl">
                             <form className="flex flex-col space-y-4" onSubmit={e => onSubmit(e)}>
-                                <div className="flex flex-col space-y-4">
+                                <div className="flex flex-col space-y-2">
+                                    <p className="font-bold text-sm pt-2">
+                                        Token ID
+                                    </p>
                                     <input
                                         name="tokenId"
                                         type="text"
                                         placeholder="token id"
                                         value={tokenId}
-                                        onChange={(e) => setTokenId(e.target.value)}
-                                        className="form-text-field bg-white"
+                                        onChange={(e) => {
+                                            setTokenidError(checkTokenid(e.target.value))
+                                            setTokenId(e.target.value)
+                                        }}
+                                        className={'form-text-field bg-white' + (tokenidError ? ' outline-2 outline-red-400 ' : ' form-text-field-highlight ')}
                                     />
+                                    <p className="font-bold text-sm pt-2">
+                                        NFT Contract Address
+                                    </p>
                                     <input
                                         name="contractAddress"
                                         type="text"
                                         placeholder="contract address"
                                         value={contractAddress}
-                                        onChange={(e) => setContractAddress(e.target.value)}
-                                        className="form-text-field bg-white"
+                                        onChange={(e) => {
+                                            setContractAddressError(checkContractAddress(e.target.value))
+                                            setContractAddress(e.target.value)
+                                        }}
+                                        className={'form-text-field bg-white' + (contractAddressError ? ' outline-2 outline-red-400 ' : ' form-text-field-highlight ')}
                                     />
+                                    <p className="font-bold text-sm pt-2">
+                                        Listing Price
+                                    </p>
                                     <input
                                         name="listingPrice"
                                         type="text"
                                         placeholder="listing price"
                                         value={listingPrice}
-                                        onChange={(e) => setListingPrice(e.target.value)}
-                                        className="form-text-field bg-white"
+                                        onChange={(e) => {
+                                            setListingPriceError(checkListingPrice(e.target.value))
+                                            setListingPrice(e.target.value)
+                                        }}
+                                        className={'form-text-field bg-white' + (listingPriceError ? ' outline-2 outline-red-400 ' : ' form-text-field-highlight ')}
                                     />
-                                    <div className="flex justify-end space-x-4">
+                                    <div className="flex justify-end space-x-4 pt-2">
                                         <button type="submit" className="flex h-16 px-8 text-lg nunito-font text-background whitespace-nowrap bg-mainBlack rounded-xl items-center justify-center font-extrabold max-w-min" >
                                             Submit
                                         </button>

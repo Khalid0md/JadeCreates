@@ -21,6 +21,7 @@ module.exports = {
         green2: '#49BEAA',
         green1: '#49DCB1',
         accentGray: '#E6E6E6',
+        warningRed: '#D63A4A',
       }
     },
   },

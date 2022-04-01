@@ -113,7 +113,11 @@ html, body {
     }
 
     .form-text-field {
-        @apply p-4 bg-transparent text-lg nunito-font font-bold shadow-inner rounded-xl outline outline-2 outline-accentGray focus:outline-green1 text-mainBlack
+        @apply p-4 bg-transparent text-lg nunito-font font-bold shadow-inner rounded-xl outline outline-2 outline-accentGray text-mainBlack
+    }
+
+    .form-text-field-highlight {
+        @apply focus:outline-green1
     }
 }
 
