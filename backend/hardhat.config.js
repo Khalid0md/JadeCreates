@@ -1,5 +1,6 @@
 require("@nomiclabs/hardhat-waffle");
 require("hardhat-gas-reporter");
+require("@nomiclabs/hardhat-ethers");
 
 var fs = require("fs")
 const privateKey = fs.readFileSync(".secret").toString()

@@ -10,7 +10,7 @@ const fs = require("fs")
 
 async function main() {
 
-  const Market = await ethers.getContractFactory("Marketplace")
+  const Market = await ethers.getContractFactory("RevisedMarketplace")
   const market = await Market.deploy()
   await market.deployed()
   console.log("marketplace deployed to: " + market.address)
@@ -59,10 +59,10 @@ async function main() {
   /*
     NFT minting that works
   */
-  const NFT = await ethers.getContractFactory("ERC721PresetMinterPauserAutoId")
-  const nft = await NFT.deploy("TestContract", "TST", "https://gateway.pinata.cloud/ipfs/QmVkDbc6NPni1uzQq3gsiocUc3YGZjF7QGcM37hMcBqNmv")
-  await nft.deployed()
-  console.log("nft deployed to: " + nft.address)
+  //const NFT = await ethers.getContractFactory("ERC721PresetMinterPauserAutoId")
+  //const nft = await NFT.deploy("TestContract", "TST", "https://gateway.pinata.cloud/ipfs/QmVkDbc6NPni1uzQq3gsiocUc3YGZjF7QGcM37hMcBqNmv")
+  //await nft.deployed()
+  //console.log("nft deployed to: " + nft.address)
 
   //fs.writeFileSync('./config.js', `
   //export const nftAddress = "${nft.address}"
