@@ -74,7 +74,7 @@ function PlansHeader() {
     return (
         <div className="flex flex-col items-center space-y-4 max-w-2xl mx-14 pt-10">
             <p className="text-5xl nunito-font font-black">
-                Choose your plan
+                Hello yelllowsin! Choose your plan
             </p>
             <p className="nunito-font font-bold text-secondaryGray text-center">
                 With Martazo, you can create your own NFT marketplace in seconds! All plans will provide you with a unique subdomain (e.g. yourname.martazo.com).
@@ -269,12 +269,12 @@ function CreateStoreForm({ plan, price, walletSession, modalController }) {
 
         // Upload to ipfs (the url)
         uploadFile().then(async (uri) => {
-            
+
             // do final checks on form inputs
             setImgError(uri == null || uri == undefined)
             setNameError(checkName(name))
             setSubdomainError(checkSubdomain(subdomain))
-            if (imgError | nameError || subdomainError) { return } 
+            if (imgError | nameError || subdomainError) { return }
 
             // perform transaction
             if (uri && walletSession.provider && walletSession.address) {
