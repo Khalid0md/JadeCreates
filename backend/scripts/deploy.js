@@ -29,6 +29,12 @@ async function main() {
   await store.deployed()
   console.log("store deployed to: " + store.address)
 
+  await market.setAddy(store.address)
+  console.log("setAddy success")
+  const royalAdd = "0xe6b8F935A0b5Fb1A3BE1784e5aB7897C6824467e"
+  await market.setRoyaltyAddress(royalAdd)
+  console.log("royalty success")
+  //console.log(await market.setRoyaltyAddress(0xe6b8F935A0b5Fb1A3BE1784e5aB7897C6824467e))
   /*
     Marketplace and store contracts
   */
