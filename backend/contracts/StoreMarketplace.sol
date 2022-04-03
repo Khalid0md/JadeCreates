@@ -34,7 +34,6 @@ contract StoreMarketplace is ERC721, ReentrancyGuard, Ownable {
         bool isInitialized
     );
 
-    //mapping(uint256 => Store) private idToStore;
     mapping(string => Store) private subdomainToStore;
     mapping(address => string[]) private ownerAddressToSubdomains;
 
@@ -46,28 +45,14 @@ contract StoreMarketplace is ERC721, ReentrancyGuard, Ownable {
         setBaseURI(newBaseURI);
     }
 
-    //internal function, used by the contract to search if a name is taken or not before completing many procedures
-    /*
-    function nameAvailable(string memory name) public view returns (bool) {
-        uint256 itemCount = _storeIds.current();
-        for (uint256 i = 0; i <= itemCount; i++) {
-            if (
-                keccak256(abi.encodePacked(idToStore[i].subdomain)) ==
-                keccak256(abi.encodePacked(name))
-            ) {
-                return false;
-            }
+    function nameAvailable(string memory subdomain) public view returns (bool) {
+        // check if key's value exists
+        if (subdomainToStore[subdomain].isInitialized) {
+            return false;
         }
         return true;
     }
-    */
-    function nameAvailable(string memory subdomain) public view returns (bool) {
-        // check if key's value exists
-        if (subdomainToStore[subdomain].isInitialized) { return false; }
-        return true;
-    }
 
-    //?use enums
     //creates a store and mints a Martazo token to the store owner
     function createStore(
         string memory subdomainIn,
@@ -98,7 +83,6 @@ contract StoreMarketplace is ERC721, ReentrancyGuard, Ownable {
         _storeIds.increment();
         uint256 id = _storeIds.current();
 
-        //idToStore[id] = Store(
         subdomainToStore[subdomainIn] = Store(
             id,
             subdomainIn,
@@ -146,33 +130,11 @@ contract StoreMarketplace is ERC721, ReentrancyGuard, Ownable {
         baseURI = _newBaseURI;
     }
 
-    //takes in id and returns store object
-    /*
-    function getStoreWithId(uint256 id) public view returns (Store memory) {
-        return idToStore[id];
-    }
-    */
-
-    //takes in subdomain and returns store object
-    /*
-    function getStoreWithSubdomain(string memory subdomainIn)
+    function getStoreWithSubdomain(string memory subdomain)
         public
         view
         returns (Store memory)
     {
-        require(nameAvailable(subdomainIn) == false);
-        uint256 itemCount = _storeIds.current();
-        for (uint256 i = 0; i <= itemCount; i++) {
-            if (
-                keccak256(abi.encodePacked(idToStore[i].subdomain)) ==
-                keccak256(abi.encodePacked(subdomainIn))
-            ) {
-                return idToStore[i];
-            }
-        }
-    }
-    */
-    function getStoreWithSubdomain(string memory subdomain) public view returns (Store memory) {
         require(nameAvailable(subdomain) == false);
         return subdomainToStore[subdomain];
     }
@@ -193,7 +155,7 @@ contract StoreMarketplace is ERC721, ReentrancyGuard, Ownable {
     {
         require(msg.sender == storeIn.owner);
         storeIn.colourHex = newHexColour;
-        //idToStore[storeIn.storeId] = storeIn;
+
         subdomainToStore[storeIn.subdomain] = storeIn;
     }
 
@@ -203,10 +165,10 @@ contract StoreMarketplace is ERC721, ReentrancyGuard, Ownable {
         string memory newHexColour
     ) external payable {
         Store memory currentStore = getStoreWithSubdomain(subdomainIn);
-        //uint256 id = currentStore.storeId;
+
         require(msg.sender == currentStore.owner);
         currentStore.colourHex = newHexColour;
-        //idToStore[id] = currentStore;
+
         subdomainToStore[subdomainIn] = currentStore;
     }
 
@@ -216,10 +178,14 @@ contract StoreMarketplace is ERC721, ReentrancyGuard, Ownable {
         payable
     {
         Store memory currentStore = getStoreWithSubdomain(subdomainIn);
-        //uint256 id = currentStore.storeId;
+
         require(msg.sender == currentStore.owner);
         currentStore.logoURI = newLogoURI;
-        //idToStore[id] = currentStore;
+
         subdomainToStore[subdomainIn] = currentStore;
+    }
+
+    function getValue(uint256 initial) public view returns (uint256) {
+        return initial + 150;
     }
 }

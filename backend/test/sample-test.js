@@ -3,7 +3,7 @@ const { ethers } = require("hardhat");
 
 describe("Marketplace", function () {
   it("Should create and execute market sales", async function () {
-    const Market = await ethers.getContractFactory("Marketplace")
+    const Market = await ethers.getContractFactory("RevisedMarketplace")
     const market = await Market.deploy()
     await market.deployed()
     const marketAddress = market.address
@@ -18,14 +18,16 @@ describe("Marketplace", function () {
     await store.deployed()
     const storeaddress = store.address
 
-    let fee = await market.getFee()
-    fee = fee.toString()
+    console.log(await market.setAddy(storeaddress))
+
+
+
 
     const auctionPrice = ethers.utils.parseUnits('1', 'ether')
     const basicFee = ethers.utils.parseUnits('500', 'ether')
 
-    const [_, seller1, seller2, buyer1, buyer2, buyer3] = await ethers.getSigners()
-
+    const [_, seller1, seller2, buyer1, buyer2, buyer3, jade] = await ethers.getSigners()
+    console.log(await market.setRoyaltyAddress(jade.address))
     //seller1 mints
     await nft.connect(seller1).mint(1, { value: auctionPrice })
     console.log("mint successful")
@@ -50,7 +52,7 @@ describe("Marketplace", function () {
 
     //seller 1 creates listing
     //should require the subdomain to be available
-    await market.connect(seller1).createListing("khalids", 1, 1, nftaddress, { value: fee })
+    await market.connect(seller1).createListing("khalids", 1, 1, nftaddress)
     console.log("seller1 lsiitng created successful")
 
     //buyer 1 buys NFT from seller1
@@ -63,7 +65,7 @@ describe("Marketplace", function () {
 
     //buyer 1 relists
     //need a way of grabbing these nftcontractaddresses
-    await market.connect(buyer1).relistToken(1, 1, nftaddress, { value: fee })
+    await market.connect(buyer1).relistToken(1, 1, nftaddress)
     console.log("buyer1 relist successful")
 
     //seller 1 buys it back
@@ -76,6 +78,14 @@ describe("Marketplace", function () {
     //add fetch market and display items 1:08:32
 
     console.log("\n\nmessing about\n\n")
+    console.log("plan is a: ")
+    console.log(await market.connect(seller1).someAction(storeaddress, 1))
+
+
+
+
+
+
 
 
 

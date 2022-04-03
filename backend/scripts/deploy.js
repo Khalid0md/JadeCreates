@@ -10,7 +10,7 @@ const fs = require("fs")
 
 async function main() {
 
-  const Market = await ethers.getContractFactory("Marketplace")
+  const Market = await ethers.getContractFactory("RevisedMarketplace")
   const market = await Market.deploy()
   await market.deployed()
   console.log("marketplace deployed to: " + market.address)
@@ -29,6 +29,12 @@ async function main() {
   await store.deployed()
   console.log("store deployed to: " + store.address)
 
+  await market.setAddy(store.address)
+  console.log("setAddy success")
+  const royalAdd = "0xcaA59673A8e84bd9869C6c56b05de4EB1d5eC98B"
+  await market.setRoyaltyAddress(royalAdd)
+  console.log("royalty success")
+  //console.log(await market.setRoyaltyAddress(0xe6b8F935A0b5Fb1A3BE1784e5aB7897C6824467e))
   /*
     Marketplace and store contracts
   */
@@ -59,10 +65,10 @@ async function main() {
   /*
     NFT minting that works
   */
-  const NFT = await ethers.getContractFactory("ERC721PresetMinterPauserAutoId")
-  const nft = await NFT.deploy("TestContract", "TST", "https://gateway.pinata.cloud/ipfs/QmVkDbc6NPni1uzQq3gsiocUc3YGZjF7QGcM37hMcBqNmv")
-  await nft.deployed()
-  console.log("nft deployed to: " + nft.address)
+  //const NFT = await ethers.getContractFactory("ERC721PresetMinterPauserAutoId")
+  //const nft = await NFT.deploy("TestContract", "TST", "https://gateway.pinata.cloud/ipfs/QmVkDbc6NPni1uzQq3gsiocUc3YGZjF7QGcM37hMcBqNmv")
+  //await nft.deployed()
+  //console.log("nft deployed to: " + nft.address)
 
   //fs.writeFileSync('./config.js', `
   //export const nftAddress = "${nft.address}"

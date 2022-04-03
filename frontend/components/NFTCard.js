@@ -4,7 +4,7 @@ import { useModal } from '../utils/ModalContext';
 
 // reference contracts
 import { marketplaceAddress } from "../../backend/config";
-import marketplaceJson from '../../backend/artifacts/contracts/Marketplace.sol/Marketplace.json';
+import marketplaceJson from '../../backend/artifacts/contracts/RevisedMarketplace.sol/RevisedMarketplace.json';
 import Web3 from 'web3';
 import TransactionPendingModalContent from './TransactionPendingModalContent';
 

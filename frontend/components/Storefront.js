@@ -13,7 +13,7 @@ import Web3 from "web3";
 
 // reference store and marketplace contracts
 import storeMarketplaceJson from '../../backend/artifacts/contracts/StoreMarketplace.sol/StoreMarketplace.json';
-import marketplaceJson from '../../backend/artifacts/contracts/Marketplace.sol/Marketplace.json';
+import marketplaceJson from '../../backend/artifacts/contracts/RevisedMarketplace.sol/RevisedMarketplace.json';
 import { marketplaceAddress, storeMarketplaceAddress } from "../../backend/config";
 
 export default function Storefront({ storeData }) {
@@ -82,7 +82,7 @@ function NFTGrid({ nfts, expectedBatchSize = 1 }) {
                         nftData &&
                         nftData.number && nftData.imgSrc &&
                         <NFT number={nftData.number} imgSrc={nftData.imgSrc} isAuction={nftData.isAuction} />
-                        
+
                     )
                 })
             }
@@ -146,9 +146,9 @@ function ListNFT({ walletSession }) {
             const web3 = new Web3(window.ethereum);
 
             const marketplace = new web3.eth.Contract(marketplaceJson.abi, marketplaceAddress)
-            const listingFee = await marketplace.methods.getFee().send({ from: walletSession.walletAddress })
-            const fee = web3.utils.toWei(listingFee, "ether")
-            const transaction = await marketplace.methods.createListing(subdomain, tokenId, price, nftContract).send({ from: walletSession.walletAddress, value: fee })
+            //const listingFee = await marketplace.methods.getFee().send({ from: walletSession.walletAddress })
+            //const fee = web3.utils.toWei(listingFee, "ether")
+            const transaction = await marketplace.methods.createListing(subdomain, tokenId, price, nftContract).send({ from: walletSession.walletAddress })
             console.log(transaction)
 
         }

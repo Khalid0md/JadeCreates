@@ -14,7 +14,7 @@ import Web3 from "web3";
 
 // reference contracts
 import { marketplaceAddress, storeMarketplaceAddress } from "../../backend/config";
-import marketplaceJson from '../../backend/artifacts/contracts/Marketplace.sol/Marketplace.json';
+import marketplaceJson from '../../backend/artifacts/contracts/RevisedMarketplace.sol/RevisedMarketplace.json';
 import storeMarketplaceJson from '../../backend/artifacts/contracts/StoreMarketplace.sol/StoreMarketplace.json';
 //import nfTestJson from '../../backend/artifacts/contracts/NFTest.sol/NFTest.json';
 import createERC721Json from '../../backend/artifacts/contracts/CreateERC721.sol/CreateERC721.json';
@@ -52,7 +52,7 @@ export async function getServerSideProps(context) {
 export default function DashboardLoginHandler() {
 
     const walletSession = useWallet();
-    
+
     const router = useRouter();
 
     // Redirects if loaded and not connected

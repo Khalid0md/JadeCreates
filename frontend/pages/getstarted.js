@@ -269,12 +269,12 @@ function CreateStoreForm({ plan, price, walletSession, modalController }) {
 
         // Upload to ipfs (the url)
         uploadFile().then(async (uri) => {
-            
+
             // do final checks on form inputs
             setImgError(uri == null || uri == undefined)
             setNameError(checkName(name))
             setSubdomainError(checkSubdomain(subdomain))
-            if (imgError | nameError || subdomainError) { return } 
+            if (imgError | nameError || subdomainError) { return }
 
             // perform transaction
             if (uri && walletSession.provider && walletSession.address) {
