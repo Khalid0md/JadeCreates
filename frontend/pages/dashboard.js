@@ -21,6 +21,8 @@ import createERC721Json from '../../backend/artifacts/contracts/CreateERC721.sol
 import { useModal } from "../utils/ModalContext";
 import NFTCard from "../components/NFTCard";
 import ListingsList from "../components/ListingsList";
+import EditLogoModalContent from "../components/EditLogoModalContent";
+import EditColourModalContent from "../components/EditColourModalContent";
 
 // get tatum function
 //import { Currency, getNFTsByAddress } from '@tatumio/tatum'
@@ -306,7 +308,7 @@ function SmallStoreDisplay({ subdomain, setSelectedStore, walletSession }) {
                             if (store) { setSelectedStore(store); }
                         }}>
                         <div className="flex items-center justify-center p-8 w-[18rem] flex-shrink-0 grow aspect-square rounded-xl border-accentGray overflow-clip">
-                            <img src={store.logoURI && store.logoURI} className="min-w-full h-fit rounded-xl" />
+                            <img src={store.logoURI && store.logoURI} className="max-h-28 object-contain px-4 rounded-xl" />
                         </div>
                     </button>
                     :
@@ -334,6 +336,9 @@ function SmallStoreDisplayLoading() {
 }
 
 function DashboardStoreContent({ store, walletSession }) {
+
+    const modalController = useModal();
+
     return (
         <div className="flex flex-col space-y-8">
             <p className="nunito-font text-2xl font-black text-mainBlack/50">
@@ -345,9 +350,17 @@ function DashboardStoreContent({ store, walletSession }) {
                         Logo
                     </p>
                     <div className="flex items-center justify-center grow rounded-xl border-accentGray overflow-clip">
-                        <img src={store.logoURI && store.logoURI} className="min-w-full h-fit rounded-xl px-2" />
+                        <img src={store.logoURI && store.logoURI} className="max-h-14 object-contain rounded-xl px-2" />
                     </div>
-                    <button className="flex items-center justify-center w-full h-14 bg-black rounded-xl nunito-font text-white font-bold">
+                    <button
+                        className="flex items-center justify-center w-full h-14 bg-black rounded-xl nunito-font text-white font-bold"
+                        onClick={async () => {
+                            modalController.setContent(
+                                <EditLogoModalContent subdomain={store.subdomain} walletSession={walletSession} modalController={modalController} />
+                            )
+                            modalController.setIsShown(true)
+                        }}
+                    >
                         Edit Logo
                     </button>
                 </div>
@@ -359,7 +372,15 @@ function DashboardStoreContent({ store, walletSession }) {
                         {'#' + (store.colourHex ? store.colourHex : '------')}
                     </p>
                     <div style={{ backgroundColor: "#" + store.colourHex }} className="flex grow rounded-xl mt-4 mb-6 border-2 border-mainBlack/10 shadow-low" />
-                    <button className="flex items-center justify-center w-full h-14 bg-black rounded-xl nunito-font text-white font-bold">
+                    <button
+                        className="flex items-center justify-center w-full h-14 bg-black rounded-xl nunito-font text-white font-bold"
+                        onClick={async () => {
+                            modalController.setContent(
+                                <EditColourModalContent store={store} walletSession={walletSession} modalController={modalController} />
+                            )
+                            modalController.setIsShown(true)
+                        }}
+                    >
                         Edit Colour
                     </button>
                 </div>
@@ -371,8 +392,13 @@ function DashboardStoreContent({ store, walletSession }) {
                         {store.plan && store.plan}
                     </p>
                     <div className="flex grow" />
-                    <button className="flex items-center justify-center w-full h-14 bg-black rounded-xl nunito-font text-white font-bold">
-                        Edit Logo
+                    <button
+                        className="flex items-center justify-center w-full h-14 bg-black rounded-xl nunito-font text-white font-bold"
+                        onClick={async () => {
+
+                        }}
+                    >
+                        {/*Edit Plan*/}
                     </button>
                 </div>
                 <div className="flex flex-col aspect-square w-full bg-white shadow-low rounded-2xl p-8">
@@ -383,8 +409,13 @@ function DashboardStoreContent({ store, walletSession }) {
                         {store.subdomain && store.subdomain}
                     </p>
                     <div className="flex grow" />
-                    <button className="flex items-center justify-center w-full h-14 bg-black rounded-xl nunito-font text-white font-bold">
-                        Edit Subdomain
+                    <button
+                        className="flex items-center justify-center w-full h-14 bg-black rounded-xl nunito-font text-white font-bold"
+                        onClick={async () => {
+
+                        }}
+                    >
+                        {/*Edit Subdomain*/}
                     </button>
                 </div>
             </div>
