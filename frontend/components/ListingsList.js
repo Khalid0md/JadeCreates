@@ -8,7 +8,7 @@ import AddListingModalContent from "./AddListingModalContent";
 
 // reference contract
 import { marketplaceAddress, storeMarketplaceAddress } from "../../backend/config";
-import marketplaceJson from '../../backend/artifacts/contracts/Marketplace.sol/Marketplace.json';
+import marketplaceJson from '../../backend/artifacts/contracts/RevisedMarketplace.sol/RevisedMarketplace.json';
 import CustomColorLoadingIndicator from "./CustomColorLoadingIndicator";
 
 export default function ListingsList({ store, walletSession, isStorefrontDisplay }) {
@@ -81,7 +81,7 @@ export default function ListingsList({ store, walletSession, isStorefrontDisplay
                                             )
                                         })
                                     }
-                                    
+
                                 </div>
                                 :
                                 <div>

@@ -4,7 +4,7 @@ import Web3 from "web3"
 
 // reference contract
 import { marketplaceAddress } from "../../backend/config";
-import marketplaceJson from '../../backend/artifacts/contracts/Marketplace.sol/Marketplace.json';
+import marketplaceJson from '../../backend/artifacts/contracts/RevisedMarketplace.sol/RevisedMarketplace.json';
 import TransactionPendingModalContent from "./TransactionPendingModalContent";
 
 export default function AddListingModalContent({ store, walletSession, modalController }) {
