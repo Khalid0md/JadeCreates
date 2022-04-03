@@ -152,9 +152,6 @@ export default function AddListingModalContent({ store, walletSession, modalCont
                 // get marketplace contract
                 const marketplace = new web3.eth.Contract(marketplaceJson.abi, marketplaceAddress)
 
-                // get listing fee
-                const listingFee = await marketplace.methods.getFee().call()
-
                 // create listing
                 const tx2 = await marketplace.methods.createListing(
                     store.subdomain,
@@ -162,8 +159,7 @@ export default function AddListingModalContent({ store, walletSession, modalCont
                     parseInt(listingPrice, 10),
                     contractAddress
                 ).send({
-                    from: walletSession.address,
-                    value: listingFee
+                    from: walletSession.address
                 })
                 modalController.setContent(
                     <TransactionPendingModalContent modalController={modalController} isSuccessful={tx1.status ? tx2.status : false} />

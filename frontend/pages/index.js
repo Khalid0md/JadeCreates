@@ -210,9 +210,9 @@ function PseudoNFTCard({ number, blockSeed, offsetY }) {
 
       }
       {
-
+        /*
         <img src={makeBlockie(blockSeed)} className="flex rounded-xl w-64 h-64 opacity-80 flex-shrink-0" />
-
+        */
       }
       <div className="flex space-x-4" >
         <p className="bg-accentGray text-secondaryGray text-2xl numbers-font italic font-black rounded-xl px-4 py-2 w-24">
