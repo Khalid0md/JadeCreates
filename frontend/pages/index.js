@@ -176,7 +176,7 @@ function NFTParallax({ offsetY }) {
   return (
     <div className="flex space-x-6 overflow-hidden h-[40rem] rounded-2xl glow-wide flex-shrink-0">
       <div
-        className="flex flex-col space-y-6"
+        className="flex flex-col space-y-6 transition-all ease-linear"
         style={{ willChange: 'transform', transform: `translateY(${offsetY * -0.75}px)` }}
       >
         <PseudoNFTCard number={1234} blockSeed={'qetuoadgjlxvn'} offsetY={offsetY} />
@@ -185,7 +185,7 @@ function NFTParallax({ offsetY }) {
         <PseudoNFTCard number={1234} blockSeed={'ljiq2h34'} offsetY={offsetY} />
       </div>
       <div
-        className="flex flex-col space-y-6"
+        className="flex flex-col space-y-6 transition-all ease-linear"
         style={{ willChange: 'transform', transform: `translateY(${offsetY * -1}px)` }}
       >
         <PseudoNFTCard number={1234} blockSeed={'askldfhlkja'} offsetY={offsetY} />
