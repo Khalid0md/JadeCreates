@@ -8,7 +8,7 @@ import {
     marketplaceAddress
 } from '../config'
 
-import Marketplace from '../../backend/artifacts/contracts/Marketplace.sol/Marketplace.json'
+import Marketplace from '../../backend/artifacts/contracts/RevisedMarketplace.sol/RevisedMarketplace.json'
 
 export default function MyAssets() {
     const [nfts, setNfts] = useState([])

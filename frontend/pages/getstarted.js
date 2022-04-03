@@ -74,7 +74,7 @@ function PlansHeader() {
     return (
         <div className="flex flex-col items-center space-y-4 max-w-2xl mx-14 pt-10">
             <p className="text-5xl nunito-font font-black">
-                Hello yelllowsin! Choose your plan
+                Choose your plan
             </p>
             <p className="nunito-font font-bold text-secondaryGray text-center">
                 With Martazo, you can create your own NFT marketplace in seconds! All plans will provide you with a unique subdomain (e.g. yourname.martazo.com).
