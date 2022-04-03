@@ -161,12 +161,12 @@ function LandingContent3({ offsetY }) {
           "max-w-fit -ml-8 p-8 nunito-font font-black text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl rounded-3xl transition-all duration-500"
         }
       >
-          <p className={ (inView ? ' opacity-100 ' : ' opacity-0 ') + "absolute bg-clip-text bg-gradient-to-bl from-green2 via-green1 to-green2 text-transparent transition-all duration-500"} >
-            How it works:
-          </p>
-          <p className={ (inView ? ' opacity-0 ' : ' opacity-100 ') + "text-accentGray transition-all duration-500"} >
-            How it works:
-          </p>
+        <p className={(inView ? ' opacity-100 ' : ' opacity-0 ') + "absolute bg-clip-text bg-gradient-to-bl from-green2 via-green1 to-green2 text-transparent transition-all duration-500"} >
+          How it works:
+        </p>
+        <p className={(inView ? ' opacity-0 ' : ' opacity-100 ') + "text-accentGray transition-all duration-500"} >
+          How it works:
+        </p>
       </div>
     </div>
   )
@@ -210,9 +210,9 @@ function PseudoNFTCard({ number, blockSeed, offsetY }) {
 
       }
       {
-        /*
+
         <img src={makeBlockie(blockSeed)} className="flex rounded-xl w-64 h-64 opacity-80 flex-shrink-0" />
-        */
+
       }
       <div className="flex space-x-4" >
         <p className="bg-accentGray text-secondaryGray text-2xl numbers-font italic font-black rounded-xl px-4 py-2 w-24">
