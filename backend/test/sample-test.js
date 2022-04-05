@@ -19,6 +19,7 @@ describe("Marketplace", function () {
     const storeaddress = store.address
 
     console.log(await market.setAddy(storeaddress))
+    console.log("addy set success")
 
 
 
@@ -28,9 +29,15 @@ describe("Marketplace", function () {
 
     const [_, seller1, seller2, buyer1, buyer2, buyer3, jade] = await ethers.getSigners()
     console.log(await market.setRoyaltyAddress(jade.address))
+    console.log("royalty set success")
     //seller1 mints
-    await nft.connect(seller1).mint(1, { value: auctionPrice })
-    console.log("mint successful")
+    let count = 1
+    while (count < 15) {
+      await nft.connect(seller1).mint(1, { value: auctionPrice })
+      console.log("mint successful #" + count)
+      count = count + 1;
+    }
+
 
     //seller1 registers store
     await store.connect(seller1).createStore("khalids", "#571686", "basic", "www.logo.com", { value: basicFee })
@@ -52,8 +59,15 @@ describe("Marketplace", function () {
 
     //seller 1 creates listing
     //should require the subdomain to be available
-    await market.connect(seller1).createListing("khalids", 1, 1, nftaddress)
-    console.log("seller1 lsiitng created successful")
+    /** */
+    let counter = 1
+    while (counter < 11) {
+      await market.connect(seller1).createListing("khalids", counter, 1, nftaddress)
+      console.log("seller1 listing created successful, listing #" + counter)
+      counter = counter + 1;
+    }
+
+
 
     //buyer 1 buys NFT from seller1
     await market.connect(buyer1).buyNow(nftaddress, 1, { value: auctionPrice })
@@ -79,7 +93,11 @@ describe("Marketplace", function () {
 
     console.log("\n\nmessing about\n\n")
     console.log("plan is a: ")
-    console.log(await market.connect(seller1).someAction(storeaddress, 1))
+    //console.log(await market.connect(seller1).someAction(storeaddress, 1))
+
+    const diff = ethers.utils.parseUnits('1500', 'ether')
+    await store.connect(seller1).upgrade("khalids", "unlimited", { value: diff })
+    console.log(await store.connect(seller1).getStoreWithSubdomain("khalids"))
 
 
 

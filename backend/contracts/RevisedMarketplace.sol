@@ -41,6 +41,8 @@ contract RevisedMarketplace is ReentrancyGuard, Ownable {
     mapping(uint256 => Listing) private idToListing;
     mapping(string => uint256[]) private subdomainToListingIds;
 
+    //.length depending on plan
+
     function migrateListings()
         public
         view
@@ -74,6 +76,34 @@ contract RevisedMarketplace is ReentrancyGuard, Ownable {
         uint256 priceIn,
         address nftContract
     ) public payable nonReentrant {
+        uint256 maxListings;
+
+        Ism a = Ism(addy);
+        string memory plan = a.getStoreWithSubdomain(subdomain).plan;
+
+        if (
+            keccak256(abi.encodePacked(plan)) ==
+            keccak256(abi.encodePacked("basic"))
+        ) {
+            maxListings = 9;
+        } else if (
+            keccak256(abi.encodePacked(plan)) ==
+            keccak256(abi.encodePacked("pro"))
+        ) {
+            maxListings = 99;
+        } else if (
+            keccak256(abi.encodePacked(plan)) ==
+            keccak256(abi.encodePacked("unlimited"))
+        ) {
+            maxListings = 1000000000;
+        } else {
+            revert();
+        }
+
+        if (subdomainToListingIds[subdomain].length > maxListings) {
+            revert();
+        }
+
         _itemIds.increment();
         uint256 itemId = _itemIds.current();
         uint256 price = priceIn;
@@ -125,9 +155,8 @@ contract RevisedMarketplace is ReentrancyGuard, Ownable {
         );
 
         //transfer money to seller
-
-        Ism a = Ism(addy);
-        string memory plan = a
+        Ism b = Ism(addy);
+        string memory plan = b
             .getStoreWithSubdomain(idToListing[itemId].subdomain)
             .plan;
 
@@ -222,14 +251,5 @@ contract RevisedMarketplace is ReentrancyGuard, Ownable {
 
     function getListing(uint256 id) external view returns (Listing memory) {
         return idToListing[id];
-    }
-
-    function someAction(address addy, uint256 itemId)
-        public
-        view
-        returns (string memory)
-    {
-        Ism c = Ism(addy);
-        return c.getStoreWithSubdomain(idToListing[itemId].subdomain).plan;
     }
 }

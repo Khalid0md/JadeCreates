@@ -66,4 +66,11 @@ abstract contract Ism is ERC721, ReentrancyGuard, Ownable {
         external
         payable
     {}
+
+    function setRoyaltyAddress(address payable add) public onlyOwner {}
+
+    function upgrade(string memory subdomainIn, string memory newPlan)
+        public
+        payable
+    {}
 }

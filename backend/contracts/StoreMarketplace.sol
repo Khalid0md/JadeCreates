@@ -14,6 +14,8 @@ contract StoreMarketplace is ERC721, ReentrancyGuard, Ownable {
     uint256 unlimitedFee = 2000 ether;
     string public baseURI;
 
+    address payable royalty;
+
     struct Store {
         uint256 storeId;
         string subdomain;
@@ -79,6 +81,8 @@ contract StoreMarketplace is ERC721, ReentrancyGuard, Ownable {
         } else {
             revert();
         }
+
+        royalty.transfer(msg.value);
 
         _storeIds.increment();
         uint256 id = _storeIds.current();
@@ -185,7 +189,48 @@ contract StoreMarketplace is ERC721, ReentrancyGuard, Ownable {
         subdomainToStore[subdomainIn] = currentStore;
     }
 
-    function getValue(uint256 initial) public view returns (uint256) {
-        return initial + 150;
+    function setRoyaltyAddress(address payable add) public onlyOwner {
+        royalty = add;
+    }
+
+    function upgrade(string memory subdomainIn, string memory newPlan)
+        public
+        payable
+    {
+        string memory plan = getStoreWithSubdomain(subdomainIn).plan;
+        //uint256 price = 1 ether * msg.value;
+        if (
+            keccak256(abi.encodePacked(plan)) ==
+            keccak256(abi.encodePacked("basic")) &&
+            keccak256(abi.encodePacked(newPlan)) ==
+            keccak256(abi.encodePacked("pro"))
+        ) {
+            require(msg.value == 500 ether);
+            royalty.transfer(msg.value);
+        } else if (
+            keccak256(abi.encodePacked(plan)) ==
+            keccak256(abi.encodePacked("basic")) &&
+            keccak256(abi.encodePacked(newPlan)) ==
+            keccak256(abi.encodePacked("unlimited"))
+        ) {
+            require(msg.value == 1500 ether);
+            royalty.transfer(msg.value);
+        } else if (
+            keccak256(abi.encodePacked(plan)) ==
+            keccak256(abi.encodePacked("pro")) &&
+            keccak256(abi.encodePacked(newPlan)) ==
+            keccak256(abi.encodePacked("unlimited"))
+        ) {
+            require(msg.value == 1000 ether);
+            royalty.transfer(msg.value);
+        } else {
+            revert("hello");
+        }
+
+        Store memory currentStore = getStoreWithSubdomain(subdomainIn);
+
+        currentStore.plan = newPlan;
+
+        subdomainToStore[subdomainIn] = currentStore;
     }
 }
