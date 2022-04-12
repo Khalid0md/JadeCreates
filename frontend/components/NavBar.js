@@ -13,8 +13,37 @@ const walletConnectLogo = require('../public/walletconnect-logo.png')
 import { IoWallet, IoWalletOutline } from "react-icons/io5";
 import { HiOutlineGlobe, HiOutlineGlobeAlt, HiViewGrid, HiViewGridAdd, HiCreditCard, HiReceiptTax } from "react-icons/hi";
 import makeBlockie from "ethereum-blockies-base64";
+import { HiMenu, HiOutlineX } from 'react-icons/hi'
 
-function NavBar(props, spaceX) {
+function NavBar({ logo, buttons, collapsed, setCollapsed }) {
+    return (
+        <div className="sticky flex flex-col items-center justify-center w-full top-0 flex-shrink-0 bg-background/70 backdrop-blur-xl z-30 py-4">
+            <div className="flex w-full max-w-[90rem] px-6 md:px-14 space-x-4">
+                {logo}
+                <div className="flex grow" />
+                <div className="hidden md:flex">
+                    {buttons}
+                </div>
+                <div className="flex md:hidden">
+                    <button onClick={() => setCollapsed(!collapsed)}>
+                        {
+                            collapsed
+                            ?
+                            <HiMenu size={25} />
+                            :
+                            <HiOutlineX size={25} />
+                        }
+                    </button>
+                </div>
+            </div>
+            <div className={collapsed ? ' hidden ' : ' flex ' + 'md:hidden pt-4 w-full'} >
+                {buttons}
+            </div>
+        </div>
+    )
+}
+
+function NavBar2(props, spaceX) {
     return (
         <div className="sticky flex justify-center w-full top-0 space-x-4 flex-shrink-0 bg-background/70 backdrop-blur-xl z-30 py-4">
             <div className="flex grow max-w-[90rem] px-6 md:px-14 space-x-4">
@@ -25,6 +54,52 @@ function NavBar(props, spaceX) {
 }
 
 export function MainNavBar({ showGetStarted }) {
+
+    const walletSession = useWallet();
+    const router = useRouter();
+
+    const [collapsed, setCollapsed] = useState(true);
+
+    return (
+        <NavBar
+            logo={
+                <div className="flex space-x-4">
+                    <div className="flex h-full items-center -mr-2">
+                        <img src="/martazo_logo.svg" className="w-8 h-8 mb-1" />
+                    </div>
+                    <Logo />
+                </div>
+            }
+            buttons={
+                <div className={"flex flex-col grow md:flex-row space-y-4 space-x-0 md:space-y-0 md:space-x-4 px-6"} >
+                    <NavButton
+                        text={walletSession.isConnected ? 'Go to Dashboard' : 'Connect Wallet'}
+                        bgColor={'white'} textColor={'mainBlack'}
+                        iconRight={!walletSession.isConnected && <IoWallet size={25} className="text-green2 ml-4 -mt-1 -mr-2" />}
+                        onClick={async () => {
+                            if (walletSession.isConnected) {
+                                router.push('/dashboard')
+                            } else {
+                                await walletSession.showConnectModal()
+                            }
+                        }}
+                    />
+                    {
+                        showGetStarted
+                            ?
+                            <NavButton text={'Get Started'} bgColor={'mainBlack'} textColor={'white'} shadow={'high'} link={'/getstarted'} />
+                            :
+                            <NavButton text={'Back'} bgColor={'mainBlack'} textColor={'white'} shadow={'high'} link={'/'} />
+                    }
+                </div>
+            }
+            collapsed={collapsed}
+            setCollapsed={setCollapsed}
+        />
+    )
+}
+
+export function MainNavBar2({ showGetStarted }) {
 
     //const walletConnectSession = useWalletConnect();
     const walletSession = useWallet();

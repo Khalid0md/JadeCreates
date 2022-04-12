@@ -202,8 +202,8 @@ function LandingContent1() {
 function LandingContent2({ offsetY }) {
   return (
     <div className="px-6 2xl:px-0">
-      <div className="flex items-center justify-end h-full w-full max-w-[90rem] px-6 md:px-12 bg-mainBlack/90 p-4 py-12 rounded-3xl">
-        <div className="flex grow text-center pr-6 md:pr-12 nunito-font text-6xl font-black text-background leading-tight">
+      <div className="flex flex-col lg:flex-row space-y-12 lg:space-y-0 items-center justify-end h-full w-full max-w-[90rem] px-6 md:px-12 bg-mainBlack/90 p-4 py-12 rounded-3xl">
+        <div className="flex grow text-center pr-6 md:pr-12 nunito-font text-4xl sm:text-5xl md:text-6xl font-black text-background leading-tight">
           List all of your NFTs in one place.
         </div>
         <NFTParallax offsetY={offsetY} />
@@ -275,31 +275,31 @@ function InfoCardStack() {
         iden={'1'}
         titleText='Connect a wallet'
         mainText='All you need to purchase a store is your metamask wallet.'
-        icon={<img src="/landing_howitworks/wallet.png" className="h-64" />}//<IoWallet size={175} />}
+        icon={<img src="/landing_howitworks/wallet.png" className="h-5/6" />}//<IoWallet size={175} />}
       />
       <InfoCard
         iden={'2'}
         titleText='Choose a plan'
         mainText="Click 'Get Started' to choose from three different plans."
-        icon={<img src="/landing_howitworks/plan.png" className="h-64" />}//<BsListCheck size={175} />}
+        icon={<img src="/landing_howitworks/plan.png" className="h-5/6" />}//<BsListCheck size={175} />}
       />
       <InfoCard
         iden={'3'}
         titleText='Claim a subdomain'
         mainText='Get your own subdomain! In the serach bar it will look like: yourdomain.martazo.com.'
-        icon={<img src="/landing_howitworks/domain.png" className="h-64" />}//<BsGlobe2 size={175} />}
+        icon={<img src="/landing_howitworks/domain.png" className="h-5/6" />}//<BsGlobe2 size={175} />}
       />
       <InfoCard
         iden={'4'}
         titleText='List NFTs'
         mainText='Transfer NFTs that you own from your wallet to your store.'
-        icon={<img src="/landing_howitworks/list.png" className="h-64" />}//<HiViewGridAdd size={175} />}
+        icon={<img src="/landing_howitworks/list.png" className="h-5/6" />}//<HiViewGridAdd size={175} />}
       />
       <InfoCard
         iden={'lastInfoCard'}
         titleText='Done! Start Selling'
         mainText='From here, you can view your NFTs in your own store by going to your subdomain.'
-        icon={<img src="/landing_howitworks/sell.png" className="h-64" />}//<MdSell size={175} />}
+        icon={<img src="/landing_howitworks/sell.png" className="h-5/6" />}//<MdSell size={175} />}
       />
     </div>
   )
@@ -414,7 +414,7 @@ function InfoCard({ iden, transitionOffset, offsetY, titleText, mainText, icon }
     <div id={iden}
       className={
         (inView ? ' opacity-100 ' : ' opacity-0 ') +
-        "flex flex-col w-96 aspect-[5/6] bg-white rounded-3xl p-4 flex-shrink-0 transition-all duration-500"
+        "flex flex-col xl:w-96 aspect-[5/6] bg-white rounded-3xl p-4 transition-all duration-500"
       }
     >
       <div className="flex items-center justify-center bg-background grow h-2/3 rounded-2xl text-green0">
@@ -457,9 +457,10 @@ function NFTParallax({ offsetY }) {
         <PseudoNFTCard number={1234} blockSeed={'iuqwerhf'} offsetY={offsetY} />
         <PseudoNFTCard number={1234} blockSeed={'oiqwuernf'} offsetY={offsetY} />
         <PseudoNFTCard number={1234} blockSeed={'ljiq2h34'} offsetY={offsetY} />
+        <PseudoNFTCard number={1234} blockSeed={'ljiq2h34'} offsetY={offsetY} />
       </div>
       <div
-        className="flex flex-col space-y-6 transition-all ease-linear duration-[10ms]"
+        className="hidden md:flex flex-col space-y-6 transition-all ease-linear duration-[10ms]"
         style={{ willChange: 'transform', transform: `translate3d(0, ${offsetY * -1}px, 0)` }}
       >
         <PseudoNFTCard number={1234} blockSeed={'askldfhlkja'} offsetY={offsetY} />
