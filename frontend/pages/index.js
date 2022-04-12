@@ -133,12 +133,12 @@ function LandingPage() {
         <LandingContent3 offsetY={offsetY} trackerId='posTracker' endTrackerId={'endTracker'} />
       </div>
       <div id='endTracker' className="h-[125rem]" />
-      <Footer />
+
     </div>
   )
 }
 
-/** 
+/**
 function Footer() {
 
   const router = useRouter();
@@ -183,8 +183,7 @@ function Footer() {
     </div>
   )
 }
-*/
-//
+ */
 
 
 function LandingContent1() {
