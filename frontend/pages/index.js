@@ -292,39 +292,39 @@ function InfoCardCollection({ offsetY, trackerId, endTrackerId }) {
           transitionOffset={0}
           offsetY={offsetY}
           titleText='Connect a wallet'
-          mainText='Lorem ipsum dolor sit amet, bla something else to put here to fill up space.'
+          mainText='All you need to purchase a store is your metamask wallet.'
           icon={<img src="/landing_howitworks/wallet.png" className="h-64" />}//<IoWallet size={175} />}
         />
         <InfoCard
           iden={'2'}
-          transitionOffset={75}
+          transitionOffset={25}
           offsetY={offsetY}
           titleText='Choose a plan'
-          mainText='Lorem ipsum dolor sit amet, bla something else to put here to fill up space.'
+          mainText="Click 'Get Started' to choose from three different plans."
           icon={<img src="/landing_howitworks/plan.png" className="h-64" />}//<BsListCheck size={175} />}
         />
         <InfoCard
           iden={'3'}
-          transitionOffset={150}
+          transitionOffset={50}
           offsetY={offsetY}
           titleText='Claim a subdomain'
-          mainText='Lorem ipsum dolor sit amet, bla something else to put here to fill up space.'
+          mainText='Get your own subdomain! In the serach bar it will look like: yourdomain.martazo.com.'
           icon={<img src="/landing_howitworks/domain.png" className="h-64" />}//<BsGlobe2 size={175} />}
         />
         <InfoCard
           iden={'4'}
-          transitionOffset={175}
+          transitionOffset={75}
           offsetY={offsetY}
           titleText='List NFTs'
-          mainText='Lorem ipsum dolor sit amet, bla something else to put here to fill up space.'
+          mainText='Transfer NFTs that you own from your wallet to your store.'
           icon={<img src="/landing_howitworks/list.png" className="h-64" />}//<HiViewGridAdd size={175} />}
         />
         <InfoCard
           iden={'lastInfoCard'}
-          transitionOffset={180}
+          transitionOffset={100}
           offsetY={offsetY}
           titleText='Done! Start Selling'
-          mainText='Lorem ipsum dolor sit amet, bla something else to put here to fill up space.'
+          mainText='From here, you can view your NFTs in your own store by going to your subdomain.'
           icon={<img src="/landing_howitworks/sell.png" className="h-64" />}//<MdSell size={175} />}
         />
       </div>
