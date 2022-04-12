@@ -38,25 +38,27 @@ export function MainNavBar({ showGetStarted }) {
             </div>
             <Logo />
             <div className="flex grow" />
-            <NavButton
-                text={walletSession.isConnected ? 'Go to Dashboard' : 'Connect Wallet'}
-                bgColor={'white'} textColor={'mainBlack'}
-                iconRight={!walletSession.isConnected && <IoWallet size={25} className="text-green2 ml-4 -mt-1 -mr-2" />}
-                onClick={async () => {
-                    if (walletSession.isConnected) {
-                        router.push('/dashboard')
-                    } else {
-                        await walletSession.showConnectModal()
-                    }
-                }}
-            />
-            {
-                showGetStarted
-                    ?
-                    <NavButton text={'Get Started'} bgColor={'mainBlack'} textColor={'white'} shadow={'high'} link={'/getstarted'} />
-                    :
-                    <NavButton text={'Back'} bgColor={'mainBlack'} textColor={'white'} shadow={'high'} link={'/'} />
-            }
+            <div className="flex space-x-4">
+                <NavButton
+                    text={walletSession.isConnected ? 'Go to Dashboard' : 'Connect Wallet'}
+                    bgColor={'white'} textColor={'mainBlack'}
+                    iconRight={!walletSession.isConnected && <IoWallet size={25} className="text-green2 ml-4 -mt-1 -mr-2" />}
+                    onClick={async () => {
+                        if (walletSession.isConnected) {
+                            router.push('/dashboard')
+                        } else {
+                            await walletSession.showConnectModal()
+                        }
+                    }}
+                />
+                {
+                    showGetStarted
+                        ?
+                        <NavButton text={'Get Started'} bgColor={'mainBlack'} textColor={'white'} shadow={'high'} link={'/getstarted'} />
+                        :
+                        <NavButton text={'Back'} bgColor={'mainBlack'} textColor={'white'} shadow={'high'} link={'/'} />
+                }
+            </div>
         </NavBar>
     )
 }

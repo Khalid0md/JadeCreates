@@ -129,10 +129,13 @@ function LandingPage() {
       <div className="h-12" />
       <LandingContent2 offsetY={offsetY} />
       <div id='posTracker' className="h-12" />
-      <div className={false ? '  ' : ' sticky ' + "flex flex-col items-center justify-center flex-shrink-0 top-[18%] h-screen w-full"} >
+      <div className={false ? '  ' : ' sticky ' + "hidden xl:flex flex-col items-center justify-center flex-shrink-0 top-[18%] h-screen w-full"} >
         <LandingContent3 offsetY={offsetY} trackerId='posTracker' endTrackerId={'endTracker'} />
       </div>
-      <div id='endTracker' className="h-[125rem]" />
+      <div className={"flex xl:hidden pb-16"} >
+        <LandingContent3Mobile offsetY={offsetY} trackerId='posTracker' endTrackerId={'endTracker'} />
+      </div>
+      <div id='endTracker' className="hidden xl:flex h-[125rem]" />
       <Footer />
     </div>
   )
@@ -143,9 +146,9 @@ function Footer() {
   const router = useRouter();
 
   return (
-    <div className="sticky top-0 flex items-center justify-center h-screen w-full bg-background">
-      <div className="grid items-center justify-center grid-flow-row xl:grid-flow-col px-16 py-32 xl:px-48 nunito-font bg-white rounded-3xl space-y-8 xl:space-y-0 xl:space-x-16">
-        <div className="max-w-[15rem] -mr-4">
+    <div className="relative pb-8 xl:mb-0 xl:sticky xl:top-0 flex items-center justify-center xl:h-screen w-full bg-background">
+      <div className="grid items-center justify-center grid-flow-row xl:grid-flow-col px-16 py-32 xl:px-48 nunito-font bg-white rounded-3xl space-y-8 xl:space-y-0 xl:space-x-16 w-full xl:max-w-min mx-8">
+        <div className="min-w-[10rem] max-w-[15rem] -mr-4">
           <Logo />
           <p className="font-bold">
             The fastest way to build your own NFT marketplace.
@@ -155,7 +158,7 @@ function Footer() {
           <p className="font-extrabold">
             Links
           </p>
-          <button onClick={() => router.push('/getstarted')}>
+          <button className=" whitespace-nowrap" onClick={() => router.push('/getstarted')}>
             Get Started
           </button>
           <button onClick={() => router.push('/dashboard')}>
@@ -239,6 +242,62 @@ function LandingContent3({ offsetY, trackerId, endTrackerId }) {
         </p>
       </div>
       <InfoCardCollection offsetY={offsetY} trackerId={trackerId} />
+    </div>
+  )
+}
+
+function LandingContent3Mobile({ offsetY, trackerId, endTrackerId }) {
+
+  return (
+    <div className="flex flex-col h-full w-full max-w-[90rem] px-10 md:px-24 space-y-8">
+      <div
+        id='howitworks'
+        className={
+          "bg-white max-w-fit p-8 nunito-font font-black text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl rounded-3xl"
+        }
+      >
+        <p className={"bg-clip-text bg-gradient-to-bl from-green2 via-green1 to-green2 text-transparent transition-all duration-500"} >
+          How it works:
+        </p>
+      </div>
+      <InfoCardStack />
+    </div>
+  )
+}
+
+function InfoCardStack() {
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 place-items-center">
+      <InfoCard
+        iden={'1'}
+        titleText='Connect a wallet'
+        mainText='All you need to purchase a store is your metamask wallet.'
+        icon={<img src="/landing_howitworks/wallet.png" className="h-64" />}//<IoWallet size={175} />}
+      />
+      <InfoCard
+        iden={'2'}
+        titleText='Choose a plan'
+        mainText="Click 'Get Started' to choose from three different plans."
+        icon={<img src="/landing_howitworks/plan.png" className="h-64" />}//<BsListCheck size={175} />}
+      />
+      <InfoCard
+        iden={'3'}
+        titleText='Claim a subdomain'
+        mainText='Get your own subdomain! In the serach bar it will look like: yourdomain.martazo.com.'
+        icon={<img src="/landing_howitworks/domain.png" className="h-64" />}//<BsGlobe2 size={175} />}
+      />
+      <InfoCard
+        iden={'4'}
+        titleText='List NFTs'
+        mainText='Transfer NFTs that you own from your wallet to your store.'
+        icon={<img src="/landing_howitworks/list.png" className="h-64" />}//<HiViewGridAdd size={175} />}
+      />
+      <InfoCard
+        iden={'lastInfoCard'}
+        titleText='Done! Start Selling'
+        mainText='From here, you can view your NFTs in your own store by going to your subdomain.'
+        icon={<img src="/landing_howitworks/sell.png" className="h-64" />}//<MdSell size={175} />}
+      />
     </div>
   )
 }
@@ -334,15 +393,17 @@ function InfoCardCollection({ offsetY, trackerId, endTrackerId }) {
 
 function InfoCard({ iden, transitionOffset, offsetY, titleText, mainText, icon }) {
 
-  const [inView, setInView] = useState(false)
+  const [inView, setInView] = useState(true)
 
   useEffect(() => {
 
-    // get element's position
-    const rect = document.getElementById(iden).getBoundingClientRect();
+    if (offsetY) {
+      // get element's position
+      const rect = document.getElementById(iden).getBoundingClientRect();
 
-    // apply effects
-    setInView(rect.y < screen.height / 2 - transitionOffset)
+      // apply effects
+      setInView(rect.y < screen.height / 2 - transitionOffset)
+    }
 
   }, [offsetY])
 
@@ -352,7 +413,6 @@ function InfoCard({ iden, transitionOffset, offsetY, titleText, mainText, icon }
         (inView ? ' opacity-100 ' : ' opacity-0 ') +
         "flex flex-col w-96 aspect-[5/6] bg-white rounded-3xl p-4 flex-shrink-0 transition-all duration-500"
       }
-
     >
       <div className="flex items-center justify-center bg-background grow h-2/3 rounded-2xl text-green0">
         {/*
