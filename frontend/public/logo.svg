@@ -1,0 +1,24 @@
+<svg width="350" height="496" viewBox="0 0 350 496" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect y="146" width="350" height="350" rx="50" fill="#49BEAA"/>
+<path d="M280 426H350V446C350 473.614 327.614 496 300 496H280V426Z" fill="#49DCB1"/>
+<path d="M0 426H70V496H50C22.3858 496 0 473.614 0 446V426Z" fill="#49DCB1"/>
+<path d="M280 146H300C327.614 146 350 168.386 350 196V216H280V146Z" fill="#49DCB1"/>
+<path d="M0 196C0 168.386 22.3858 146 50 146H70V216H0V196Z" fill="#49DCB1"/>
+<path d="M210 216H280V286H210V216Z" fill="#49DCB1"/>
+<path d="M210 426H280V496H210V426Z" fill="#49DCB1"/>
+<path d="M140 286H210V356H140V286Z" fill="#49DCB1"/>
+<path d="M210 146H280V216H210V146Z" fill="#49DCB1"/>
+<path d="M140 146H210V216H140V146Z" fill="#49DCB1"/>
+<path d="M70 146H140V216H70V146Z" fill="#49DCB1"/>
+<path d="M140 356H210V426H140V356Z" fill="#49DCB1"/>
+<path d="M70 356H140V426H70V356Z" fill="#49DCB1"/>
+<path d="M0 216H70V286H0V216Z" fill="#49DCB1"/>
+<path d="M70 286H140V356H70V286Z" fill="#49DCB1"/>
+<path d="M280 356H350V426H280V356Z" fill="#49DCB1"/>
+<mask id="mask0_2_30" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="70" y="0" width="210" height="107">
+<rect x="70" width="210" height="107" fill="#C4C4C4"/>
+</mask>
+<g mask="url(#mask0_2_30)">
+<path d="M255 107C255 152.734 218.74 189 175 189C131.26 189 95 152.734 95 107C95 61.2659 131.26 25 175 25C218.74 25 255 61.2659 255 107Z" stroke="#49DCB1" stroke-width="50"/>
+</g>
+</svg>

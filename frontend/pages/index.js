@@ -1,11 +1,19 @@
 
 import { MainNavBar, TopSpacer } from "../components/NavBar"
-import { useContext, useEffect, useReducer, useState } from "react"
+import { useContext, useEffect, useReducer, useRef, useState } from "react"
 import { useRouter } from "next/router";
 import makeBlockie from 'ethereum-blockies-base64';
 import Storefront from "../components/Storefront";
+import Head from 'next/head'
 const Web3 = require("web3");
-import { ParallaxProvider, useParallax } from 'react-scroll-parallax';
+var throttle = require('lodash.throttle');
+
+// icons for 'how it works' section
+import { BsListCheck, BsGlobe2 } from "react-icons/bs";
+import { IoWallet } from "react-icons/io5";
+import { GrDomain } from "react-icons/gr";
+import { HiOutlineGlobe, HiOutlineGlobeAlt, HiViewGrid, HiViewGridAdd, HiCreditCard, HiReceiptTax } from "react-icons/hi";
+import { MdSell } from 'react-icons/md';
 //
 //const fs = require("fs")
 //const market = fs.readFileSync("market.txt").toString()
@@ -17,6 +25,7 @@ import { marketplaceAddress, storeMarketplaceAddress } from "../../backend/confi
 // reference store marketplace contract
 import storeMarketplaceJson from '../../backend/artifacts/contracts/StoreMarketplace.sol/StoreMarketplace.json';
 import LoadingIndicator from "../components/LoadingIndicator";
+import Logo from "../components/logo";
 //const storeMarketplaceAddress = '0x02DfcEFB6069f27b89f041b6Be92dC3e2185c9bB';
 
 async function getStoreData() {
@@ -67,6 +76,10 @@ export default function CheckDomain() {
 
   return (
     <div>
+      <Head>
+        <title>Martazo</title>
+        <link rel="icon" href="/favicon.ico?" />
+      </Head>
       {
         loaded
           ?
@@ -89,29 +102,86 @@ export default function CheckDomain() {
 function LandingPage() {
 
   const [offsetY, setOffsetY] = useState(0);
-  const handleScroll = () => setOffsetY(window.pageYOffset);
+
+  function handleScroll() {
+    setOffsetY(window.pageYOffset)
+  }
 
   // hook to track scrolling
   useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
 
-    return () => window.removeEventListener("scroll", handleScroll);
+    const throttledScroll = throttle(handleScroll, 1);
+    window.addEventListener('scroll', throttledScroll, { passive: true })
+
+    return () => {
+      window.removeEventListener('scroll', throttledScroll);
+    }
+
   }, [])
 
-
   return (
-    <div className="flex flex-col w-full items-center bg-background h-full space-y-4">
+    <div
+      className="flex flex-col w-full items-center bg-background h-full space-y-4"
+    >
       <TopSpacer />
       <MainNavBar showGetStarted={true} />
-      <div className="space-y-24">
-        <LandingContent1 />
-        <LandingContent2 offsetY={offsetY} />
-        <LandingContent3 offsetY={offsetY} />
+      <LandingContent1 />
+      <div className="h-12" />
+      <LandingContent2 offsetY={offsetY} />
+      <div id='posTracker' className="h-12" />
+      <div className={false ? '  ' : ' sticky ' + "flex flex-col items-center justify-center flex-shrink-0 top-[18%] h-screen w-full"} >
+        <LandingContent3 offsetY={offsetY} trackerId='posTracker' endTrackerId={'endTracker'} />
       </div>
-      <div className="h-[100rem]" />
+      <div id='endTracker' className="h-[125rem]" />
+      <Footer />
     </div>
   )
-}//<div className="flex flex-col h-full w-full max-w-[90rem] px-14 md:px-24 space-y-24">
+}
+
+function Footer() {
+
+  const router = useRouter();
+
+  return (
+    <div className="sticky top-0 flex items-center justify-center h-screen w-full bg-background">
+      <div className="grid items-center justify-center grid-flow-row xl:grid-flow-col px-16 py-32 xl:px-48 nunito-font bg-white rounded-3xl space-y-8 xl:space-y-0 xl:space-x-16">
+        <div className="max-w-[15rem] -mr-4">
+          <Logo />
+          <p className="font-bold">
+            The fastest way to build your own NFT marketplace.
+          </p>
+        </div>
+        <div className="flex flex-col items-start">
+          <p className="font-extrabold">
+            Links
+          </p>
+          <button onClick={() => router.push('/getstarted')}>
+            Get Started
+          </button>
+          <button onClick={() => router.push('/dashboard')}>
+            Dashboard
+          </button>
+        </div>
+        <div className="flex flex-col items-start">
+          <p className="font-extrabold">
+            Socials
+          </p>
+          <div className="flex space-x-2">
+            <button className="flex items-center justify-center w-16 h-16 bg-mainBlack text-white rounded-2xl">
+              a
+            </button>
+            <button className="flex items-center justify-center w-16 h-16 bg-mainBlack text-white rounded-2xl">
+              b
+            </button>
+            <button className="flex items-center justify-center w-16 h-16 bg-mainBlack text-white rounded-2xl">
+              c
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
 
 function LandingContent1() {
   return (
@@ -136,7 +206,7 @@ function LandingContent2({ offsetY }) {
   )
 }
 
-function LandingContent3({ offsetY }) {
+function LandingContent3({ offsetY, trackerId, endTrackerId }) {
 
   const [inView, setInView] = useState(false)
   const [bgInView, setBgInView] = useState(false)
@@ -168,6 +238,144 @@ function LandingContent3({ offsetY }) {
           How it works:
         </p>
       </div>
+      <InfoCardCollection offsetY={offsetY} trackerId={trackerId} />
+    </div>
+  )
+}
+
+function InfoCardCollection({ offsetY, trackerId, endTrackerId }) {
+
+  const [offsetX, setOffsetX] = useState(0)
+  const [posIsFrozen, setPosIsFrozen] = useState(false)
+
+  useEffect(() => {
+
+    // get width of collection
+    /*
+    if (!collectionWidth) {
+      const collection = document.getElementById('infoCardCollection').getBoundingClientRect()
+      setCollecitonWidth(collection.width - 200)
+    }
+    */
+
+    // get tracker's position
+    const tracker = document.getElementById(trackerId).getBoundingClientRect()
+
+    setPosIsFrozen(tracker.y < 0)
+
+    if (posIsFrozen) {
+
+      // check that last card does not go past edge of collection
+      //if (tracker.y * -1 > collectionWidth) {
+      const col = document.getElementById('infoCardCollection').getBoundingClientRect();
+      const lastItem = document.getElementById('lastInfoCard').getBoundingClientRect();
+      if (!(lastItem.right < col.right && offsetX + tracker.y < 0)) {
+        setOffsetX(tracker.y * -1)
+      }
+    } else {
+      setOffsetX(0)
+    }
+
+  }, [offsetY])
+
+  return (
+    <div id='infoCardCollection' className="flex overflow-hidden rounded-3xl -mx-8 z-0 mt-8">
+      <div id='posTracker2' className="h-0" />
+      <div
+        className={
+          "flex space-x-8 ease-linear2 transition-all2"
+        }
+        style={{ willChange: 'transform', transform: `translate3d(${offsetX * -0.5}px, 0, 0)` }}
+      >
+        <InfoCard
+          iden={'1'}
+          transitionOffset={0}
+          offsetY={offsetY}
+          titleText='Connect a wallet'
+          mainText='Lorem ipsum dolor sit amet, bla something else to put here to fill up space.'
+          icon={<IoWallet size={175} />}
+        />
+        <InfoCard
+          iden={'2'}
+          transitionOffset={75}
+          offsetY={offsetY}
+          titleText='Choose a plan'
+          mainText='Lorem ipsum dolor sit amet, bla something else to put here to fill up space.'
+          icon={<BsListCheck size={175} />}
+        />
+        <InfoCard
+          iden={'3'}
+          transitionOffset={150}
+          offsetY={offsetY}
+          titleText='Claim a subdomain'
+          mainText='Lorem ipsum dolor sit amet, bla something else to put here to fill up space.'
+          icon={<BsGlobe2 size={175} />}
+        />
+        <InfoCard
+          iden={'4'}
+          transitionOffset={175}
+          offsetY={offsetY}
+          titleText='List NFTs'
+          mainText='Lorem ipsum dolor sit amet, bla something else to put here to fill up space.'
+          icon={<HiViewGridAdd size={175} />}
+        />
+        <InfoCard
+          iden={'lastInfoCard'}
+          transitionOffset={180}
+          offsetY={offsetY}
+          titleText='Done! Start Selling'
+          mainText='Lorem ipsum dolor sit amet, bla something else to put here to fill up space.'
+          icon={<MdSell size={175} />}
+        />
+      </div>
+    </div>
+  )
+}
+
+function InfoCard({ iden, transitionOffset, offsetY, titleText, mainText, icon }) {
+
+  const [inView, setInView] = useState(false)
+
+  useEffect(() => {
+
+    // get element's position
+    const rect = document.getElementById(iden).getBoundingClientRect();
+
+    // apply effects
+    setInView(rect.y < screen.height / 2 - transitionOffset)
+
+  }, [offsetY])
+
+  return (
+    <div id={iden}
+      className={
+        (inView ? ' opacity-100 ' : ' opacity-0 ') +
+        "flex flex-col w-96 aspect-[5/6] bg-white rounded-3xl p-4 transition-all ease-linear flex-shrink-0"
+      }
+
+    >
+      <div className="flex items-center justify-center bg-background grow h-2/3 rounded-2xl text-green0">
+        <div
+          className="drop-shadow-2xl bg-green1 px-6 py-10 rounded-3xl"
+          style={{
+            //transform: 'rotate3d(1, 1, 1, 45deg)',
+            //transform: 'rotateX(23deg) rotateY(-19deg) rotateZ(20deg)',
+            //transformOrigin: '50% 50% 0px'
+          }}
+        >
+          <div className="drop-shadow-xl">
+            {icon}
+          </div>
+        </div>
+      </div>
+      <div className="flex flex-col grow justify-center nunito-font px-2 space-y-2">
+        <p className="font-black text-2xl text-mainBlack/75">
+          {titleText}
+        </p>
+        <p className="font-bold text-mainBlack/50">
+          {mainText}
+        </p>
+      </div>
     </div>
   )
 }
@@ -176,8 +384,8 @@ function NFTParallax({ offsetY }) {
   return (
     <div className="flex space-x-6 overflow-hidden h-[40rem] rounded-2xl glow-wide flex-shrink-0">
       <div
-        className="flex flex-col space-y-6 transition-all ease-linear"
-        style={{ willChange: 'transform', transform: `translateY(${offsetY * -0.75}px)` }}
+        className="flex flex-col space-y-6"
+        style={{ willChange: 'transform', transform: `translate3d(0, ${offsetY * -0.75}px, 0)` }}
       >
         <PseudoNFTCard number={1234} blockSeed={'qetuoadgjlxvn'} offsetY={offsetY} />
         <PseudoNFTCard number={1234} blockSeed={'iuqwerhf'} offsetY={offsetY} />
@@ -185,8 +393,8 @@ function NFTParallax({ offsetY }) {
         <PseudoNFTCard number={1234} blockSeed={'ljiq2h34'} offsetY={offsetY} />
       </div>
       <div
-        className="flex flex-col space-y-6 transition-all ease-linear"
-        style={{ willChange: 'transform', transform: `translateY(${offsetY * -1}px)` }}
+        className="flex flex-col space-y-6"
+        style={{ willChange: 'transform', transform: `translate3d(0, ${offsetY * -1}px, 0)` }}
       >
         <PseudoNFTCard number={1234} blockSeed={'askldfhlkja'} offsetY={offsetY} />
         <PseudoNFTCard number={1234} blockSeed={'klwefjkasdf'} offsetY={offsetY} />
@@ -207,7 +415,6 @@ function PseudoNFTCard({ number, blockSeed, offsetY }) {
             className="bg-gradient-to-b from-green1 to-green2 flex grow -m-16 animate-spin"
           />
         </div>
-
       }
       {
         /*
@@ -223,3 +430,10 @@ function PseudoNFTCard({ number, blockSeed, offsetY }) {
     </div>
   )
 }
+
+/*
+<div
+            className="bg-gradient-to-b from-green1 to-green2 flex grow -m-16 animate-spin"
+          />
+
+          */

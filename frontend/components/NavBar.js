@@ -14,7 +14,7 @@ import { IoWallet, IoWalletOutline } from "react-icons/io5";
 import { HiOutlineGlobe, HiOutlineGlobeAlt, HiViewGrid, HiViewGridAdd, HiCreditCard, HiReceiptTax } from "react-icons/hi";
 import makeBlockie from "ethereum-blockies-base64";
 
-function NavBar(props) {
+function NavBar(props, spaceX) {
     return (
         <div className="sticky flex justify-center w-full top-0 space-x-4 flex-shrink-0 bg-background/70 backdrop-blur-xl z-30 py-4">
             <div className="flex grow max-w-[90rem] px-6 md:px-14 space-x-4">
@@ -32,7 +32,10 @@ export function MainNavBar({ showGetStarted }) {
     const modalController = useModal();
 
     return (
-        <NavBar>
+        <NavBar spaceX={4} >
+            <div className="flex h-full items-center -mr-2">
+                <img src="/martazo_logo.svg" className="w-8 h-8 mb-1" />
+            </div>
             <Logo />
             <div className="flex grow" />
             <NavButton
