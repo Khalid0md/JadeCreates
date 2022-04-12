@@ -148,23 +148,24 @@ function Footer() {
   return (
     <div className="relative pb-8 xl:mb-0 xl:sticky xl:top-0 flex items-center justify-center xl:h-screen w-full bg-background">
       <div className="grid items-center justify-center grid-flow-row xl:grid-flow-col px-16 py-32 xl:px-48 nunito-font bg-white rounded-3xl space-y-8 xl:space-y-0 xl:space-x-16 w-full xl:max-w-min mx-8">
-        <div className="min-w-[10rem] max-w-[15rem] -mr-4">
+        <div className="min-w-[13rem] max-w-[15rem] -mr-4">
           <Logo />
           <p className="font-bold">
             The fastest way to build your own NFT marketplace.
           </p>
         </div>
-        <div className="flex flex-col items-start">
+        <div className="flex flex-col items-start space-y-1">
           <p className="font-extrabold">
             Links
           </p>
-          <button className=" whitespace-nowrap" onClick={() => router.push('/getstarted')}>
+          <button className="whitespace-nowrap" onClick={() => router.push('/getstarted')}>
             Get Started
           </button>
           <button onClick={() => router.push('/dashboard')}>
             Dashboard
           </button>
         </div>
+        {/*
         <div className="flex flex-col items-start">
           <p className="font-extrabold">
             Socials
@@ -181,10 +182,12 @@ function Footer() {
             </button>
           </div>
         </div>
+        */}
       </div>
     </div>
   )
 }
+
 
 function LandingContent1() {
   return (

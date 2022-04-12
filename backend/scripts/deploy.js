@@ -31,10 +31,20 @@ async function main() {
 
   await market.setAddy(store.address)
   console.log("setAddy success")
-  const royalAdd = "0xcaA59673A8e84bd9869C6c56b05de4EB1d5eC98B"
+  const royalAdd = "0xe6b8F935A0b5Fb1A3BE1784e5aB7897C6824467e"
   await market.setRoyaltyAddress(royalAdd)
-  console.log("royalty success")
-  //console.log(await market.setRoyaltyAddress(0xe6b8F935A0b5Fb1A3BE1784e5aB7897C6824467e))
+  console.log("market royalty success")
+  await store.setRoyaltyAddress(royalAdd)
+  console.log("store royalty success")
+
+
+  //await market.transferOwnership("0xe6b8F935A0b5Fb1A3BE1784e5aB7897C6824467e")
+  //console.log("transferred marketplace")
+
+  //await store.transferOwnership("0xe6b8F935A0b5Fb1A3BE1784e5aB7897C6824467e")
+  //console.log("store transferred")
+
+
   /*
     Marketplace and store contracts
   */
