@@ -21,6 +21,12 @@ module.exports = {
       gasPrice: 35000000000,
       saveDeployments: true
     },
+    mainnet: {
+      url: `https://api.harmony.one`,
+      accounts: [privateKey],
+      gasPrice: 35000000000,
+      saveDeployments: true
+    }
 
   },
   solidity: "0.8.4",
