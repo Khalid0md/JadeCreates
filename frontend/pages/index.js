@@ -350,7 +350,7 @@ function InfoCard({ iden, transitionOffset, offsetY, titleText, mainText, icon }
     <div id={iden}
       className={
         (inView ? ' opacity-100 ' : ' opacity-0 ') +
-        "flex flex-col w-96 aspect-[5/6] bg-white rounded-3xl p-4 flex-shrink-0 transition-all duration-"
+        "flex flex-col w-96 aspect-[5/6] bg-white rounded-3xl p-4 flex-shrink-0 transition-all duration-500"
       }
 
     >
