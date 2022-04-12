@@ -34,6 +34,12 @@ async function main() {
   const royalAdd = "0xcaA59673A8e84bd9869C6c56b05de4EB1d5eC98B"
   await market.setRoyaltyAddress(royalAdd)
   console.log("royalty success")
+
+  await market.transferOwnership("0xcaA59673A8e84bd9869C6c56b05de4EB1d5eC98B")
+  console.log("transferred marketplace")
+
+  await store.transferOwnership("0xcaA59673A8e84bd9869C6c56b05de4EB1d5eC98B")
+  console.log("store transferred")
   //console.log(await market.setRoyaltyAddress(0xe6b8F935A0b5Fb1A3BE1784e5aB7897C6824467e))
   /*
     Marketplace and store contracts
