@@ -110,7 +110,7 @@ function LandingPage() {
   // hook to track scrolling
   useEffect(() => {
 
-    const throttledScroll = throttle(handleScroll, 1);
+    const throttledScroll = throttle(handleScroll, 10);
     window.addEventListener('scroll', throttledScroll, { passive: true })
 
     return () => {
@@ -283,7 +283,7 @@ function InfoCardCollection({ offsetY, trackerId, endTrackerId }) {
       <div id='posTracker2' className="h-0" />
       <div
         className={
-          "flex space-x-8 ease-linear2 transition-all2"
+          "flex space-x-8 transition-all ease-linear duration-[10ms]"
         }
         style={{ willChange: 'transform', transform: `translate3d(${offsetX * -0.5}px, 0, 0)` }}
       >
@@ -293,7 +293,7 @@ function InfoCardCollection({ offsetY, trackerId, endTrackerId }) {
           offsetY={offsetY}
           titleText='Connect a wallet'
           mainText='Lorem ipsum dolor sit amet, bla something else to put here to fill up space.'
-          icon={<IoWallet size={175} />}
+          icon={<img src="/landing_howitworks/wallet.png" className="h-64" />}//<IoWallet size={175} />}
         />
         <InfoCard
           iden={'2'}
@@ -301,7 +301,7 @@ function InfoCardCollection({ offsetY, trackerId, endTrackerId }) {
           offsetY={offsetY}
           titleText='Choose a plan'
           mainText='Lorem ipsum dolor sit amet, bla something else to put here to fill up space.'
-          icon={<BsListCheck size={175} />}
+          icon={<img src="/landing_howitworks/plan.png" className="h-64" />}//<BsListCheck size={175} />}
         />
         <InfoCard
           iden={'3'}
@@ -309,7 +309,7 @@ function InfoCardCollection({ offsetY, trackerId, endTrackerId }) {
           offsetY={offsetY}
           titleText='Claim a subdomain'
           mainText='Lorem ipsum dolor sit amet, bla something else to put here to fill up space.'
-          icon={<BsGlobe2 size={175} />}
+          icon={<img src="/landing_howitworks/domain.png" className="h-64" />}//<BsGlobe2 size={175} />}
         />
         <InfoCard
           iden={'4'}
@@ -317,7 +317,7 @@ function InfoCardCollection({ offsetY, trackerId, endTrackerId }) {
           offsetY={offsetY}
           titleText='List NFTs'
           mainText='Lorem ipsum dolor sit amet, bla something else to put here to fill up space.'
-          icon={<HiViewGridAdd size={175} />}
+          icon={<img src="/landing_howitworks/list.png" className="h-64" />}//<HiViewGridAdd size={175} />}
         />
         <InfoCard
           iden={'lastInfoCard'}
@@ -325,7 +325,7 @@ function InfoCardCollection({ offsetY, trackerId, endTrackerId }) {
           offsetY={offsetY}
           titleText='Done! Start Selling'
           mainText='Lorem ipsum dolor sit amet, bla something else to put here to fill up space.'
-          icon={<MdSell size={175} />}
+          icon={<img src="/landing_howitworks/sell.png" className="h-64" />}//<MdSell size={175} />}
         />
       </div>
     </div>
@@ -350,13 +350,14 @@ function InfoCard({ iden, transitionOffset, offsetY, titleText, mainText, icon }
     <div id={iden}
       className={
         (inView ? ' opacity-100 ' : ' opacity-0 ') +
-        "flex flex-col w-96 aspect-[5/6] bg-white rounded-3xl p-4 transition-all ease-linear flex-shrink-0"
+        "flex flex-col w-96 aspect-[5/6] bg-white rounded-3xl p-4 flex-shrink-0 transition-all duration-"
       }
 
     >
       <div className="flex items-center justify-center bg-background grow h-2/3 rounded-2xl text-green0">
+        {/*
         <div
-          className="drop-shadow-2xl bg-green1 px-6 py-10 rounded-3xl"
+          className="drop-shadow-2xl2 bg-green1 px-6 py-10 rounded-3xl"
           style={{
             //transform: 'rotate3d(1, 1, 1, 45deg)',
             //transform: 'rotateX(23deg) rotateY(-19deg) rotateZ(20deg)',
@@ -367,6 +368,8 @@ function InfoCard({ iden, transitionOffset, offsetY, titleText, mainText, icon }
             {icon}
           </div>
         </div>
+        */}
+        {icon}
       </div>
       <div className="flex flex-col grow justify-center nunito-font px-2 space-y-2">
         <p className="font-black text-2xl text-mainBlack/75">
@@ -382,9 +385,9 @@ function InfoCard({ iden, transitionOffset, offsetY, titleText, mainText, icon }
 
 function NFTParallax({ offsetY }) {
   return (
-    <div className="flex space-x-6 overflow-hidden h-[40rem] rounded-2xl glow-wide flex-shrink-0">
+    <div className="flex space-x-6 overflow-hidden h-[40rem] rounded-2xl flex-shrink-0">
       <div
-        className="flex flex-col space-y-6"
+        className="flex flex-col space-y-6 transition-all ease-linear duration-[10ms]"
         style={{ willChange: 'transform', transform: `translate3d(0, ${offsetY * -0.75}px, 0)` }}
       >
         <PseudoNFTCard number={1234} blockSeed={'qetuoadgjlxvn'} offsetY={offsetY} />
@@ -393,7 +396,7 @@ function NFTParallax({ offsetY }) {
         <PseudoNFTCard number={1234} blockSeed={'ljiq2h34'} offsetY={offsetY} />
       </div>
       <div
-        className="flex flex-col space-y-6"
+        className="flex flex-col space-y-6 transition-all ease-linear duration-[10ms]"
         style={{ willChange: 'transform', transform: `translate3d(0, ${offsetY * -1}px, 0)` }}
       >
         <PseudoNFTCard number={1234} blockSeed={'askldfhlkja'} offsetY={offsetY} />
@@ -408,7 +411,7 @@ function NFTParallax({ offsetY }) {
 
 function PseudoNFTCard({ number, blockSeed, offsetY }) {
   return (
-    <div className="flex flex-col p-4 space-y-4 bg-white rounded-2xl glow-low flex-shrink-0 min-w-max">
+    <div className="flex flex-col p-4 space-y-4 bg-white rounded-2xl flex-shrink-0 min-w-max">
       {
         <div className="flex rounded-xl w-64 h-64 opacity-80 flex-shrink-0 overflow-hidden -p-16">
           <div
