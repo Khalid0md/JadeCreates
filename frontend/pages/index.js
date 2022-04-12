@@ -138,6 +138,7 @@ function LandingPage() {
   )
 }
 
+/** 
 function Footer() {
 
   const router = useRouter();
@@ -182,6 +183,9 @@ function Footer() {
     </div>
   )
 }
+*/
+//
+
 
 function LandingContent1() {
   return (
