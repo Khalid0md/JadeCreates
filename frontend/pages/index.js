@@ -26,6 +26,7 @@ import { marketplaceAddress, storeMarketplaceAddress } from "../../backend/confi
 import storeMarketplaceJson from '../../backend/artifacts/contracts/StoreMarketplace.sol/StoreMarketplace.json';
 import LoadingIndicator from "../components/LoadingIndicator";
 import Logo from "../components/logo";
+import { hrmnyRpc } from "../utils/WalletSessionProvider";
 //const storeMarketplaceAddress = '0x02DfcEFB6069f27b89f041b6Be92dC3e2185c9bB';
 
 async function getStoreData() {
@@ -39,7 +40,7 @@ async function getStoreData() {
     }
 
     // Check subdomain validity here:
-    const web3 = new Web3('https://api.s0.b.hmny.io');
+    const web3 = new Web3(hrmnyRpc);
     const storeMarketplace = new web3.eth.Contract(storeMarketplaceJson.abi, storeMarketplaceAddress)
 
     const isAvailable = await storeMarketplace.methods.nameAvailable(subdomain).call()

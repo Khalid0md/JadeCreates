@@ -10,6 +10,7 @@ import AddListingModalContent from "./AddListingModalContent";
 import { marketplaceAddress, storeMarketplaceAddress } from "../../backend/config";
 import marketplaceJson from '../../backend/artifacts/contracts/RevisedMarketplace.sol/RevisedMarketplace.json';
 import CustomColorLoadingIndicator from "./CustomColorLoadingIndicator";
+import { hrmnyRpc } from "../utils/WalletSessionProvider";
 
 export default function ListingsList({ store, walletSession, isStorefrontDisplay }) {
 
@@ -24,13 +25,13 @@ export default function ListingsList({ store, walletSession, isStorefrontDisplay
 
         // if logged in, use account as provider
         // otherwise, use standard provider only if on storefront (storefront doesn't require that you be logged in)
-        const provider = (walletSession.provider != undefined ? walletSession.provider : (isStorefrontDisplay && 'https://api.s0.b.hmny.io'))
+        const provider = (walletSession.provider != undefined ? walletSession.provider : (isStorefrontDisplay && hrmnyRpc))
         setProvider(provider);
 
         // fetch listings data
         if (provider) {
             // init web3 provider
-            const web3 = new Web3('https://api.s0.b.hmny.io')
+            const web3 = new Web3(hrmnyRpc)
 
             // get store contract
             const marketplace = new web3.eth.Contract(marketplaceJson.abi, marketplaceAddress)

@@ -22,6 +22,10 @@ export function useWallet() {
     return useContext(WalletContext)
 }
 
+// rpc endpoint (for reference in other files)
+// testnet: export const hrmnyRpc = https://api.s0.b.hmny.io
+export const hrmnyRpc = 'https://api.harmony.one';
+
 // enum for currently connected wallet
 export const walletTypes = Object.freeze({
     metamask: 'mm',
@@ -244,8 +248,11 @@ function addWalletConnectListeners({ setWalletAddress }) {
 
 async function ensureMetamaskIsOnHarmony() {
 
-    //**** CHANGE TO MAINNET LATER */
-    const chainId = 1666700000
+    /* TESTNET ID: */
+    //const chainId = 1666700000
+
+    /* MAINNET ID: */
+    const chainId = 1666600000
 
     if (window.ethereum.networkVersion !== chainId) {
         try {

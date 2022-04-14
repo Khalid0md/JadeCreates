@@ -7,6 +7,7 @@ import { marketplaceAddress } from "../../backend/config";
 import marketplaceJson from '../../backend/artifacts/contracts/RevisedMarketplace.sol/RevisedMarketplace.json';
 import Web3 from 'web3';
 import TransactionPendingModalContent from './TransactionPendingModalContent';
+import { hrmnyRpc } from '../utils/WalletSessionProvider';
 
 export default function NFTCard({ listingId, provider, isStorefrontDisplay, walletIsConnected, walletSession, storeData }) {
 
@@ -18,7 +19,7 @@ export default function NFTCard({ listingId, provider, isStorefrontDisplay, wall
     const [name, setName] = useState();
     useEffect(async () => {
 
-        const web3 = new Web3('https://api.s0.b.hmny.io')  //provider)
+        const web3 = new Web3(hrmnyRpc)  //provider)
 
         // get marketplace contract
         const marketplace = new web3.eth.Contract(marketplaceJson.abi, marketplaceAddress)
