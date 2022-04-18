@@ -19,7 +19,7 @@ export default function NFTCard({ listingId, provider, isStorefrontDisplay, wall
     const [name, setName] = useState();
     useEffect(async () => {
 
-        const web3 = new Web3(hrmnyRpc)  //provider)
+        const web3 = new Web3(hrmnyRpc)
 
         // get marketplace contract
         const marketplace = new web3.eth.Contract(marketplaceJson.abi, marketplaceAddress)
@@ -58,14 +58,25 @@ export default function NFTCard({ listingId, provider, isStorefrontDisplay, wall
             const originalContract = new web3.eth.Contract(erc721Abi, data.nftContract)
             const tokenURI = await originalContract.methods.tokenURI(data.tokenId).call()
 
-
-            try {
-                const meta = await fetch(tokenURI)
-                const data = await meta.json()
-                setName(data && data.name)
-                setImageUri(data && data.image && data.image)
-            } catch {
-                console.log("Error loading imageURI / imageURI doesn't exist")
+            // Check if URI is ipfs address, otherwise try regular http get request
+            if (tokenURI && tokenURI.substring(0, 7) === 'ipfs://' && tokenURI.length > 10) {
+                try {
+                    const meta = await fetch("https://ipfs.infura.io/ipfs/" + tokenURI.substring(7))
+                    const data = await meta.json()
+                    setName(data && data.name)
+                    setImageUri(data && data.image && ("https://ipfs.infura.io/ipfs/" + data.image.substring(7)))
+                } catch {
+                    console.log("Error loading imageURI / imageURI doesn't exist")
+                }
+            } else {
+                try {
+                    const meta = await fetch(tokenURI)
+                    const data = await meta.json()
+                    setName(data && data.name)
+                    setImageUri(data && data.image && data.image)
+                } catch {
+                    console.log("Error loading imageURI / imageURI doesn't exist")
+                }
             }
         }
     }, [])
