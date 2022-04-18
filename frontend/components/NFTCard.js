@@ -58,15 +58,14 @@ export default function NFTCard({ listingId, provider, isStorefrontDisplay, wall
             const originalContract = new web3.eth.Contract(erc721Abi, data.nftContract)
             const tokenURI = await originalContract.methods.tokenURI(data.tokenId).call()
 
-            if (tokenURI.length > 10) {
-                try {
-                    const meta = await fetch("https://ipfs.infura.io/ipfs/" + tokenURI.substring(7))
-                    const data = await meta.json()
-                    setName(data && data.name)
-                    setImageUri(data && data.image && ("https://ipfs.infura.io/ipfs/" + data.image.substring(7)))
-                } catch {
-                    console.log("Error loading imageURI / imageURI doesn't exist")
-                }
+
+            try {
+                const meta = await fetch(tokenURI)
+                const data = await meta.json()
+                setName(data && data.name)
+                setImageUri(data && data.image && data.image)
+            } catch {
+                console.log("Error loading imageURI / imageURI doesn't exist")
             }
         }
     }, [])
@@ -99,7 +98,7 @@ export default function NFTCard({ listingId, provider, isStorefrontDisplay, wall
                             }
                         />
                         <div className='flex space-x-4 nunito-font font-extrabold text-mainBlack bg-background py-2 px-4 rounded-xl'>
-                            <p className=''>
+                            <p className='w-2/3 text-ellipsis overflow-clip'>
                                 {name}
                             </p>
                             <div className='flex grow' />
